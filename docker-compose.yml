@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0.9
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: "HomeAutomation"
+    volumes:
+      - mongo_data:/data/db
+      - ./mongodb-init:/docker-entrypoint-initdb.d
+      - ./mongod.conf:/etc/mongod.conf
+    healthcheck:
+      test: "mongosh --eval 'db.runCommand({ ping: 1 })' --quiet"
+      interval: 10s
+      timeout: 10s
+      retries: 6
+
+  homeautomationservice:
+    build:
+      context: ./PluginServices
+      dockerfile: HomeAutomationService/Dockerfile
+    ports:
+      - "5001:80"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  lightservice:
+    build:
+      context: ./PluginServices
+      dockerfile: LightService/Dockerfile
+    ports:
+      - "5002:80"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  speakerservice:
+    build:
+      context: ./PluginServices
+      dockerfile: SpeakerService/Dockerfile
+    ports:
+      - "5003:80"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+volumes:
+  mongo_data:

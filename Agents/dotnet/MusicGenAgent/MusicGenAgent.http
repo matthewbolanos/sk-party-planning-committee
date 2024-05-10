@@ -1,0 +1,6 @@
+@MusicGenAgent_HostAddress = http://localhost:5216
+
+GET {{MusicGenAgent_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

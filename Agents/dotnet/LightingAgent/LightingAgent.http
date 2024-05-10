@@ -1,6 +1,0 @@
-@LightingAgent_HostAddress = http://localhost:5161
-
-GET {{LightingAgent_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

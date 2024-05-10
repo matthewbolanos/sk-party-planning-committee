@@ -1,0 +1,11 @@
+
+{
+  "OpenAI": {
+      "DeploymentType": "AzureOpenAI",
+      "ApiKey": "your-api-key",
+      "ModelId": "your-model-id",
+      "DeploymentName": "your-models-deployment-name",
+      "Endpoint": "your-endpoint",
+      "OrgId": "your-org-id"
+  }
+}

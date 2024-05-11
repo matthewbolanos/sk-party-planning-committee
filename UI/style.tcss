@@ -1,0 +1,46 @@
+Image {
+    height: 20;
+}
+
+MessageInput {
+    dock: bottom;
+    margin-bottom: 1;
+}
+
+ChatMessage {
+    width: 100%;
+    padding: 0;
+    margin: 1;
+    height:auto;
+
+    Container {
+        border-title-color: black;
+        padding:1 1 0 1;
+        margin:0;
+        max-width: 80%;
+        height:auto;
+
+        Markdown {
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    &.user-message {
+        align-horizontal: right;
+        Container {
+            border-title-background: #58a6ff;                       
+            border: round #58a6ff;
+            color: #58a6ff;
+        }
+    }
+
+    &.agent-message {
+        align-horizontal: left;
+        Container {
+            border-title-background: white;
+            border: round white;
+            color: white;
+        }
+    }
+}

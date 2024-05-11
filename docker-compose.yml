@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongodb:
     image: mongo:7.0.9
@@ -17,6 +15,11 @@ services:
       interval: 10s
       timeout: 10s
       retries: 6
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   homeautomationservice:
     build:
@@ -47,6 +50,11 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+
+  ui:
+    build: ./UI
+    stdin_open: true
+    tty: true
 
 volumes:
   mongo_data:

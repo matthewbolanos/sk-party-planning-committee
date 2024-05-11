@@ -1,0 +1,117 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run UI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/UI/main.py",
+      "console": "integratedTerminal"
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
+      "name": "Launch LightService",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build - LightService",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/PluginServices/LightService/bin/Debug/net8.0/LightService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/PluginServices/LightService",
+      "stopAtEntry": false,
+      // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
+      "name": "Launch HomeAutomationService",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build - HomeAutomationService",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/PluginServices/HomeAutomationService/bin/Debug/net8.0/HomeAutomationService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/PluginServices/HomeAutomationService",
+      "stopAtEntry": false,
+      // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
+      "name": "Launch SpeakerService",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build - SpeakerService",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/PluginServices/SpeakerService/bin/Debug/net8.0/SpeakerService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/PluginServices/SpeakerService",
+      "stopAtEntry": false,
+      // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    },
+    {
+      // Use IntelliSense to find out which attributes exist for C# debugging
+      // Use hover for the description of the existing attributes
+      // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
+      "name": "Launch LightingAgent (.NET)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build - LightingAgent-dotnet",
+      // If you have changed target frameworks, make sure to update the program path.
+      "program": "${workspaceFolder}/Agents/dotnet/LightingAgent/bin/Debug/net8.0/LightingAgent.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Agents/dotnet/LightingAgent",
+      "stopAtEntry": false,
+      // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    }
+  ]
+}

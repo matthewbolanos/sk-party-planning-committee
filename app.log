@@ -1,0 +1,967 @@
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 0
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 0
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 0
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 0
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 0
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 20
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 3, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 3, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 3, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 3, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=5, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=5, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=1, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=1, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-3, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-3, width=20, height=10) with size (20, 10) and crop amounts (3, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-5, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-5, width=20, height=10) with size (20, 10) and crop amounts (5, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-9, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-9, width=20, height=10) with size (20, 10) and crop amounts (9, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-10, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-8, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-8, width=20, height=10) with size (20, 10) and crop amounts (8, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-6, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-6, width=20, height=10) with size (20, 10) and crop amounts (6, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-4, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-4, width=20, height=10) with size (20, 10) and crop amounts (4, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10) with size (20, 10) and crop amounts (2, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=4, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=4, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=6, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=6, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=8, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=8, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 2, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=10, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=10, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 4, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=12, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=12, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 6, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=13, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=13, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 7, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=11, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=11, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 5, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=9, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 3, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=5, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=5, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=3, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=3, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=1, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=1, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-1, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-1, width=20, height=10) with size (20, 10) and crop amounts (1, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-3, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-3, width=20, height=10) with size (20, 10) and crop amounts (3, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-5, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-5, width=20, height=10) with size (20, 10) and crop amounts (5, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-7, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-7, width=20, height=10) with size (20, 10) and crop amounts (7, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-9, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-9, width=20, height=10) with size (20, 10) and crop amounts (9, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-10, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-8, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-8, width=20, height=10) with size (20, 10) and crop amounts (8, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-6, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-6, width=20, height=10) with size (20, 10) and crop amounts (6, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-4, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-4, width=20, height=10) with size (20, 10) and crop amounts (4, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10) with size (20, 10) and crop amounts (2, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=4, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=4, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10) with size (20, 10) and crop amounts (2, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-4, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-4, width=20, height=10) with size (20, 10) and crop amounts (4, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=-2, width=20, height=10) with size (20, 10) and crop amounts (2, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=0, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=2, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=4, width=20, height=10).
+DEBUG:root:Rendering image ./ui/flower.png at Region(x=3, y=4, width=20, height=10) with size (20, 10) and crop amounts (0, 0, 0, 0).
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'sRGB' 41 1
+DEBUG:PIL.PngImagePlugin:STREAM b'eXIf' 54 132
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 198 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 219 345
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 576 16384
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 112
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 113
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 20
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 110
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 110
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 20
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 20
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 110
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 110
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 20
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 110
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 110
+DEBUG:asyncio:Using selector: KqueueSelector
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.code:entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.fence:entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.blockquote:entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.hr:entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.list:entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.reference:entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.html_block:entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.heading:entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.lheading:entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:markdown_it.rules_block.paragraph:entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 112
+DEBUG:root:Rendering message Integer posuere..
+DEBUG:root:Message length: 16
+DEBUG:root:Message width: 20
+DEBUG:root:Rendering message Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit..
+DEBUG:root:Message length: 142
+DEBUG:root:Message width: 110
+DEBUG:root:Rendering message Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus..
+DEBUG:root:Message length: 182
+DEBUG:root:Message width: 110
+DEBUG:asyncio:Using selector: KqueueSelector

@@ -4,7 +4,7 @@ This is a sample project that demonstrates how to use the Semantic Kernel to cre
 
 ## Getting Started
 
-### Setting up your secrets
+### Setting up your configuration
 
 Depending on the SDK you are using, you will need to set up your secrets in the respective configuration file, environment, or secret manager.
 
@@ -43,7 +43,7 @@ With .NET, it is recommended to use .NET Secret Manager to store your secrets. Y
 #  - Other: Used if you are using another deployment (e.g., Ollama) that provides an OpenAI API
 dotnet user-secrets set "OpenAI:DeploymentType" "AzureOpenAI" --project Agents/dotnet/SharedConfig
 dotnet user-secrets set "OpenAI:ApiKey" "your-api-key" --project Agents/dotnet/SharedConfig
-dotnet user-secrets set "OpenAI:ModelId" "your-api-key" --project Agents/dotnet/SharedConfig
+dotnet user-secrets set "OpenAI:ModelId" "your-model-id" --project Agents/dotnet/SharedConfig
 
 # Set if you are using AzureOpenAI
 # The deployment name may differ from the model name
@@ -56,7 +56,7 @@ dotnet user-secrets set "OpenAI:Endpoint" "your-endpoint" --project Agents/dotne
 dotnet user-secrets set "OpenAI:OrgId" "your-org-id" --project Agents/dotnet/SharedConfig
 ```
 
-If you want to use _appsettings.json_ instead, you can add the following to _/Agents/dotnet/SharedConfig/sharedsettings.json_ so that the configuration is used by all the services (alternatively, you can duplicate this information in each of the _appsettings.json_ files under /Agents/dotnet).
+If you want to use _appsettings.json_ instead, you can add the following to _/Agents/dotnet/SharedConfig/sharedsettings.json_ so that the configuration is used by all the services (alternatively, you can duplicate this information in each of the _appsettings.json_ files under /Agents/dotnet). To get started, copy _/Agents/dotnet/SharedConfig/sharedsettings.sample.json_ and populate it with your configuration.
 
 ```json
 {

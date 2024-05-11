@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Shared.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -10,28 +13,24 @@ namespace LightingAgent.Controllers
     /// <summary>
     /// Controller for the thread object
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ThreadController"/> class.
+    /// </remarks>
+    /// <param name="database">The MongoDB database.</param>
     [ApiController]
-    [Route("/api/threads")]
-    public class ThreadController : ControllerBase
+    [Route("api/threads")]
+    public class ThreadController(IMongoDatabase database) : ControllerBase
     {
-        private readonly IMongoCollection<AssistantThread> _threadsCollection;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ThreadController"/> class.
-        /// </summary>
-        /// <param name="database">The MongoDB database.</param>
-        public ThreadController(IMongoDatabase database)
-        {
-            _threadsCollection = database.GetCollection<AssistantThread>("threads");
-        }
-
+        private readonly IMongoCollection<AssistantThreadBase> _threadsCollection = database.GetCollection<AssistantThreadBase>("Threads");
+        private readonly IMongoCollection<AssistantMessageContent> _messagesCollection = database.GetCollection<AssistantMessageContent>("Messages");
 
         /// <summary>
         /// Creates a new thread.
         /// </summary>
         /// <param name="input">Thread to be created</param>
-        /// <returns>The created thread</returns>
-        [HttpPost("threads")]
+        /// <response code="201">Returns the newly created thread</response>
+        [HttpPost]
+        [ProducesResponseType(typeof(AssistantThreadBase), 201)]
         public async Task<IActionResult> CreateThread([FromBody] ThreadInputModel input)
         {
             if (input == null)
@@ -39,15 +38,34 @@ namespace LightingAgent.Controllers
                 return BadRequest("Thread is required.");
             }
 
-            var newThread = new AssistantThread
+            // Generate thread ID
+            var threadId = ObjectId.GenerateNewId().ToString();
+
+            // Create thread message content
+            List<AssistantMessageContent> AssistantMessageContents = [];
+            foreach (var message in input.Messages)
             {
-                Messages = input.Messages
+                // Add the message to the thread
+                AssistantMessageContents.Add(new AssistantMessageContent
+                {
+                    ThreadId = threadId,
+                    Role = message.Role,
+                    Items = [.. message.Content]
+                });
+            }
+
+            var newThread = new AssistantThreadBase
+            {
+                Id = threadId
             };
 
+            // Save data in parallel
+            await Task.WhenAll(
+                _threadsCollection.InsertOneAsync(newThread),
+                _messagesCollection.InsertManyAsync(AssistantMessageContents)
+            );
 
-            await _threadsCollection.InsertOneAsync(newThread);
-
-            return CreatedAtRoute("RetrieveThread", new { id = newThread.Id }, newThread);
+            return CreatedAtRoute("RetrieveThread", new { id = threadId }, newThread);
         }
 
         /// <summary>
@@ -55,7 +73,7 @@ namespace LightingAgent.Controllers
         /// </summary>
         /// <param name="id">The ID of the thread to retrieve</param>
         /// <returns>The requested thread</returns>
-        [HttpGet("threads/{id}", Name = "RetrieveThread")]
+        [HttpGet("{id}", Name = "RetrieveThread")]
         public async Task<IActionResult> RetrieveThread(string id)
         {
             var thread = await _threadsCollection.Find(t => t.Id == id).FirstOrDefaultAsync();
@@ -72,24 +90,12 @@ namespace LightingAgent.Controllers
         /// Updates an existing thread.
         /// </summary>
         /// <param name="id">The ID of the thread to update</param>
-        /// <param name="updatedThread">The updated thread object</param>
         /// <returns>The updated thread</returns>
-        [HttpPut("threads/{id}", Name = "ModifyThread")]
-        public async Task<IActionResult> ModifyThread(string id, [FromBody] AssistantThread updatedThread)
+        [HttpPut("{id}", Name = "ModifyThread")]
+        public IActionResult ModifyThread(string id)
         {
-            if (updatedThread == null || updatedThread.Id != id)
-            {
-                return BadRequest("Thread ID mismatch.");
-            }
-
-            var result = await _threadsCollection.ReplaceOneAsync(t => t.Id == id, updatedThread);
-
-            if (result.IsAcknowledged && result.ModifiedCount > 0)
-            {
-                return Ok(updatedThread);
-            }
-
-            return NotFound();
+            // return that the operation is not supported
+            return StatusCode(405);
         }
 
         /// <summary>
@@ -97,7 +103,7 @@ namespace LightingAgent.Controllers
         /// </summary>
         /// <param name="id">The ID of the thread to delete</param>
         /// <returns>Status of the deletion</returns>
-        [HttpDelete("threads/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteThread(string id)
         {
             var result = await _threadsCollection.DeleteOneAsync(t => t.Id == id);

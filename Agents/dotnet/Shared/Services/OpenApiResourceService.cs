@@ -8,9 +8,8 @@ public class OpenApiResourceService
     /// <param name="OpenApiResourceName">The name of the OpenAPI Resource (e.g., myPlugin.swagger.json)</param>
     /// <returns>The contents of the OpenAPI Resource</returns>
     /// <exception cref="Exception"></exception>
-    public string GetOpenApiResource(string OpenApiResourceName)
+    public string GetOpenApiResource(Assembly assembly, string OpenApiResourceName)
     {
-        Assembly assembly = Assembly.GetExecutingAssembly();
         string? fullResourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =>
             x.EndsWith(OpenApiResourceName)
         );

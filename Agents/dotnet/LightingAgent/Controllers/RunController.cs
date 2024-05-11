@@ -1,30 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Shared.Models;
+using Shared.Utilities;
+using LightingAgent.Services;
+using Microsoft.Extensions.Options;
+using SharedConfig.Models;
 
 namespace LightingAgent.Controllers
 {
     /// <summary>
     /// Controller for managing runs within a specific thread.
     /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="RunController"/> class.
+    /// </remarks>
+    /// <param name="database">The MongoDB database.</param>
+    /// <param name="runService">The run service.</param>
     [ApiController]
     [Route("/api/threads/{threadId}/runs")]
-    public class RunController : ControllerBase
+    public class RunController(
+        IMongoDatabase database,
+        IRunService runService,
+        IOptions<AgentConfig> agentConfig
+    ) : ControllerBase
     {
-        private readonly IMongoCollection<AssistantThread> _threadsCollection;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RunController"/> class.
-        /// </summary>
-        /// <param name="database">The MongoDB database.</param>
-        public RunController(IMongoDatabase database)
-        {
-            _threadsCollection = database.GetCollection<AssistantThread>("threads");
-        }
+        private readonly IMongoCollection<AssistantThreadBase> _threadsCollection = database.GetCollection<AssistantThreadBase>("Threads");
+        private readonly IRunService _runService = runService;
 
         /// <summary>
         /// Creates a new run within a specific thread.
@@ -33,12 +34,13 @@ namespace LightingAgent.Controllers
         /// <param name="newRun">The run to be created</param>
         /// <returns>Server-sent events stream of the run</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateRun(string threadId, [FromBody] Run newRun)
+        public async Task<IActionResult> CreateRun(string threadId)
         {
-            if (string.IsNullOrEmpty(threadId) || newRun == null || string.IsNullOrEmpty(newRun.AssistantId))
+            if (string.IsNullOrEmpty(threadId))
             {
-                return BadRequest("Thread ID and assistant ID are required.");
+                return BadRequest("Thread ID is required.");
             }
+
 
             var thread = await _threadsCollection.Find(t => t.Id == threadId).FirstOrDefaultAsync();
 
@@ -47,54 +49,32 @@ namespace LightingAgent.Controllers
                 return NotFound($"Thread with ID '{threadId}' not found.");
             }
 
-            newRun.ThreadId = threadId;
-            newRun.CreatedAt = DateTime.UtcNow;
+            var newRun = new Run()
+            {
+                ThreadId = threadId,
+                AssistantId = agentConfig.Value.Name,
+                CreatedAt = DateTime.UtcNow
+            };
 
-            // Dummy event stream example, replace with actual run logic
             async IAsyncEnumerable<string> RunEventStream()
             {
-                yield return "event: thread.run.created\n";
-                yield return $"data: {{ \"id\": \"run_123\", \"object\": \"thread.run\", \"created\": {new DateTimeOffset(newRun.CreatedAt).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.run.created", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.run.queued", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.run.in_progress", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.run.step.created", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.run.step.in_progress", newRun);
 
-                yield return "event: thread.run.queued\n";
-                yield return $"data: {{ \"id\": \"run_123\", \"object\": \"thread.run\", \"queued\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
+                await foreach (var events in _runService.ExecuteRunAsync(newRun))
+                {
+                    yield return events;
+                }
 
-                yield return "event: thread.run.in_progress\n";
-                yield return $"data: {{ \"id\": \"run_123\", \"object\": \"thread.run\", \"in_progress\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: thread.run.step.created\n";
-                yield return $"data: {{ \"id\": \"step_001\", \"object\": \"thread.run.step\", \"created\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: thread.run.step.in_progress\n";
-                yield return $"data: {{ \"id\": \"step_001\", \"object\": \"thread.run.step\", \"in_progress\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: thread.message.created\n";
-                yield return $"data: {{ \"id\": \"msg_001\", \"object\": \"thread.message\", \"created\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: thread.message.in_progress\n";
-                yield return $"data: {{ \"id\": \"msg_001\", \"object\": \"thread.message\", \"in_progress\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: thread.message.delta\n";
-                yield return $"data: {{ \"id\": \"msg_001\", \"object\": \"thread.message.delta\", \"created\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: thread.run.completed\n";
-                yield return $"data: {{ \"id\": \"run_123\", \"object\": \"thread.run\", \"completed\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: thread.run.step.completed\n";
-                yield return $"data: {{ \"id\": \"step_001\", \"object\": \"thread.run.step\", \"completed\": {new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()} }}\n\n";
-                await Task.Delay(1000);
-
-                yield return "event: done\n";
-                yield return "data: [DONE]\n\n";
+                yield return AssistantEventStreamUtility.CreateEvent("thread.message.created", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.message.in_progress", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.message.delta", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.run.completed", newRun);
+                yield return AssistantEventStreamUtility.CreateEvent("thread.run.step.completed", newRun);
+                yield return AssistantEventStreamUtility.CreateDoneEvent();
             }
 
             Response.ContentType = "text/event-stream";

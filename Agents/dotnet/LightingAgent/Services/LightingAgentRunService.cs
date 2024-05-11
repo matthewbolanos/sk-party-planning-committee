@@ -7,6 +7,8 @@ using MongoDB.Driver;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text;
+using Shared.Utilities;
+using Microsoft.Extensions.Options;
 
 namespace LightingAgent.Services
 {
@@ -16,15 +18,16 @@ namespace LightingAgent.Services
     /// <param name="database"></param>
     /// <param name="openAIConfig"></param>
     /// <param name="openApiResourceService"></param>
-    public class RunService(
+    /// <param name="assistantEventStreamUtility"></param>
+    public class LightingAgentRunService(
         IMongoDatabase database,
-        OpenAIConfig openAIConfig,
-        OpenApiResourceService openApiResourceService
+        IOptions<OpenAIConfig> openAIConfig,
+        OpenApiResourceService openApiResourceService,
+        AssistantEventStreamUtility assistantEventStreamUtility
     ) : IRunService
     {
-        private readonly IMongoCollection<AssistantThread> _threadsCollection = database.GetCollection<AssistantThread>("threads");
-        private readonly IMongoCollection<ThreadMessageContent> _messagesCollection = database.GetCollection<ThreadMessageContent>("threads");
-
+        private readonly IMongoCollection<AssistantMessageContent> _messagesCollection = database.GetCollection<AssistantMessageContent>("Messages");
+        private readonly OpenAIConfig _openAIConfig = openAIConfig.Value;
         /// <summary>
         /// Executes a run.
         /// </summary>
@@ -37,30 +40,30 @@ namespace LightingAgent.Services
             IKernelBuilder kernelBuilder = Kernel.CreateBuilder();
 
             // Add AI services
-            switch (openAIConfig.DeploymentType)
+            switch (_openAIConfig.DeploymentType)
             {
                 case OpenAIDeploymentType.AzureOpenAI:
                     kernelBuilder.AddAzureOpenAIChatCompletion(
-                        deploymentName: openAIConfig.DeploymentName!,
-                        apiKey: openAIConfig.ApiKey,
-                        endpoint: new(openAIConfig.Endpoint!),
-                        modelId: openAIConfig.ModelId // Optional
+                        deploymentName: _openAIConfig.DeploymentName!,
+                        apiKey: _openAIConfig.ApiKey,
+                        endpoint: new(_openAIConfig.Endpoint!),
+                        modelId: _openAIConfig.ModelId // Optional
                     );
                     break;
                 case OpenAIDeploymentType.OpenAI:
                     kernelBuilder.AddOpenAIChatCompletion(
-                        apiKey: openAIConfig.ApiKey,
-                        modelId: openAIConfig.ModelId,
-                        orgId: openAIConfig.OrgId // Optional
+                        apiKey: _openAIConfig.ApiKey,
+                        modelId: _openAIConfig.ModelId,
+                        orgId: _openAIConfig.OrgId // Optional
                     );
                     break;
                 case OpenAIDeploymentType.Other:
                     // With the endpoint property, you can target any OpenAI-compatible API
                     #pragma warning disable SKEXP0010
                     kernelBuilder.AddOpenAIChatCompletion(
-                        apiKey: openAIConfig.ApiKey,
-                        modelId: openAIConfig.ModelId,
-                        endpoint: new(openAIConfig.Endpoint!)
+                        apiKey: _openAIConfig.ApiKey,
+                        modelId: _openAIConfig.ModelId,
+                        endpoint: new(_openAIConfig.Endpoint!)
                     );
                     #pragma warning restore SKEXP0010
                     break;
@@ -77,7 +80,10 @@ namespace LightingAgent.Services
             #pragma warning disable SKEXP0040
             await kernel.ImportPluginFromOpenApiAsync(
                 pluginName: "LightPlugin",
-                stream: new MemoryStream(Encoding.UTF8.GetBytes(openApiResourceService.GetOpenApiResource("LightPlugin.swagger.json")))
+                stream: new MemoryStream(Encoding.UTF8.GetBytes(openApiResourceService.GetOpenApiResource(
+                    Assembly.GetExecutingAssembly(),
+                    "LightPlugin.swagger.json"))
+                )
             );
             #pragma warning restore SKEXP0040
 
@@ -100,18 +106,25 @@ namespace LightingAgent.Services
             var completeMessage = new StringBuilder();
             await foreach (var result in results)
             {
-                completeMessage.AppendLine(result.ToString());
-                yield return result.ToString();
+                completeMessage.Append(result.ToString());
+
+                // Send the message events to the client
+                var events = assistantEventStreamUtility.CreateMessageEvent("thread.message.delta", run.Id, result);
+                foreach (var messageEvent in events)
+                {
+                    yield return messageEvent;
+                }
             }
 
             // Save the results to MongoDB
             await _messagesCollection.InsertOneAsync(
-                new ThreadMessageContent() {
+                new AssistantMessageContent() {
+                    AssistantId = run.AssistantId,
+                    Role = AuthorRole.Assistant,
                     ThreadId = run.ThreadId,
                     Content = completeMessage.ToString()
                 }
             );
         }
-
     }
 }

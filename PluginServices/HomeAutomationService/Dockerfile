@@ -9,14 +9,17 @@ ENV ASPNETCORE_URLS=http://+:80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+# Copy Directory.Packages.props to the build directory
+COPY ["/Directory.Packages.props", "./"]
+
 # Copy the project files and restore dependencies
-COPY ["/HomeAutomationService/HomeAutomationService.csproj", "HomeAutomationService/"]
-COPY ["/Shared/Shared.csproj", "Shared/"]
-RUN dotnet restore "HomeAutomationService/HomeAutomationService.csproj"
+COPY ["/PluginServices/HomeAutomationService/HomeAutomationService.csproj", "PluginServices/HomeAutomationService/"]
+COPY ["/PluginServices/Shared/Shared.csproj", "PluginServices/Shared/"]
+RUN dotnet restore "PluginServices/HomeAutomationService/HomeAutomationService.csproj"
 
 # Copy the remaining files and publish the project
 COPY . .
-WORKDIR "/src/HomeAutomationService"
+WORKDIR "/src/PluginServices/HomeAutomationService"
 RUN dotnet publish "HomeAutomationService.csproj" -c Release -o /app/publish
 
 # Build the final image using the .NET 8 ASP.NET base image

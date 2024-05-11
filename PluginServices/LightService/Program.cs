@@ -1,7 +1,6 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Shared.Models;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);

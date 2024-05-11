@@ -20,8 +20,8 @@ services:
 
   homeautomationservice:
     build:
-      context: ./PluginServices
-      dockerfile: HomeAutomationService/Dockerfile
+      context: ./
+      dockerfile: PluginServices/HomeAutomationService/Dockerfile
     ports:
       - "5001:80"
     depends_on:
@@ -30,8 +30,8 @@ services:
 
   lightservice:
     build:
-      context: ./PluginServices
-      dockerfile: LightService/Dockerfile
+      context: ./
+      dockerfile: PluginServices/LightService/Dockerfile
     ports:
       - "5002:80"
     depends_on:
@@ -40,8 +40,8 @@ services:
 
   speakerservice:
     build:
-      context: ./PluginServices
-      dockerfile: SpeakerService/Dockerfile
+      context: ./
+      dockerfile: PluginServices/SpeakerService/Dockerfile
     ports:
       - "5003:80"
     depends_on:

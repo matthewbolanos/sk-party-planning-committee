@@ -54,3 +54,9 @@ db.Homes.insertOne({
         }
     ]
 });
+
+// Create empty "threads" collection
+db.createCollection("Threads");
+
+// Create empty "Messages" collection
+db.createCollection("Messages");

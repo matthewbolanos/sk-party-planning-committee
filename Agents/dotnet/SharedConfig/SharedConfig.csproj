@@ -7,7 +7,7 @@
     <UserSecretsId>12a78b9d-47a0-4763-916c-dc7756fe526c</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="sharedsettings.json" />
+    <EmbeddedResource Include="sharedsettings.json" Condition="Exists('sharedsettings.json')" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" />

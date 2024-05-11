@@ -13,9 +13,7 @@ namespace Shared.Models
     /// <summary>
     /// Model representing a run within a thread.
     /// </summary>
-    [JsonConverter(typeof(ThreadMessageContentConverter))]
-    [SwaggerSchemaFilter(typeof(ThreadMessageContentSchemaFilter))]
-    public class ThreadMessageContent() : ChatMessageContent
+    public class AssistantMessageContent() : ChatMessageContent
     {
         /// <summary>
         /// The ID of message.
@@ -28,6 +26,16 @@ namespace Shared.Models
         /// The ID of the thread this message belongs to.
         /// </summary>
         public string? ThreadId { get; set; }
+
+        /// <summary>
+        /// The run ID of the run this message belongs to.
+        /// </summary>
+        public string? RunId { get; set; }
+
+        /// <summary>
+        /// The assistant ID of the assistant this message belongs to.
+        /// </summary>
+        public string? AssistantId { get; set; }
 
         /// <summary>
         /// When the message was created.

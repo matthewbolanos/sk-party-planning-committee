@@ -22,6 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\..\..\Plugins\*.swagger.json" />
+    <EmbeddedResource Include="..\..\..\Plugins\OpenApiPlugins\**\*.swagger.json" />
   </ItemGroup>
 </Project>

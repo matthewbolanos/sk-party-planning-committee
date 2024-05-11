@@ -9,14 +9,17 @@ ENV ASPNETCORE_URLS=http://+:80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+# Copy Directory.Packages.props to the build directory which is two levels up
+COPY ["Directory.Packages.props", "./"]
+
 # Copy the project files and restore dependencies
-COPY ["/SpeakerService/SpeakerService.csproj", "SpeakerService/"]
-COPY ["/Shared/Shared.csproj", "Shared/"]
-RUN dotnet restore "SpeakerService/SpeakerService.csproj"
+COPY ["/PluginServices/SpeakerService/SpeakerService.csproj", "PluginServices/SpeakerService/"]
+COPY ["/PluginServices/Shared/Shared.csproj", "Shared/"]
+RUN dotnet restore "PluginServices/SpeakerService/SpeakerService.csproj"
 
 # Copy the remaining files and publish the project
 COPY . .
-WORKDIR "/src/SpeakerService"
+WORKDIR "/src/PluginServices/SpeakerService"
 RUN dotnet publish "SpeakerService.csproj" -c Release -o /app/publish
 
 # Build the final image using the .NET 8 ASP.NET base image

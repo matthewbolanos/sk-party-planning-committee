@@ -4,7 +4,7 @@ using Shared.Models;
 using Shared.Utilities;
 using LightingAgent.Services;
 using Microsoft.Extensions.Options;
-using SharedConfig.Models;
+using Shared.Config;
 
 namespace LightingAgent.Controllers
 {

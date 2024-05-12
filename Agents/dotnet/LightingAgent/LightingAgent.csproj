@@ -5,7 +5,6 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>12a78b9d-47a0-4763-916c-dc7756fe526c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +17,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
-    <ProjectReference Include="..\SharedConfig\SharedConfig.csproj" />
   </ItemGroup>
 
   <ItemGroup>

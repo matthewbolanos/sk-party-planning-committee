@@ -1,6 +1,6 @@
 #pragma warning disable CS8618
 
-namespace SharedConfig.Models
+namespace Shared.Config
 {
     public class AgentConfig
     {

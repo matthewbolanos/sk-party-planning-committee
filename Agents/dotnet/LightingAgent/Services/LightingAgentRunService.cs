@@ -1,6 +1,5 @@
 using Microsoft.SemanticKernel;
 using Shared.Models;
-using SharedConfig.Models;
 using Microsoft.SemanticKernel.Plugins.OpenApi;
 using System.Reflection;
 using MongoDB.Driver;
@@ -9,6 +8,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text;
 using Shared.Utilities;
 using Microsoft.Extensions.Options;
+using Shared.Config;
 
 namespace LightingAgent.Services
 {

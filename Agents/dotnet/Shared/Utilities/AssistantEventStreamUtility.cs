@@ -7,8 +7,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Shared.Config;
 using Shared.Models;
-using SharedConfig.Models;
 
 namespace Shared.Utilities
 {

@@ -13,11 +13,18 @@ class TerminalGui(App):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        # Determine the base URL based on the deployment environment
+        deploy_env = os.getenv('DEPLOY_ENV', 'development')  # Default to 'development' if not set
+        if deploy_env == 'docker':
+            base_url = "http://csharp-lightingagent/api"
+        else:
+            base_url = "http://localhost:6001/api"
+
         # Initialize the OpenAI async client
         self.http_client = httpx.AsyncClient(verify=False)
         self.client = AsyncOpenAI(
-            api_key=os.environ.get("OPENAI_API_KEY", "sk-proj-yourapikeyhere"),
-            base_url="https://localhost:7284/api",
+            api_key="no-api-key-needed-here", # The API key is managed by the server
+            base_url=base_url,
             http_client=self.http_client
         )
 

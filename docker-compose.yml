@@ -21,6 +21,16 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  csharp-lightingagent:
+    build:
+      context: ./
+      dockerfile: Agents/dotnet/lightingAgent/Dockerfile
+    ports:
+      - "6001:80"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
   homeautomationservice:
     build:
       context: ./
@@ -55,6 +65,8 @@ services:
     build: ./UI
     stdin_open: true
     tty: true
+    environment:
+      - DEPLOY_ENV=docker
 
 volumes:
   mongo_data:

@@ -6,7 +6,10 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/UI/main.py",
-      "console": "integratedTerminal"
+      "console": "integratedTerminal",
+      "env": {
+        "DEPLOY_ENV": "development"
+      }
     },
     {
       // Use IntelliSense to find out which attributes exist for C# debugging

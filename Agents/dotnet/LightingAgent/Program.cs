@@ -3,8 +3,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Shared.Swagger;
 using Shared.Converters;
-using SharedConfig.Models;
-using SharedConfig;
+using Shared.Config;
 using LightingAgent.Services;
 using Shared.Utilities;
 

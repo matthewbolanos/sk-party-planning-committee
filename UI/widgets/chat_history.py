@@ -9,12 +9,7 @@ from widgets.chat_message import ChatMessage
 class ChatHistory(Widget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        test = ChatMessage(
-            author="Assistant",
-            role="assistant",
-            text="Hello! How can I help you today?"
-        )
-        self.list_view =  VerticalScroll(test)
+        self.list_view =  VerticalScroll()
 
     def compose(self) -> ComposeResult:
         yield self.list_view

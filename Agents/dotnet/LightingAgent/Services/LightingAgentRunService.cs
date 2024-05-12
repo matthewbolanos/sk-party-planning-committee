@@ -34,7 +34,7 @@ namespace LightingAgent.Services
         /// <param name="run"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async IAsyncEnumerable<string> ExecuteRunAsync(Run run)
+        public async IAsyncEnumerable<string> ExecuteRunAsync(AssistantThreadRun run)
         {
             // Create kernel
             IKernelBuilder kernelBuilder = Kernel.CreateBuilder();
@@ -109,7 +109,7 @@ namespace LightingAgent.Services
                 completeMessage.Append(result.ToString());
 
                 // Send the message events to the client
-                var events = assistantEventStreamUtility.CreateMessageEvent("thread.message.delta", run.Id, result);
+                var events = assistantEventStreamUtility.CreateMessageEvent(run.Id, result);
                 foreach (var messageEvent in events)
                 {
                     yield return messageEvent;

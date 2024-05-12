@@ -1,7 +1,6 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using MongoDB.Driver;
 using Shared.Swagger;
 using Shared.Converters;
 using SharedConfig.Models;
@@ -42,6 +41,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new AuthorRoleConverter());
     options.JsonSerializerOptions.Converters.Add(new AssistantMessageContentConverter());
     options.JsonSerializerOptions.Converters.Add(new AssistantThreadConverter());
+    options.JsonSerializerOptions.Converters.Add(new AssistantThreadRunConverter());
 });
 
 // Setup configuration

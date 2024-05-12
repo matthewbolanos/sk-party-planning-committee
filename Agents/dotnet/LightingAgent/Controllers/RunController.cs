@@ -21,7 +21,8 @@ namespace LightingAgent.Controllers
     public class RunController(
         IMongoDatabase database,
         IRunService runService,
-        IOptions<AgentConfig> agentConfig
+        IOptions<AgentConfig> agentConfig,
+        AssistantEventStreamUtility assistantEventStreamUtility
     ) : ControllerBase
     {
         private readonly IMongoCollection<AssistantThreadBase> _threadsCollection = database.GetCollection<AssistantThreadBase>("Threads");
@@ -49,7 +50,7 @@ namespace LightingAgent.Controllers
                 return NotFound($"Thread with ID '{threadId}' not found.");
             }
 
-            var newRun = new Run()
+            var newRun = new AssistantThreadRun()
             {
                 ThreadId = threadId,
                 AssistantId = agentConfig.Value.Name,
@@ -58,23 +59,20 @@ namespace LightingAgent.Controllers
 
             async IAsyncEnumerable<string> RunEventStream()
             {
-                yield return AssistantEventStreamUtility.CreateEvent("thread.run.created", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.run.queued", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.run.in_progress", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.run.step.created", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.run.step.in_progress", newRun);
+                yield return assistantEventStreamUtility.CreateEvent("thread.run.created", newRun);
+                yield return assistantEventStreamUtility.CreateEvent("thread.run.queued", newRun);
+                yield return assistantEventStreamUtility.CreateEvent("thread.run.in_progress", newRun);
+                yield return assistantEventStreamUtility.CreateEvent("thread.run.step.created", newRun);
+                yield return assistantEventStreamUtility.CreateEvent("thread.run.step.in_progress", newRun);
 
                 await foreach (var events in _runService.ExecuteRunAsync(newRun))
                 {
                     yield return events;
                 }
-
-                yield return AssistantEventStreamUtility.CreateEvent("thread.message.created", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.message.in_progress", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.message.delta", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.run.completed", newRun);
-                yield return AssistantEventStreamUtility.CreateEvent("thread.run.step.completed", newRun);
-                yield return AssistantEventStreamUtility.CreateDoneEvent();
+                
+                yield return assistantEventStreamUtility.CreateEvent("thread.run.completed", newRun);
+                yield return assistantEventStreamUtility.CreateEvent("thread.run.step.completed", newRun);
+                yield return assistantEventStreamUtility.CreateDoneEvent();
             }
 
             Response.ContentType = "text/event-stream";

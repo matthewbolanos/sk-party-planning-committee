@@ -1,36 +1,66 @@
 import asyncio
-import logging
+import os
+import time
+import httpx
+from openai import AsyncOpenAI
 from textual.app import App, ComposeResult
-from textual.containers import ScrollableContainer
-from widgets.chat_message import ChatMessage
-
+from widgets.chat_history import ChatHistory
 from widgets.message_input import MessageInput
-
-logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
 class TerminalGui(App):
     CSS_PATH = "style.tcss"
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # Initialize the OpenAI async client
+        self.http_client = httpx.AsyncClient(verify=False)
+        self.client = AsyncOpenAI(
+            api_key=os.environ.get("OPENAI_API_KEY", "sk-proj-yourapikeyhere"),
+            base_url="https://localhost:7284/api",
+            http_client=self.http_client
+        )
+
+        self.thread = None  # Initialized later in an async method
+        self.input_widget: MessageInput = MessageInput(on_message=self.handle_user_input)
+        self.chat_history: ChatHistory = ChatHistory()
+
+    async def on_mount(self):
+        self.thread = await self.client.beta.threads.create()
+        self.loop = asyncio.get_running_loop()
 
     def compose(self) -> ComposeResult:
-        yield MessageInput()
-        yield ScrollableContainer(
+        yield self.input_widget
+        yield self.chat_history
 
-            ChatMessage(
-                "Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.",
-                author="User",
-                type="user"
-            ),
-            ChatMessage(
-                "Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                author="Assistant",
-                type="other"
-            ),
-            ChatMessage(
-                "Integer posuere.",
-                author="User",
-                type="user"
-            )
+    async def handle_user_input(self, message: str) -> None:
+        await self.chat_history.add_message(author="You", role="user", text=message)
+
+        if not self.thread:
+            raise Exception("Thread not successfully initialized")
+
+        await self.client.beta.threads.messages.create(
+            thread_id=self.thread.id,
+            role="user",
+            content=message,
         )
+
+        stream = await self.client.beta.threads.runs.create(
+            thread_id=self.thread.id,
+            assistant_id="_",
+            stream=True
+        )
+        async for event in stream:
+            await self.handle_event(event)
+
+    async def handle_event(self, event):
+        if event.event == "thread.message.created":
+            self.current_message_widget = await self.chat_history.add_message(event.data.assistant_id, event.data.role, '')
+        elif event.event == "thread.message.delta":
+            if event.data.content and self.current_message_widget:
+                await self.current_message_widget.append_text(event.data.content)
+        elif event.event == "thread.message.completed":
+            self.current_message_widget = None
 
 if __name__ == "__main__":
     asyncio.run(TerminalGui().run())

@@ -16,37 +16,113 @@ namespace Shared.Converters
         /// </summary>
         public override AssistantMessageContent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            // Deserialize JSON to a dictionary
-            var jsonObject = JsonSerializer.Deserialize<Dictionary<string, object>>(ref reader, options);
-
-            if (jsonObject == null)
+            if (reader.TokenType != JsonTokenType.StartObject)
             {
-                throw new JsonException();
+                throw new JsonException("Expected StartObject token.");
             }
 
-            // Extract values from dictionary
-            var id = (string)jsonObject["id"];
-            var threadId = (string?)jsonObject["thread_id"];
-            var createdAt = ((JsonElement)jsonObject["created_at"]).GetDateTime();
-            var role = Enum.Parse<AuthorRole>((string)jsonObject["role"]);
-            var items = JsonSerializer.Deserialize<List<KernelContent>>(((JsonElement)jsonObject["content"]).GetString()!, options); // improve?
-            var assistantId = (string?)jsonObject["assistant_id"];
-            var runId = (string?)jsonObject["run_id"];
+            string? id = null, threadId = null, assistantId = null, runId = null;
+            List<KernelContent>? items = null;
+            DateTime? createdAt = null;
+            AuthorRole? role = null;
 
-            // Create a new instance of AssistantMessageContent
-            var AssistantMessageContent = new AssistantMessageContent()
+            while (reader.Read())
             {
-                Role = role,
+                if (reader.TokenType == JsonTokenType.EndObject)
+                {
+                    break;
+                }
+
+                if (reader.TokenType == JsonTokenType.PropertyName)
+                {
+                    var propertyName = reader.GetString();
+                    reader.Read(); // Move to the value token
+
+                    switch (propertyName)
+                    {
+                        case "id":
+                            id = reader.GetString();
+                            break;
+                        case "thread_id":
+                            threadId = reader.GetString();
+                            break;
+                        case "created_at":
+                            // Convert Unix timestamp to DateTime
+                            createdAt = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64()).DateTime;
+                            break;
+                        case "role":
+                            string? roleLabel = reader.GetString();
+                            if (roleLabel != null)
+                            {
+                                role = new AuthorRole(roleLabel);
+                            }
+                            else
+                            {
+                                throw new JsonException("Role is missing.");
+                            }
+                            break;
+                        case "content":
+                            string? contentJson = reader.GetString();
+                            if (contentJson != null)
+                            {
+                                // Check if contentJson is actually json or a string that doesn't need to be deserialized
+                                if (contentJson.StartsWith('['))
+                                {
+                                    // Deserialize the content array
+                                    items = JsonSerializer.Deserialize<List<KernelContent>>(contentJson, options);
+                                }
+                                else
+                                {
+                                    // If contentJson is a string, create a new KernelContent object with the string as the text
+                                    items =
+                                    [
+                                        new TextContent
+                                        {
+                                            Text = contentJson
+                                        }
+                                    ];
+                                }
+                            }
+                            break;
+                        case "assistant_id":
+                            assistantId = reader.GetString();
+                            break;
+                        case "run_id":
+                            runId = reader.GetString();
+                            break;
+                        default:
+                            reader.Skip(); // Skip unknown properties
+                            break;
+                    }
+                }
+            }
+
+            if (role == null || items == null)
+            {
+                throw new JsonException("Required properties are missing.");
+            }
+
+            var assistantMessageContent = new AssistantMessageContent()
+            {
+                Role = role.Value,
                 Items = [.. items],
-                Id = id,
                 ThreadId = threadId,
-                CreatedAt = createdAt,
                 AssistantId = assistantId,
                 RunId = runId
             };
 
-            return AssistantMessageContent;
+            if (id != null)
+            {
+                assistantMessageContent.Id = id;
+            }
+            if (createdAt != null)
+            {
+                assistantMessageContent.CreatedAt = createdAt.Value;
+            }
+
+            return assistantMessageContent;
         }
+
 
         /// <summary>
         /// Writes the JSON representation of a <see cref="AssistantMessageContent"/> object to a <see cref="Utf8JsonWriter"/>.
@@ -66,12 +142,12 @@ namespace Shared.Converters
             writer.WriteString("run_id", value.RunId);
             writer.WriteString("role", value.Role.ToString().ToLower());
 
-            // Write the 'content' array using the custom converter
-            JsonSerializer.Serialize(writer, value.Items, new JsonSerializerOptions
-            {
-                Converters = { new ListOfKernelContentConverter() }
-            });
-
+            writer.WritePropertyName("content");
+            JsonSerializer.Serialize<List<KernelContent>>(writer: writer, value: [.. value.Items], options: options);
+            writer.WriteStartArray("attachments");
+            writer.WriteEndArray();
+            writer.WriteStartObject("metadata");
+            writer.WriteEndObject();
             writer.WriteEndObject();
         }
     }

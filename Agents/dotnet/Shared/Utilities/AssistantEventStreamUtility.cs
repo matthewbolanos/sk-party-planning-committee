@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using Azure.AI.OpenAI;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -11,14 +12,17 @@ using SharedConfig.Models;
 
 namespace Shared.Utilities
 {
-    public class AssistantEventStreamUtility(IOptions<AgentConfig> agentConfiguration)
+    public class AssistantEventStreamUtility(
+        IOptions<AgentConfig> agentConfiguration,
+        IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions
+    )
     {
         private string? _currentThreadId = null;
         private AssistantMessageContent? _currentMessage = null;
         private AgentConfig _agentConfiguration = agentConfiguration.Value;
         private StringBuilder _messageBuilder = new();
 
-        public IEnumerable<string> CreateMessageEvent(string eventType, string runId, StreamingChatMessageContent data)
+        public IEnumerable<string> CreateMessageEvent(string runId, StreamingChatMessageContent data)
         {
             // Check if the type is not OpenAIStreamingChatMessageContent (if so, fail)
             if (data.GetType() != typeof(OpenAIStreamingChatMessageContent))
@@ -46,7 +50,7 @@ namespace Shared.Utilities
                     Id = streamingChatCompletionsUpdate.Id,
                     ThreadId = _currentThreadId,
                     CreatedAt = DateTime.Now,
-                    Role = AuthorRole.User,
+                    Role = AuthorRole.Assistant,
                     AssistantId = _agentConfiguration.Name,
                     RunId = runId,
                     Items = []
@@ -75,22 +79,22 @@ namespace Shared.Utilities
             }
         }
 
-        public static string CreateEvent<T>(string eventType, T data)
+        public string CreateEvent<T>(string eventType, T data)
         {
-            string jsonData = JsonSerializer.Serialize(data);
+            string jsonData = JsonSerializer.Serialize(data, options: jsonOptions.Value.JsonSerializerOptions);
             return $"event: {eventType}\n" +
                 $"data: {jsonData}\n\n";
         }
 
-        public static string CreateErrorEvent(string message)
+        public string CreateErrorEvent(string message)
         {
             var errorData = new { message = message };
-            string jsonData = JsonSerializer.Serialize(errorData);
+            string jsonData = JsonSerializer.Serialize(errorData, options: jsonOptions.Value.JsonSerializerOptions);
             return $"event: error\n" +
                 $"data: {jsonData}\n\n";
         }
 
-        public static string CreateDoneEvent()
+        public string CreateDoneEvent()
         {
             return "event: done\n" +
                 "data: [DONE]\n\n";

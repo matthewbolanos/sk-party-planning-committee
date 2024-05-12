@@ -1,8 +1,5 @@
-Image {
-    height: 20;
-}
-
 MessageInput {
+    height: 3;
     dock: bottom;
     margin-bottom: 1;
 }

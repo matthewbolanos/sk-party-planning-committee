@@ -12,6 +12,6 @@ namespace LightingAgent.Services
         /// </summary>
         /// <param name="run">The run to execute.</param>
         /// <returns>An asynchronous enumerable of strings representing the execution result.</returns>
-        IAsyncEnumerable<string> ExecuteRunAsync(Run run);
+        IAsyncEnumerable<string> ExecuteRunAsync(AssistantThreadRun run);
     }
 }

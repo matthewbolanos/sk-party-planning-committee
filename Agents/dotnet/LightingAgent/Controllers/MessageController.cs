@@ -29,12 +29,12 @@ namespace LightingAgent.Controllers
         /// Creates a new message in a specific thread.
         /// </summary>
         /// <param name="threadId">The ID of the thread to create the message in</param>
-        /// <param name="newMessage">The message to be created</param>
+        /// <param name="messageInput">The message to be created</param>
         /// <returns>The created message</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateMessage(string threadId, [FromBody] AssistantMessageContent newMessage)
+        public async Task<IActionResult> CreateMessage(string threadId, [FromBody] AssistantMessageContentInputModel messageInput)
         {
-            if (string.IsNullOrEmpty(threadId) || newMessage == null)
+            if (string.IsNullOrEmpty(threadId) || messageInput == null)
             {
                 return BadRequest("Thread ID and message are required.");
             }
@@ -46,7 +46,14 @@ namespace LightingAgent.Controllers
                 return NotFound($"Thread with ID '{threadId}' not found.");
             }
 
-            newMessage.ThreadId = threadId;
+            AssistantMessageContent newMessage = new()
+            {
+                ThreadId = threadId,
+                Role = messageInput.Role,
+                Items = [.. messageInput.Content],
+                CreatedAt = DateTime.UtcNow
+            };
+
             await _messagesCollection.InsertOneAsync(newMessage);
 
             return CreatedAtRoute("RetrieveMessage", new { threadId, id = newMessage.Id }, newMessage);

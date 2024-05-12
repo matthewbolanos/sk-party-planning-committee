@@ -59,11 +59,14 @@ namespace LightingAgent.Controllers
                 Id = threadId
             };
 
+
             // Save data in parallel
-            await Task.WhenAll(
-                _threadsCollection.InsertOneAsync(newThread),
-                _messagesCollection.InsertManyAsync(AssistantMessageContents)
-            );
+            List<Task> tasks = [_threadsCollection.InsertOneAsync(newThread)];
+            if (AssistantMessageContents.Count > 0)
+            {
+                tasks.Add(_messagesCollection.InsertManyAsync(AssistantMessageContents));
+            }
+            await Task.WhenAll(tasks);
 
             return CreatedAtRoute("RetrieveThread", new { id = threadId }, newThread);
         }

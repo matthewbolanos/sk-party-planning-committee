@@ -1,37 +1,60 @@
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.SemanticKernel.ChatCompletion;
+using MongoDB.Bson;
 using Shared.Models;
 
-namespace Shared.Converters
+public class AssistantThreadConverter : JsonConverter<AssistantThreadBase>
 {
-    /// <summary>
-    /// Converts JSON to <see cref="AssistantThread"/> and vice versa.
-    /// </summary>
-    public class AssistantThreadConverter : JsonConverter<AssistantThread>
+    public override AssistantThreadBase Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        /// <summary>
-        /// Represents the content of a thread message.
-        /// </summary>
-        public override AssistantThread Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            // Perform default deserialization
-            var AssistantThread = JsonSerializer.Deserialize<AssistantThread>(ref reader, options);
+        if (reader.TokenType != JsonTokenType.StartObject)
+            throw new JsonException("Expected StartObject token type");
 
-            return AssistantThread!;
+        var thread = new AssistantThreadBase();
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.EndObject)
+            {
+                return thread;
+            }
+
+            if (reader.TokenType == JsonTokenType.PropertyName)
+            {
+                var propertyName = reader.GetString();
+                reader.Read();
+                switch (propertyName)
+                {
+                    case "id":
+                        thread.Id = reader.GetString();
+                        break;
+                    case "object":
+                        thread.Object = reader.GetString();
+                        break;
+                    case "created_at":
+                        var unixTime = reader.GetInt64();
+                        thread.CreatedAt = DateTimeOffset.FromUnixTimeSeconds(unixTime).UtcDateTime;
+                        break;
+                    default:
+                        throw new JsonException($"Property {propertyName} is not supported");
+                }
+            }
         }
 
-        /// <summary>
-        /// Writes the JSON representation of a <see cref="AssistantThread"/> object to a <see cref="Utf8JsonWriter"/>.
-        /// </summary>
-        /// <param name="writer">The <see cref="Utf8JsonWriter"/> to write the JSON to.</param>
-        /// <param name="value">The <see cref="AssistantThread"/> object to serialize.</param>
-        /// <param name="options">The <see cref="JsonSerializerOptions"/> used during serialization.</param>
-        public override void Write(Utf8JsonWriter writer, AssistantThread value, JsonSerializerOptions options)
-        {
-            // Perform serialization with the base class
-            JsonSerializer.Serialize<AssistantThreadBase>(writer, value, options);
-        }
+        throw new JsonException("Unexpected end when reading JSON.");
+    }
+
+    public override void Write(Utf8JsonWriter writer, AssistantThreadBase value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("id", value.Id);
+        writer.WriteString("object", value.Object);
+        var unixTime = new DateTimeOffset(value.CreatedAt).ToUnixTimeSeconds();
+        writer.WriteNumber("created_at", unixTime);
+        writer.WriteStartObject("tool_resources");
+        writer.WriteNull("code_interpreter");
+        writer.WriteNull("file_search");
+        writer.WriteEndObject();
+        writer.WriteEndObject();
     }
 }
-

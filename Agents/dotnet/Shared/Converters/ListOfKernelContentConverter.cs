@@ -8,6 +8,12 @@ namespace Shared.Converters
     {
         public override List<KernelContent> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var text = reader.GetString();
+                return [new TextContent { Text = text }];
+            }
+
             if (reader.TokenType != JsonTokenType.StartArray)
                 throw new JsonException("Expected StartArray token");
 
@@ -69,7 +75,11 @@ namespace Shared.Converters
                 {
                     case TextContent textContent:
                         writer.WriteString("type", "text");
-                        writer.WriteString("text", textContent.Text);
+                        writer.WriteStartObject("text");
+                        writer.WriteString("value", textContent.Text);
+                        writer.WriteStartArray("annotations");
+                        writer.WriteEndArray();
+                        writer.WriteEndObject();
                         break;
                     case ImageContent imageContent:
                         if(imageContent.Uri == null)
@@ -77,7 +87,9 @@ namespace Shared.Converters
                             throw new JsonException("Image URL is required");
                         }
                         writer.WriteString("type", "image_url");
+                        writer.WriteStartObject("image_url");
                         writer.WriteString("url", imageContent.Uri.ToString());
+                        writer.WriteEndObject();
                         break;
                 }
                 writer.WriteEndObject();

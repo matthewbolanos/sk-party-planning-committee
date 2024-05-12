@@ -1,9 +1,7 @@
-from pydantic import BaseModel, Field, validator
-from typing import Any, Optional
+from pydantic import BaseModel
+from typing import List, Optional
 from datetime import datetime
 from bson import ObjectId
-
-# Assume imports from your semantic kernel are available
 from semantic_kernel.contents import AuthorRole
 from semantic_kernel.contents.chat_message_content import ITEM_TYPES
 from models.assistant_message_content import serialize_kernel_content
@@ -16,7 +14,7 @@ class AssistantMessageContentOutputModel(BaseModel):
     run_id: Optional[str] = None
     assistant_id: Optional[str] = None
     created_at: datetime = None
-    content: Optional[list[ITEM_TYPES]] = None
+    content: Optional[List[ITEM_TYPES]] = None
 
     class Config():
         json_encoders = {
@@ -28,7 +26,7 @@ class AssistantMessageContentOutputModel(BaseModel):
         populate_by_name = True
     
 
-    def to_bson(self):
+    def to_bson(self) -> dict:
         """Convert to BSON document for MongoDB insertion, using Pydantic's dict method with by_alias=True to handle field aliases."""
         document = self.model_dump(by_alias=True, exclude_none=True)
         if "id" in document:
@@ -42,7 +40,7 @@ class AssistantMessageContentOutputModel(BaseModel):
         return document
 
     @classmethod
-    def from_bson(cls, document):
+    def from_bson(cls, document) -> 'AssistantMessageContentOutputModel':
         """Convert from BSON document to Pydantic model, adjusting field names and types as necessary."""
         document['id'] = str(document.pop('_id'))
         document['role'] = AuthorRole(document.pop('role'))

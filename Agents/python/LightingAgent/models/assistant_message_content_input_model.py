@@ -9,8 +9,6 @@ class AssistantMessageContentInputModel(BaseModel):
     role: AuthorRole
     content: List[ITEM_TYPES]
 
-
-    # Define JSON serialization within Pydantic that matches the C# structure
     class Config:
         json_encoders = {
             ITEM_TYPES: lambda v: serialize_kernel_content(v)

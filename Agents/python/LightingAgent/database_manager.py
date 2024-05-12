@@ -1,14 +1,14 @@
 from fastapi import Depends, HTTPException
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncIOMotorCollection
 
 class DatabaseManager:
     client: AsyncIOMotorClient = None
+    db: AsyncIOMotorDatabase = None
+    threads_collection: AsyncIOMotorCollection = None
+    messages_collection: AsyncIOMotorCollection = None
 
     def __init__(self, url: str):
         self.url = url
-        self.db = None
-        self.threads_collection = None
-        self.messages_collection = None
 
     async def connect(self):
         self.client = AsyncIOMotorClient(self.url)

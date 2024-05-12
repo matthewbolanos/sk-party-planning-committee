@@ -8,7 +8,7 @@ class ToolResources(BaseModel):
     file_search: Optional[bool] = None
 
 class AssistantThreadBase(BaseModel):
-    id: Optional[str] = Field(default_factory=lambda: str(ObjectId()), alias="_id")
+    id: Optional[str] = Field(default_factory=lambda: str(ObjectId()))
     object: str = Field(default="thread", alias="object")
     created_at: datetime = Field(default_factory=lambda: datetime.utcnow(), alias="created_at")
     tool_resources: ToolResources = ToolResources()
@@ -21,7 +21,7 @@ class AssistantThreadBase(BaseModel):
         populate_by_name = True
         from_attributes = True
 
-    def to_bson(self):
+    def to_bson(self) -> dict:
         """Convert to BSON document for MongoDB insertion, using Pydantic's dict method with by_alias=True to handle field aliases."""
         document = self.model_dump(by_alias=True, exclude_none=True, exclude={"tool_resources"})
         if "id" in document:
@@ -30,7 +30,7 @@ class AssistantThreadBase(BaseModel):
         return document
 
     @classmethod
-    def from_bson(cls, document):
+    def from_bson(cls, document) -> 'AssistantThreadBase':
         """Convert from BSON document to Pydantic model, adjusting field names and types as necessary."""
         document['id'] = str(document.pop('_id'))
         return cls(**document)

@@ -15,13 +15,13 @@ class AssistantThread(AssistantThreadBase):
         populate_by_name = True
         from_attributes = True
 
-    def to_bson(self):
+    def to_bson(self) -> dict:
         """Convert to BSON document for MongoDB insertion, including embedded messages."""
         document = super().to_bson()  # Get the base document
         return document
 
     @classmethod
-    def from_bson(cls, document):
+    def from_bson(cls, document) -> 'AssistantThread':
         """Convert from BSON document to Pydantic model, including embedded messages."""
         instance = super().from_bson(document)
         return instance

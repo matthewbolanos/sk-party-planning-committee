@@ -2,6 +2,7 @@
     "cSpell.words": [
         "Bson",
         "fastapi",
+        "httpx",
         "OPENAI",
         "pydantic",
         "pymongo",

@@ -24,7 +24,6 @@ class AssistantMessageContentOutputModel(BaseModel):
             AuthorRole: lambda v: AuthorRole(v).value
         }
         populate_by_name = True
-    
 
     def to_bson(self) -> dict:
         """Convert to BSON document for MongoDB insertion, using Pydantic's dict method with by_alias=True to handle field aliases."""

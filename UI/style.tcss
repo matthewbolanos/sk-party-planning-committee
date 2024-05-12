@@ -1,3 +1,7 @@
+.nav_pane {
+    width:20;
+}
+
 MessageInput {
     height: 3;
     dock: bottom;

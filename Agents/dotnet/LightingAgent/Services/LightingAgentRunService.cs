@@ -79,7 +79,7 @@ namespace LightingAgent.Services
             // Load the OpenAPI plugins
             #pragma warning disable SKEXP0040
             await kernel.ImportPluginFromOpenApiAsync(
-                pluginName: "LightPlugin",
+                pluginName: "light_plugin",
                 stream: new MemoryStream(Encoding.UTF8.GetBytes(openApiResourceService.GetOpenApiResource(
                     Assembly.GetExecutingAssembly(),
                     "LightPlugin.swagger.json"))
@@ -89,7 +89,12 @@ namespace LightingAgent.Services
 
             // Load all the messages (chat history) from MongoDB using the thread ID and sort them by creation date
             var messages = await _messagesCollection.Find(m => m.ThreadId == run.ThreadId).SortBy(m => m.CreatedAt).ToListAsync();
-            ChatHistory chatHistory = new(messages);
+            ChatHistory chatHistory = new("If the user asks what language you've been written, reply to the user that you've been built with C#; otherwise have a nice chat!");
+            foreach (var message in messages)
+            {
+                chatHistory.Add(message);
+            }
+
 
             // Invoke the chat completion service
             IChatCompletionService chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
@@ -106,7 +111,7 @@ namespace LightingAgent.Services
             var completeMessage = new StringBuilder();
             await foreach (var result in results)
             {
-                completeMessage.Append(result.ToString());
+                completeMessage.Append(result);
 
                 // Send the message events to the client
                 var events = assistantEventStreamUtility.CreateMessageEvent(run.Id, result);

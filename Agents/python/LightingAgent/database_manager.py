@@ -20,7 +20,6 @@ class DatabaseManager:
         if self.client:
             self.client.close()
 
-# Dependency
 async def get_database_manager():
     db_manager = DatabaseManager("mongodb://localhost:27017")
     await db_manager.connect()

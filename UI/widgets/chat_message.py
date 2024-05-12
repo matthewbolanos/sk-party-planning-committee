@@ -1,9 +1,9 @@
-import logging
-from textual.app import App, ComposeResult, RenderResult
+from typing import List
+from textual.app import ComposeResult
 from textual.containers import Container
-from textual.widget import Widget
 from textual.widgets import Static, Markdown
 from textual.reactive import reactive, Reactive
+from openai.types.beta.threads.message_content import MessageContent
 
 class ChatMessage(Static):
     update_count: Reactive[int] = reactive(0)
@@ -33,9 +33,15 @@ class ChatMessage(Static):
         message_container = Container(*children)
         yield message_container
 
-    async def append_text(self, text: str):
-        # Append text to the reactive variable directly
-        self.text += text  # Append to the string in reactive_text
+    async def append_text(self, text: List[MessageContent] | str):
+        # Check if text is a list of MessageContent objects or a string
+        if isinstance(text, list):
+            for content in text:
+                if content['type'] == "text":
+                    self.text += content['text']['value']
+        else:
+            self.text += text
+
         self.update_count = self.update_count + 1
         await self.update_markdown()
         self.scroll_visible()

@@ -16,7 +16,3 @@ class AssistantThreadRun(BaseModel):
             datetime: lambda v: int(v.timestamp())  # Converts datetime to Unix timestamp for JSON output
         }
 
-    # @validator('created_at', pre=True, always=True)
-    # def default_datetime(cls, v):
-    #     return v or datetime.utcnow()
-

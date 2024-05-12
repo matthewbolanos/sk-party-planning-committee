@@ -7,7 +7,7 @@ from models.assistant_message_content import serialize_kernel_content
 
 class AssistantMessageContentInputModel(BaseModel):
     role: AuthorRole
-    content: List[ITEM_TYPES]
+    content: List[ITEM_TYPES] | str
 
     class Config:
         json_encoders = {

@@ -23,8 +23,8 @@ async def create_message(thread_id: str, message_input: AssistantMessageContentI
         raise HTTPException(status_code=404, detail=f"Thread with ID '{thread_id}' not found.")
 
     # Check if message_input.content is a string or array
-    if isinstance(message_input.content[0].text, str):
-        message_input.content = [TextContent(text=message_input.content[0].text)]
+    if isinstance(message_input.content, str):
+        message_input.content = [TextContent(text=message_input.content)]
 
     # Create a new message object to save in the database
 
@@ -43,7 +43,8 @@ async def create_message(thread_id: str, message_input: AssistantMessageContentI
     new_message.items = message_input.content # Step 2
     await db_manager.messages_collection.insert_one(new_message.to_bson())
 
-    # Create a new message object to return in the response
+    # We must also create a new AssistantMessageContentOutputModel object to return to the client
+    # because the content field is a list of KernelContent objects, not a string
     return AssistantMessageContentOutputModel(
         id=new_message.id,
         thread_id=new_message.thread_id,

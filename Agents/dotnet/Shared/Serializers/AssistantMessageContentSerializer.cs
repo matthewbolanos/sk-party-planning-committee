@@ -16,7 +16,7 @@ namespace Shared.Serializers
         {
             var doc = BsonDocumentSerializer.Instance.Deserialize(context, args);
 
-            var id = doc["_id"].AsString;
+            var id = doc["_id"].AsObjectId.ToString();
             var threadId = doc.GetValue("thread_id", null)?.AsString;
             var createdAt = doc["created_at"].ToUniversalTime();
             var role = BsonSerializer.Deserialize<AuthorRole>('"'+doc["role"].AsString+'"');
@@ -58,7 +58,7 @@ namespace Shared.Serializers
         {
             var doc = new BsonDocument
             {
-                { "_id", value.Id },
+                { "_id", new ObjectId(value.Id) },
                 { "thread_id", value.ThreadId },
                 { "created_at", value.CreatedAt },
                 { "role", value.Role.Label }
@@ -103,7 +103,7 @@ namespace Shared.Serializers
             switch (memberName)
             {
                 case "Id":
-                    serializationInfo = new BsonSerializationInfo("id", new StringSerializer(), typeof(string));
+                    serializationInfo = new BsonSerializationInfo("_id", new StringSerializer(), typeof(string));
                     return true;
                 case "ThreadId":
                     serializationInfo = new BsonSerializationInfo("thread_id", new StringSerializer(), typeof(string));

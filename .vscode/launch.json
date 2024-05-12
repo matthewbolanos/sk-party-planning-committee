@@ -18,7 +18,8 @@
       "module": "uvicorn",
       "args": ["app:app", "--reload", "--host", "0.0.0.0", "--port", "7001"],
       "jinja": true,
-      "cwd": "${workspaceFolder}/Agents/python/LightingAgent"
+      "cwd": "${workspaceFolder}/Agents/python/LightingAgent",
+      "justMyCode": false
     },
     {
       // Use IntelliSense to find out which attributes exist for C# debugging

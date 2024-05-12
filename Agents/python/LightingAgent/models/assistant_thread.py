@@ -12,8 +12,8 @@ class AssistantThread(AssistantThreadBase):
             datetime: lambda v: int(v.timestamp()),  # Converts datetime to Unix timestamp for JSON output
             ObjectId: lambda v: str(v)  # Convert ObjectId to string for JSON output
         }
-        allow_population_by_field_name = True
-        orm_mode = True
+        populate_by_name = True
+        from_attributes = True
 
     def to_bson(self):
         """Convert to BSON document for MongoDB insertion, including embedded messages."""

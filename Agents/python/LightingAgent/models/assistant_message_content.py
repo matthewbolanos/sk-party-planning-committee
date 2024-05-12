@@ -1,5 +1,5 @@
 from pydantic import Field, validator
-from typing import Optional
+from typing import Any, Optional
 from datetime import datetime
 from bson import ObjectId
 
@@ -13,15 +13,41 @@ class AssistantMessageContent(ChatMessageContent):
     run_id: Optional[str] = None
     assistant_id: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.utcnow())
+    inner_content: Optional[str] = Field(exclude=True, default=None)
+    ai_model_id: Optional[str] = Field(exclude=True, default=None)
+    # content: str = Field(default=None, alias="_content")
+    # items: Optional[list[ITEM_TYPES]] = Field(default=None, alias="content")
+    metadata: Optional[dict] = Field(exclude=True, default=None)
+    name: Optional[dict] = Field(exclude=True, default=None)
+    encoding: Optional[dict] = Field(exclude=True, default=None)
+    finish_reason: Optional[dict] = Field(exclude=True, default=None)
 
-    class Config:
+    def model_dump(self, **kwargs):
+        # Use the super() function to get the standard dictionary representation
+        d = super().model_dump(**kwargs)
+        # Custom handling for content and items
+        d['content'] =  d.pop('items', None)
+        return d
+    
+    def model_dump_json(self, **kwargs):
+        # Use the super() function to get the standard JSON representation
+        d = super().model_dump_json(**kwargs)
+        
+        # Search for "items" key in json string and replace with "contents"
+        d = d.replace('"items":', '"contents":')
+        
+        
+        return d
+
+    class Config():
         json_encoders = {
             ITEM_TYPES: lambda v: serialize_kernel_content(v),
             datetime: lambda v: int(v.timestamp()),  # Converts datetime to Unix timestamp for JSON output
             ObjectId: lambda v: str(v)  # Convert ObjectId to string for JSON output
         }
         # Allow use of MongoDB's '_id' field name
-        allow_population_by_field_name = True
+        populate_by_name = True
+        
 
     @validator('created_at', pre=True, always=True)
     def default_datetime(cls, v):
@@ -29,18 +55,15 @@ class AssistantMessageContent(ChatMessageContent):
 
     def to_bson(self):
         """Convert to BSON document for MongoDB insertion, using Pydantic's dict method with by_alias=True to handle field aliases."""
-        document = self.dict(by_alias=True, exclude_none=True)
-        document.pop("metadata")
+        document = self.model_dump(by_alias=True, exclude_none=True)
         if "id" in document:
             document["_id"] = document.pop("id")
-        # if isinstance(self.items, TextContent):
-        for item in document["items"]:
-            item.pop("metadata")
+        document["_id"] = ObjectId(document["_id"])
+        for item in document["content"]:
             if item.get("text", False):
                 text = item.pop("text")
                 item["type"] = "text"
                 item["text"] = {"value": text, "annotations": []}
-        document["content"] = document.pop("items")
         return document
 
     @classmethod

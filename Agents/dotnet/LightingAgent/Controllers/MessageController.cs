@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.SemanticKernel;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Shared.Models;
 
@@ -68,7 +69,11 @@ namespace LightingAgent.Controllers
         [HttpGet("{id}", Name = "RetrieveMessage")]
         public async Task<IActionResult> RetrieveMessage(string threadId, string id)
         {
-            var message = await _messagesCollection.Find(m => m.ThreadId == threadId && m.Id == id).FirstOrDefaultAsync();
+            var IdFilter = Builders<AssistantMessageContent>.Filter.Eq("_id", new ObjectId(id));
+            var ThreadIdFilter = Builders<AssistantMessageContent>.Filter.Eq("ThreadId", threadId);
+            var filter = Builders<AssistantMessageContent>.Filter.And(IdFilter, ThreadIdFilter);
+
+            var message = await _messagesCollection.Find(filter).FirstOrDefaultAsync();
 
             if (message == null)
             {

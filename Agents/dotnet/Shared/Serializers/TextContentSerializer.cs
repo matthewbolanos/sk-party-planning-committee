@@ -15,7 +15,7 @@ namespace Shared.Serializers
         public object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var doc = BsonDocumentSerializer.Instance.Deserialize(context, args);
-            var text = doc["text"]["value"].AsString;
+            var text = doc["text"].AsBsonDocument["value"].AsString;
             return new TextContent { Text = text };
         }
 

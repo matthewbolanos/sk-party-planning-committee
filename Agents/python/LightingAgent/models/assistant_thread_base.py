@@ -18,14 +18,15 @@ class AssistantThreadBase(BaseModel):
             datetime: lambda v: int(v.timestamp()),  # Converts datetime to Unix timestamp for JSON output
             ObjectId: lambda v: str(v)  # Convert ObjectId to string for JSON output
         }
-        allow_population_by_field_name = True
-        orm_mode = True
+        populate_by_name = True
+        from_attributes = True
 
     def to_bson(self):
         """Convert to BSON document for MongoDB insertion, using Pydantic's dict method with by_alias=True to handle field aliases."""
         document = self.model_dump(by_alias=True, exclude_none=True, exclude={"tool_resources"})
         if "id" in document:
             document["_id"] = document.pop("id")
+        document["_id"] = ObjectId(document["_id"])
         return document
 
     @classmethod

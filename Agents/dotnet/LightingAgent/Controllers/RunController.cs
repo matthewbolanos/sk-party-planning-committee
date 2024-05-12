@@ -16,6 +16,8 @@ namespace LightingAgent.Controllers
     /// </remarks>
     /// <param name="database">The MongoDB database.</param>
     /// <param name="runService">The run service.</param>
+    /// <param name="agentConfig">Discovery information for the agent</param>
+    /// <param name="assistantEventStreamUtility">Provides utilities to manage Assistant API stream events</param>
     [ApiController]
     [Route("/api/threads/{threadId}/runs")]
     public class RunController(

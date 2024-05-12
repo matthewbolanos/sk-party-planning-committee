@@ -15,8 +15,7 @@ namespace Shared.Serializers
         public object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var doc = BsonDocumentSerializer.Instance.Deserialize(context, args);
-            var text = doc["text"].AsString;
-            var annotations = new List<string>();
+            var text = doc["text"]["value"].AsString;
             return new TextContent { Text = text };
         }
 
@@ -25,11 +24,11 @@ namespace Shared.Serializers
             var doc = new BsonDocument
             {
                 { "type", "text" },
-                { "text", value.Text }
+                { "text", new BsonDocument{
+                    { "value", value.Text },
+                    { "annotations", new BsonArray() }
+                } }
             };
-
-            var annotationsArray = new BsonArray();
-            doc.Add("annotations", annotationsArray);
 
             BsonDocumentSerializer.Instance.Serialize(context, doc);
         }

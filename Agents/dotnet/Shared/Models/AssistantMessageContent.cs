@@ -1,12 +1,6 @@
-using System;
-using System.Text;
-using System.Text.Json.Serialization;
 using Microsoft.SemanticKernel;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Shared.Converters;
-using Shared.Swagger;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Shared.Models
 {

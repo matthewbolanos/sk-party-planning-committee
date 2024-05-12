@@ -1,22 +1,25 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+from api.api_router import api_router
 
-app = FastAPI()
+def create_application() -> FastAPI:
+    application = FastAPI(
+        title='Home Automation API',
+        version='1.0.0',
+        description='API for managing home automation devices and interactions.',
+    )
 
-# Configuration for MongoDB
-DATABASE_URL = "mongodb://localhost:27017"
-DATABASE_NAME = "your_database_name"
+    @application.get("/health")
+    async def health_check():
+        return {"status": "up"}
+    
+    # Add API routers
+    application.include_router(api_router)
 
-@app.on_event("startup")
-async def startup_db_client():
-    app.mongodb_client = AsyncIOMotorClient(DATABASE_URL)
-    app.mongodb = app.mongodb_client[DATABASE_NAME]
+    return application
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    app.mongodb_client.close()
+app = create_application()
 
-# Example route
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7001, log_level="info")

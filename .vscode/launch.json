@@ -12,18 +12,19 @@
       }
     },
     {
-      "name": "Launch LightingAgent (Python)",
+      "name": "LightingAgent (Python)",
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["Agents.python.LightingAgent.app:app", "--reload"],
-      "jinja": true
+      "args": ["app:app", "--reload", "--host", "0.0.0.0", "--port", "7001"],
+      "jinja": true,
+      "cwd": "${workspaceFolder}/Agents/python/LightingAgent"
     },
     {
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-      "name": "Launch LightingAgent (.NET)",
+      "name": "LightingAgent (.NET)",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build - LightingAgent-dotnet",
@@ -48,7 +49,7 @@
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-      "name": "Launch LightService",
+      "name": "LightService",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build - LightService",
@@ -73,7 +74,7 @@
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-      "name": "Launch HomeService",
+      "name": "HomeService",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build - HomeService",
@@ -98,7 +99,7 @@
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-      "name": "Launch SpeakerService",
+      "name": "SpeakerService",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build - SpeakerService",

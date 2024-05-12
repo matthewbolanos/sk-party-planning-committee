@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Shared.Models;
 
-namespace HomeAutomationService.Controllers
+namespace HomeService.Controllers
 {
     /// <summary>
     /// Controller for the home object

@@ -31,6 +31,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SchemaFilter<AuthorRoleSchemaFilter>();
 });
 
+builder.Services.AddHealthChecks();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -83,6 +84,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Light API v1");
     c.RoutePrefix = string.Empty; // Set Swagger UI at the root
 });
+app.UseHealthChecks("/health");
 
 app.MapControllers();
 app.Run();

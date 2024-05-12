@@ -19,7 +19,7 @@ namespace Shared.Utilities
 
             // MongoDB client setup
             services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(connectionString));
-            services.AddSingleton(provider => provider.GetRequiredService<IMongoClient>().GetDatabase("HomeAutomation"));
+            services.AddSingleton(provider => provider.GetRequiredService<IMongoClient>().GetDatabase("PartyPlanning"));
         }
 
         public static void RegisterClassMaps()

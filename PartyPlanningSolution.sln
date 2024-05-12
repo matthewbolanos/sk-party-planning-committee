@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAutomationService", "PluginServices\HomeAutomationService\HomeAutomationService.csproj", "{66E38C30-A2B6-46DA-AFE1-B7F3B7B7457B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeService", "PluginServices\HomeService\HomeService.csproj", "{66E38C30-A2B6-46DA-AFE1-B7F3B7B7457B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightService", "PluginServices\LightService\LightService.csproj", "{2036CD8D-4EF0-459C-AE7D-BF02CFDFFC00}"
 EndProject

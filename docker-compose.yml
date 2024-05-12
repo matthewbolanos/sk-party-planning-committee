@@ -5,16 +5,16 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_DATABASE: "HomeAutomation"
+      MONGO_INITDB_DATABASE: "PartyPlanning"
     volumes:
       - mongo_data:/data/db
       - ./mongodb-init:/docker-entrypoint-initdb.d
       - ./mongod.conf:/etc/mongod.conf
     healthcheck:
       test: "mongosh --eval 'db.runCommand({ ping: 1 })' --quiet"
-      interval: 10s
-      timeout: 10s
-      retries: 6
+      interval: 2s
+      timeout: 5s
+      retries: 10
     logging:
       driver: "json-file"
       options:
@@ -27,16 +27,32 @@ services:
       dockerfile: Agents/dotnet/lightingAgent/Dockerfile
     ports:
       - "6001:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
     depends_on:
       mongodb:
         condition: service_healthy
+      homeservice:
+        condition: service_healthy
+      lightservice:
+        condition: service_healthy
+      speakerservice:
+        condition: service_healthy
 
-  homeautomationservice:
+  homeservice:
     build:
       context: ./
-      dockerfile: PluginServices/HomeAutomationService/Dockerfile
+      dockerfile: PluginServices/HomeService/Dockerfile
     ports:
       - "5001:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
     depends_on:
       mongodb:
         condition: service_healthy
@@ -47,6 +63,11 @@ services:
       dockerfile: PluginServices/LightService/Dockerfile
     ports:
       - "5002:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
     depends_on:
       mongodb:
         condition: service_healthy
@@ -57,6 +78,11 @@ services:
       dockerfile: PluginServices/SpeakerService/Dockerfile
     ports:
       - "5003:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
     depends_on:
       mongodb:
         condition: service_healthy
@@ -67,6 +93,9 @@ services:
     tty: true
     environment:
       - DEPLOY_ENV=docker
+    depends_on:
+      csharp-lightingagent:
+        condition: service_healthy
 
 volumes:
   mongo_data:

@@ -7,9 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register services
 builder.Services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(builder.Configuration.GetConnectionString("MongoDb")));
-builder.Services.AddSingleton(provider => provider.GetRequiredService<IMongoClient>().GetDatabase("HomeAutomation"));
+builder.Services.AddSingleton(provider => provider.GetRequiredService<IMongoClient>().GetDatabase("PartyPlanning"));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHealthChecks();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Home API", Version = "v1" });
@@ -40,6 +41,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Home API v1");
     c.RoutePrefix = string.Empty; // Set Swagger UI at the root
 });
+app.UseHealthChecks("/health");
 
 app.MapControllers();
 app.Run();

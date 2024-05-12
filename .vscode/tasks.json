@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -33,43 +33,43 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/HomeAutomationSolution.sln"
+                "${workspaceFolder}/PartyPlanningSolution.sln"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "build - HomeAutomationService",
+            "label": "build - HomeService",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish - HomeAutomationService",
+            "label": "publish - HomeService",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch - HomeAutomationService",
+            "label": "watch - HomeService",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/HomeAutomationSolution.sln"
+                "${workspaceFolder}/PartyPlanningSolution.sln"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -79,7 +79,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -91,7 +91,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -105,7 +105,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/HomeAutomationSolution.sln"
+                "${workspaceFolder}/PartyPlanningSolution.sln"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -115,7 +115,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -127,7 +127,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/HomeAutomationSolution.sln",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -141,7 +141,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/HomeAutomationSolution.sln"
+                "${workspaceFolder}/PartyPlanningSolution.sln"
             ],
             "problemMatcher": "$msCompile"
         }

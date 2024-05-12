@@ -4,7 +4,7 @@ function generateCustomId() {
 }
 
 // Get database reference
-const db = db.getSiblingDB("HomeAutomation");
+const db = db.getSiblingDB("PartyPlanning");
 
 // Generate custom IDs for smart devices
 const lampId = generateCustomId();

@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Shared.Models;
 
-namespace HomeAutomation.Services
+namespace HomeService.Services
 {
     /// <summary>
     /// Service class providing room-related operations.
@@ -20,7 +20,7 @@ namespace HomeAutomation.Services
         private readonly IMongoCollection<SmartDevice> _smartDevices = database.GetCollection<SmartDevice>("SmartDevices");
 
         /// <summary>
-        /// Get the rooms in the home.
+        /// Get the rooms in the HomeService.
         /// </summary>
         /// <returns>An <see cref="IActionResult"/> containing the list of rooms.</returns>
         [HttpGet("/api/home/rooms", Name="get_rooms")]

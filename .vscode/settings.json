@@ -1,7 +1,10 @@
 {
     "cSpell.words": [
         "Bson",
+        "fastapi",
         "OPENAI",
+        "pydantic",
+        "pymongo",
         "sharedsettings",
         "SKEXP",
         "Swashbuckle"

@@ -21,7 +21,8 @@ COPY ["/PluginServices/Shared/Shared.csproj", "PluginServices/Shared/"]
 RUN dotnet restore "PluginServices/LightService/LightService.csproj"
 
 # Copy the remaining files and publish the project
-COPY . .
+COPY ./PluginServices/LightService ./PluginServices/LightService
+COPY ./PluginServices/Shared ./PluginServices/Shared
 WORKDIR "/src/PluginServices/LightService"
 RUN dotnet publish "LightService.csproj" -c Release -o /app/publish
 

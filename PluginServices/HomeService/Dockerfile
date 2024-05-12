@@ -21,7 +21,9 @@ COPY ["/PluginServices/Shared/Shared.csproj", "PluginServices/Shared/"]
 RUN dotnet restore "PluginServices/HomeService/HomeService.csproj"
 
 # Copy the remaining files and publish the project
-COPY . .
+
+COPY /PluginServices/HomeService ./PluginServices/HomeService
+COPY /PluginServices/Shared ./PluginServices/Shared
 WORKDIR "/src/PluginServices/HomeService"
 RUN dotnet publish "HomeService.csproj" -c Release -o /app/publish
 

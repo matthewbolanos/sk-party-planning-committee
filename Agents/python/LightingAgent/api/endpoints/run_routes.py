@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 from fastapi import APIRouter, HTTPException, Depends, Response
 from pydantic import BaseModel
 from utilities.assistant_event_stream_utility import AssistantEventStreamUtility
@@ -32,7 +33,7 @@ async def create_run(
     run_service = LightingAgentRunService()  # No need to pass db_manager to constructor
 
     async def create_event_stream(run: AssistantThreadRun):
-        db_manager = DatabaseManager("mongodb://localhost:27017")
+        db_manager = DatabaseManager(os.getenv('MONGODB_URL'))
         await db_manager.connect()  # Explicitly managing connection
         try:
             yield streamingUtility.create_event("thread.run.created", run)

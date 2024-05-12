@@ -21,7 +21,8 @@ COPY ["/PluginServices/Shared/Shared.csproj", "Shared/"]
 RUN dotnet restore "PluginServices/SpeakerService/SpeakerService.csproj"
 
 # Copy the remaining files and publish the project
-COPY . .
+COPY ./PluginServices/SpeakerService ./PluginServices/SpeakerService
+COPY ./PluginServices/Shared ./PluginServices/Shared
 WORKDIR "/src/PluginServices/SpeakerService"
 RUN dotnet publish "SpeakerService.csproj" -c Release -o /app/publish
 

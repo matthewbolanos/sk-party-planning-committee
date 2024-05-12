@@ -21,7 +21,10 @@ COPY ["/Agents/dotnet/Shared/Shared.csproj", "Agents/dotnet/Shared/"]
 RUN dotnet restore "Agents/dotnet/LightingAgent/LightingAgent.csproj"
 
 # Copy the remaining files and publish the project
-COPY . .
+COPY config.json .
+COPY /Plugins ./Plugins
+COPY /Agents/dotnet/LightingAgent ./Agents/dotnet/LightingAgent
+COPY /Agents/dotnet/Shared ./Agents/dotnet/Shared
 WORKDIR "/src/Agents/dotnet/LightingAgent"
 RUN dotnet publish "LightingAgent.csproj" -c Release -o /app/publish
 

@@ -50,6 +50,12 @@ Wow! So easy! 🎉
 Once the app is running, you'll be prompted to provide the required configuration
 (e.g., API keys and LLM endpoints) for your agents.
 
+If you ever want to start fresh (i.e., reset the database), you can run the following command:
+
+```bash
+docker-compose down --volumes
+```
+
 Continue reading if you would like to set up your configuration before running the app.
 
 ### Setting up your configuration (pre-deployment)

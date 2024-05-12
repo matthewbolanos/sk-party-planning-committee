@@ -1,3 +1,4 @@
+import os
 from fastapi import Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncIOMotorCollection
 
@@ -21,7 +22,7 @@ class DatabaseManager:
             self.client.close()
 
 async def get_database_manager():
-    db_manager = DatabaseManager("mongodb://localhost:27017")
+    db_manager = DatabaseManager(os.getenv('MONGODB_URL'))
     await db_manager.connect()
     try:
         yield db_manager

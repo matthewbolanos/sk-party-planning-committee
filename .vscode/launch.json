@@ -19,7 +19,11 @@
       "args": ["app:app", "--reload", "--host", "0.0.0.0", "--port", "7001"],
       "jinja": true,
       "cwd": "${workspaceFolder}/Agents/python/LightingAgent",
-      "justMyCode": false
+      "justMyCode": false,
+      "env": {
+        "DEPLOY_ENV": "development",
+        "MONGODB_URL": "mongodb://localhost:27017"
+      }
     },
     {
       // Use IntelliSense to find out which attributes exist for C# debugging

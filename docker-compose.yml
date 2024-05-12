@@ -21,12 +21,35 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  python-lightingagent:
+    build:
+      context: ./
+      dockerfile: Agents/python/lightingAgent/Dockerfile
+    ports:
+      - "6001:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    environment:
+      MONGODB_URL: "mongodb://mongo:27017"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      homeservice:
+        condition: service_healthy
+      lightservice:
+        condition: service_healthy
+      speakerservice:
+        condition: service_healthy
+
   csharp-lightingagent:
     build:
       context: ./
       dockerfile: Agents/dotnet/lightingAgent/Dockerfile
     ports:
-      - "6001:80"
+      - "6101:80"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
       interval: 2s
@@ -94,6 +117,8 @@ services:
     environment:
       - DEPLOY_ENV=docker
     depends_on:
+      python-lightingagent:
+        condition: service_healthy
       csharp-lightingagent:
         condition: service_healthy
 

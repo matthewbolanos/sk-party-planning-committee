@@ -8,5 +8,5 @@ api_router = APIRouter()
 # Include various endpoint routers
 api_router.include_router(thread_router, prefix="/api/threads", tags=["threads"])
 api_router.include_router(message_router, prefix="/api/threads", tags=["messages"])
-api_router.include_router(run_router, prefix="/api/runs", tags=["runs"])
+api_router.include_router(run_router, prefix="/api/threads", tags=["runs"])
 

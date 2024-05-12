@@ -1,22 +1,15 @@
 # in services/run_service.py
 import asyncio
 from models.assistant_thread_run import AssistantThreadRun
+from utilities.assistant_event_stream_utility import AssistantEventStreamUtility
 
 class LightingAgentRunService:
-    async def execute_run_async(self, run: AssistantThreadRun):
+    def execute_run_async(self, run: AssistantThreadRun, event_stream_utility: AssistantEventStreamUtility):
         # Simulating an event stream for a thread run
         events = [
-            "thread.run.created",
-            "thread.run.queued",
-            "thread.run.in_progress",
-            "thread.run.step.created",
-            "thread.run.step.in_progress",
-            "thread.run.completed",
-            "thread.run.step.completed",
-            "thread.run.done"
+            "Im.so.excited",
         ]
         for event in events:
-            yield f"data: thread.run.created\n\n"
-            await asyncio.sleep(1)  # simulate delay for each step
+            yield event_stream_utility.create_event(event, run)
 
 run_service = LightingAgentRunService()

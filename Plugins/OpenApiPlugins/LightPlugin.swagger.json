@@ -119,9 +119,9 @@
                         "format": "int32"
                     },
                     "scheduledTime": {
-                        "type": "string",
+                        "type": "integer",
                         "description": "The time at which the change should occur.",
-                        "format": "date-time"
+                        "format": "int32"
                     }
                 },
                 "additionalProperties": false,

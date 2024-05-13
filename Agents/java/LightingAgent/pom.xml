@@ -64,6 +64,11 @@
 			<version>1.18.32</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser-v3</artifactId>
+			<version>2.1.22</version>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -1,5 +1,7 @@
 import json
 from typing import List
+import aiohttp
+import httpx
 from semantic_kernel.kernel import Kernel
 from semantic_kernel.contents import TextContent
 from semantic_kernel.contents.chat_message_content import ITEM_TYPES, AuthorRole
@@ -70,6 +72,7 @@ class LightingAgentRunService:
             plugin_name="light_plugin",
             openapi_document_path="../../../plugins/OpenApiPlugins/LightPlugin.swagger.json",
             execution_settings=OpenAPIFunctionExecutionParameters(
+                http_client=httpx.AsyncClient(verify=False), # Disable SSL verification (for development only
                 server_url_override="https://localhost:5002",
                 enable_payload_namespacing=True,
             ),

@@ -9,10 +9,9 @@ import com.microsoft.semantickernel.services.KernelContent;
 import com.microsoft.semantickernel.services.textcompletion.TextContent;
 import java.io.IOException;
 
-@SuppressWarnings("rawtypes")
-public class KernelContentDeserializer extends JsonDeserializer<KernelContent> {
+public class KernelContentDeserializer extends JsonDeserializer<KernelContent<?>> {
     @Override
-    public KernelContent deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public KernelContent<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         JsonNode node = p.getCodec().readTree(p);
         String type = node.get("type").asText();
         switch (type) {

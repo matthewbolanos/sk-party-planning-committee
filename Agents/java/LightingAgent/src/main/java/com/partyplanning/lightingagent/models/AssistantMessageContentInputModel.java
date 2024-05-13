@@ -7,14 +7,14 @@ import com.partyplanning.lightingagent.converters.AuthorRoleDeserializer;
 import com.microsoft.semantickernel.services.KernelContent;
 import java.util.List;
 
-public class AssistantMessageContentInputModel<T> {
+public class AssistantMessageContentInputModel {
 
     @JsonProperty("role")
     @JsonDeserialize(using = AuthorRoleDeserializer.class)
     private AuthorRole role;
 
     @JsonProperty("content")
-    private List<KernelContent<T>> content;
+    private List<KernelContent<?>> content;
 
     // Constructors
     public AssistantMessageContentInputModel() {
@@ -29,11 +29,11 @@ public class AssistantMessageContentInputModel<T> {
         this.role = role;
     }
 
-    public List<KernelContent<T>> getContent() {
+    public List<KernelContent<?>> getContent() {
         return content;
     }
 
-    public void setContent(List<KernelContent<T>> content) {
+    public void setContent(List<KernelContent<?>> content) {
         this.content = content;
     }
 }

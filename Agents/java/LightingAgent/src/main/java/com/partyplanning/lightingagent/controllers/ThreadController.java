@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 import com.partyplanning.lightingagent.repositories.MessageRepository;
+
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,10 +71,9 @@ public class ThreadController {
             return ResponseEntity.badRequest().body(null);
         }
 
-        String threadId = UUID.randomUUID().toString();
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+        String threadId = ObjectId.get().toString();
         List<AssistantMessageContent> messages = input.getMessages().stream()
-                .map(message -> new AssistantMessageContent(threadId, message.getRole(), message.getContent()))
+                .map(message -> new AssistantMessageContent(threadId, message.getRole(), message.getContent(), null, null, null))
                 .collect(Collectors.toList());
 
         AssistantThreadBase newThread = new AssistantThreadBase();

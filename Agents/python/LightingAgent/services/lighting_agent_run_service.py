@@ -11,6 +11,9 @@ from semantic_kernel.connectors.ai.open_ai import (
     OpenAIChatCompletion,
     OpenAIChatPromptExecutionSettings
 )
+from semantic_kernel.connectors.openapi_plugin.openapi_function_execution_parameters import (
+    OpenAPIFunctionExecutionParameters,
+)
 from semantic_kernel.connectors.ai.chat_completion_client_base import ChatCompletionClientBase
 from fastapi import Depends
 from models.assistant_message_content import AssistantMessageContent
@@ -19,6 +22,7 @@ from database_manager import DatabaseManager, get_database_manager
 from models.assistant_thread_run import AssistantThreadRun
 from utilities.assistant_event_stream_utility import AssistantEventStreamUtility
 from utilities.chat_message_conversion_utility import process_messages
+from semantic_kernel.functions.kernel_arguments import KernelArguments
 
 class LightingAgentRunService:
     async def execute_run_async(
@@ -65,6 +69,10 @@ class LightingAgentRunService:
         kernel.add_plugin_from_openapi(
             plugin_name="light_plugin",
             openapi_document_path="../../../plugins/OpenApiPlugins/LightPlugin.swagger.json",
+            execution_settings=OpenAPIFunctionExecutionParameters(
+                server_url_override="https://localhost:5002",
+                enable_payload_namespacing=True,
+            ),
         )
 
         # Load all the messages (chat history) from MongoDB using the thread ID and sort them by creation date
@@ -81,10 +89,11 @@ class LightingAgentRunService:
         results = chatCompletion.complete_chat_stream(
             chat_history=history,
             settings=OpenAIChatPromptExecutionSettings(
-                # function_call_behavior=FunctionCallBehavior()
+                function_call_behavior=FunctionCallBehavior.AutoInvokeKernelFunctions()
             ),
-            kernel=kernel
-        )
+            kernel=kernel,
+            arguments=KernelArguments()
+        ) 
 
         # Return the results as a stream 
         completeMessage = ""

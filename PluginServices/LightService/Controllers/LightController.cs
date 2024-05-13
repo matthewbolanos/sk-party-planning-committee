@@ -14,6 +14,10 @@ namespace LightService.Controllers
         private readonly IMongoCollection<Light> _lights = database.GetCollection<Light>("Lights");
         private const int LatencyBuffer = 300; // milliseconds
 
+        /// <summary>
+        /// Retrieves all lights in the system.
+        /// </summary>
+        /// <returns>Returns the current state of the light and its 6 character long ID for other API requests</returns>
         [HttpGet(Name="get_all_lights")]
         public IActionResult GetLights()
         {
@@ -44,6 +48,11 @@ namespace LightService.Controllers
             return Ok(combinedLights);
         }
 
+        /// <summary>
+        /// Retrieves a specific light by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the light from the get_all_lights tool.</param>
+        /// <returns>The requested light or a 404 error if not found.</returns>
         [HttpGet("{id}", Name="get_light")]
         public IActionResult GetLight(string id)
         {
@@ -72,6 +81,12 @@ namespace LightService.Controllers
             return Ok(light);
         }
 
+        /// <summary>
+        /// Changes the state of a light.
+        /// </summary>
+        /// <param name="id">The ID of the light to change from the get_all_lights tool.</param>
+        /// <param name="newStateRequest">The new state of the light.</param>
+        /// <returns>The updated light or a 404 error if not found.</returns>
         [HttpPost("{id}", Name="change_light_state")]
         public IActionResult ChangeLightState(string id, ChangeSpeakerStateRequest newStateRequest)
         {

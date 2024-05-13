@@ -38,6 +38,7 @@ namespace LightingAgent.Services
         {
             // Create kernel
             IKernelBuilder kernelBuilder = Kernel.CreateBuilder();
+            kernelBuilder.Services.AddLogging((builder) => builder.AddDebug().SetMinimumLevel(LogLevel.Trace));
 
             // Add AI services
             switch (_openAIConfig.DeploymentType)
@@ -83,7 +84,12 @@ namespace LightingAgent.Services
                 stream: new MemoryStream(Encoding.UTF8.GetBytes(openApiResourceService.GetOpenApiResource(
                     Assembly.GetExecutingAssembly(),
                     "LightPlugin.swagger.json"))
-                )
+                ),
+                executionParameters: new OpenApiFunctionExecutionParameters()
+                {
+                    ServerUrlOverride = new Uri("http://localhost:5002/"),
+                    EnablePayloadNamespacing = true
+                }
             );
             #pragma warning restore SKEXP0040
 

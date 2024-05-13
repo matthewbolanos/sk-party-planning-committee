@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
-    <ProjectReference Include="..\SharedConfig\SharedConfig.csproj" />
   </ItemGroup>
 
 </Project>

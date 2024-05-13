@@ -1,6 +1,7 @@
 {
     "cSpell.words": [
         "Bson",
+        "Customiser",
         "fastapi",
         "httpx",
         "lightingagent",
@@ -8,6 +9,7 @@
         "partyplanning",
         "pydantic",
         "pymongo",
+        "rawtypes",
         "sharedsettings",
         "SKEXP",
         "starlette",
@@ -22,5 +24,6 @@
     "java.project.sourcePaths": [
         "Agents/java/LightingAgent/src"
     ],
-    "java.compile.nullAnalysis.mode": "automatic"
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

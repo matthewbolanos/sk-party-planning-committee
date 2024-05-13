@@ -58,6 +58,7 @@
       "mainClass": "com.partyplanning.lightingagent.LightingAgentApplication",
       "projectName": "lighting-agent",
       "cwd": "${workspaceFolder}/Agents/java/LightingAgent",
+      "vmArgs": "--add-opens java.base/java.nio.charset=ALL-UNNAMED",
       "env": {
           "server.port": "7201"
       }

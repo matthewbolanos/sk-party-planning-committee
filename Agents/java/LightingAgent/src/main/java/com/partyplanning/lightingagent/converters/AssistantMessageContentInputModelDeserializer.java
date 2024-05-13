@@ -47,7 +47,12 @@ public class AssistantMessageContentInputModelDeserializer extends StdDeserializ
                     if (contentNode.get("type").asText().equals("text"))
                     {
                         JsonNode textNode = contentNode.get("text");
-                        items.add(new TextContent(textNode.get("value").asText(), null, null));
+                        // check if text is a string or an array
+                        if (textNode.isTextual()) {
+                            items.add(new TextContent(textNode.asText(), null, null));
+                        } else {
+                            items.add(new TextContent(textNode.get("value").asText(), null, null));
+                        }
                     }
                 }
             }

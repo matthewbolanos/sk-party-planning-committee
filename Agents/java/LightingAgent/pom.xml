@@ -49,10 +49,10 @@
 			<version>1.0.2</version>
 		</dependency>
         <dependency>
-            <groupId>com.microsoft.semantic-kernel</groupId>
-            <artifactId>semantickernel-connectors-ai-openai</artifactId>
+			<groupId>com.microsoft.semantic-kernel</groupId>
+			<artifactId>semantickernel-aiservices-openai</artifactId>
 			<version>1.0.2</version>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

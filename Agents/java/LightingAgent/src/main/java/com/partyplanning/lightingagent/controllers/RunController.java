@@ -1,5 +1,6 @@
+package com.partyplanning.lightingagent.controllers;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,6 @@ import com.partyplanning.lightingagent.models.AssistantThreadRun;
 import com.partyplanning.lightingagent.services.LightingAgentRunService;
 import com.partyplanning.lightingagent.utils.AssistantEventStreamUtility;
 
-import org.springframework.http.ResponseEntity;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -54,7 +53,7 @@ public class RunController {
                 assistantEventStreamUtility.sendEvent(emitter, "thread.run.step.created", newRun);
                 assistantEventStreamUtility.sendEvent(emitter, "thread.run.step.in_progress", newRun);
 
-                runService.executeRun(newRun).forEach(event -> assistantEventStreamUtility.sendEvent(emitter, event, newRun));
+                runService.executeRun(emitter, newRun);
 
                 assistantEventStreamUtility.sendEvent(emitter, "thread.run.completed", newRun);
                 assistantEventStreamUtility.sendEvent(emitter, "thread.run.step.completed", newRun);

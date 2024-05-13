@@ -22,7 +22,7 @@ public class AssistantThreadRun {
     private boolean stream = true;
 
     @JsonProperty("created_at")
-    private Date createdAt = new Date;
+    private Date createdAt = new Date();
 
     // Constructors, getters, and setters
 

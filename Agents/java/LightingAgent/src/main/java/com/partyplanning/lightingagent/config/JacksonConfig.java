@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.partyplanning.lightingagent.converters.AssistantMessageContentInputModelDeserializer;
 import com.partyplanning.lightingagent.converters.AssistantMessageContentSerializer;
 import com.partyplanning.lightingagent.converters.KernelContentDeserializer;
+import com.partyplanning.lightingagent.converters.KernelContentSerializer;
 import com.partyplanning.lightingagent.models.AssistantMessageContent;
 import com.partyplanning.lightingagent.models.AssistantMessageContentInputModel;
 import com.microsoft.semantickernel.services.KernelContent;
@@ -19,6 +20,7 @@ public class JacksonConfig {
         ObjectMapper mapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         module.addSerializer(AssistantMessageContent.class, new AssistantMessageContentSerializer());
+        module.addSerializer(KernelContent.class, new KernelContentSerializer());
         module.addDeserializer(KernelContent.class, new KernelContentDeserializer());
         module.addDeserializer(AssistantMessageContentInputModel.class, new AssistantMessageContentInputModelDeserializer());
         mapper.registerModule(module);

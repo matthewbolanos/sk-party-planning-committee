@@ -2,7 +2,7 @@ import json
 from typing import List
 from semantic_kernel.kernel import Kernel
 from semantic_kernel.contents import TextContent
-from semantic_kernel.contents.chat_message_content import ITEM_TYPES
+from semantic_kernel.contents.chat_message_content import ITEM_TYPES, AuthorRole
 from semantic_kernel.contents.chat_history import ChatHistory
 from semantic_kernel.connectors.ai.function_call_behavior import FunctionCallBehavior
 from semantic_kernel.contents.streaming_chat_message_content import StreamingChatMessageContent
@@ -104,5 +104,14 @@ class LightingAgentRunService:
             events = event_stream_utility.create_message_event(run, result[0])
             for event in events:
                 yield event
+
+        # Save the completed message to MongoDB
+        await db_manager.messages_collection.insert_one(
+            AssistantMessageContent(
+                thread_id=run.thread_id,
+                role=AuthorRole.ASSISTANT,
+                items=[TextContent(text=completeMessage)]
+            ).to_bson()
+        )
 
 run_service = LightingAgentRunService()

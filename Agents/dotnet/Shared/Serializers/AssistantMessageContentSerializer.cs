@@ -39,7 +39,7 @@ namespace Shared.Serializers
                 }
             }
             
-            var assistantId = doc.GetValue("assistant_id", null)?.AsString;
+            var assistantId = doc.GetValue("assistant_id", "lighting-agent")?.AsString;
             var runId = doc.GetValue("run_id", null)?.AsString;
 
             return new AssistantMessageContent

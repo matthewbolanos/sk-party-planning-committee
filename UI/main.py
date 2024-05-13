@@ -49,6 +49,11 @@ class TerminalGui(App):
                 base_url = "http://csharp-lightingagent/api"
             else:
                 base_url = "http://localhost:7101/api"
+        elif (option_id == "java"):
+            if deploy_env == 'docker':
+                base_url = "http://java-lightingagent/api"
+            else:
+                base_url = "http://localhost:7201/api"
 
         self.client = AsyncOpenAI(
             api_key="no-api-key-needed-here", # The API key is managed by the server

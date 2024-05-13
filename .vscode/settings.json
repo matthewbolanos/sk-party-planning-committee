@@ -3,7 +3,9 @@
         "Bson",
         "fastapi",
         "httpx",
+        "lightingagent",
         "OPENAI",
+        "partyplanning",
         "pydantic",
         "pymongo",
         "sharedsettings",
@@ -11,5 +13,14 @@
         "starlette",
         "Swashbuckle",
         "uvicorn"
-    ]
+    ],
+
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "Agents/java/LightingAgent/lib/**/*.jar"
+    ],
+    "java.project.sourcePaths": [
+        "Agents/java/LightingAgent/src"
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
 }

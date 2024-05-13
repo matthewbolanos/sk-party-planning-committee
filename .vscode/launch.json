@@ -12,7 +12,7 @@
       }
     },
     {
-      "name": "LightingAgent (Python)",
+      "name": "Lighting Agent (Python)",
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
@@ -29,7 +29,7 @@
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md.
-      "name": "LightingAgent (.NET)",
+      "name": "Lighting Agent (.NET)",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build - LightingAgent-dotnet",
@@ -49,6 +49,17 @@
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "type": "java",
+      "name": "Lighting Agent (Java)",
+      "request": "launch",
+      "mainClass": "com.partyplanning.lightingagent.LightingAgentApplication",
+      "projectName": "lighting-agent",
+      "cwd": "${workspaceFolder}/Agents/java/LightingAgent",
+      "env": {
+          "server.port": "7201"
       }
     },
     {

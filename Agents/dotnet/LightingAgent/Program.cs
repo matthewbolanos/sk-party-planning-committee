@@ -57,7 +57,7 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
 });
 
 // Create kernel
-builder.Services.AddSingleton((serviceProvider) => {
+builder.Services.AddTransient((serviceProvider) => {
     Kernel kernel = new(serviceProvider);
     var openApiResourceService = serviceProvider.GetRequiredService<OpenApiResourceService>();
     var lightPluginFile = new MemoryStream(Encoding.UTF8.GetBytes(
@@ -89,6 +89,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new ListOfKernelContentConverter());
         options.JsonSerializerOptions.Converters.Add(new TextContentConverter());
         options.JsonSerializerOptions.Converters.Add(new ImageContentConverter());
+        options.JsonSerializerOptions.Converters.Add(new FunctionCallContentConverter());
+        options.JsonSerializerOptions.Converters.Add(new FunctionResultContentConverter());
         options.JsonSerializerOptions.Converters.Add(new AuthorRoleConverter());
         options.JsonSerializerOptions.Converters.Add(new AssistantMessageContentConverter());
         options.JsonSerializerOptions.Converters.Add(new AssistantThreadConverter());

@@ -55,16 +55,31 @@ namespace Shared.Config
                 cm.SetIsRootClass(true);
             });
 
+            #pragma warning disable SKEXP0001
+            BsonClassMap.RegisterClassMap<FunctionCallContent>(cm =>
+            {
+                cm.AutoMap();
+                cm.SetDiscriminator("FunctionCallContent");
+                cm.MapMember(c => c.Id).SetElementName("id");
+                cm.MapMember(c => c.PluginName).SetElementName("pluginName");
+                cm.MapMember(c => c.FunctionName).SetElementName("functionName");
+                cm.MapMember(c => c.Arguments).SetElementName("arguments");
+                cm.MapMember(c => c.Exception).SetElementName("exception");
+            });
+            #pragma warning restore SKEXP0001
+
             BsonClassMap.RegisterClassMap<TextContent>(cm =>
             {
                 cm.AutoMap();
-                cm.SetDiscriminator("Text");
+                cm.SetDiscriminator("TextContent");
+                cm.MapMember(c => c.Text).SetElementName("text");
+                cm.MapMember(c => c.Encoding).SetElementName("encoding");
             });
 
             BsonClassMap.RegisterClassMap<ImageContent>(cm =>
             {
                 cm.AutoMap();
-                cm.SetDiscriminator("Image");
+                cm.SetDiscriminator("ImageContent");
             });
         }
 
@@ -72,6 +87,8 @@ namespace Shared.Config
         {
             BsonSerializer.RegisterSerializer(new TextContentSerializer());
             BsonSerializer.RegisterSerializer(new ImageContentSerializer());
+            BsonSerializer.RegisterSerializer(new FunctionCallContentSerializer());
+            BsonSerializer.RegisterSerializer(new FunctionResultContentSerializer());
             BsonSerializer.RegisterSerializer(new AssistantMessageContentSerializer());
             BsonSerializer.RegisterSerializer(new AuthorRoleSerializer());
         }

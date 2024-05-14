@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using Microsoft.SemanticKernel;
 using System;
 using System.Collections.Generic;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace Shared.Serializers
 {

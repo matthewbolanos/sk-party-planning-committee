@@ -34,6 +34,14 @@ namespace Shared.Serializers
                     case "image":
                         items.Add(BsonSerializer.Deserialize<ImageContent>(bson.AsBsonDocument));
                         break;
+                    #pragma warning disable SKEXP0001
+                    case "functionCall":
+                        items.Add(BsonSerializer.Deserialize<FunctionCallContent>(bson.AsBsonDocument));
+                        break;
+                    case "functionResult":
+                        items.Add(BsonSerializer.Deserialize<FunctionResultContent>(bson.AsBsonDocument));
+                        break;
+                    #pragma warning restore SKEXP0001
                     default:
                         throw new Exception($"Unknown content type: {type}");
                 }

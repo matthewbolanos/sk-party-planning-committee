@@ -26,10 +26,10 @@ public class AssistantThreadConverter : JsonConverter<AssistantThreadBase>
                 switch (propertyName)
                 {
                     case "id":
-                        thread.Id = reader.GetString();
+                        thread.Id = reader.GetString()!;
                         break;
                     case "object":
-                        thread.Object = reader.GetString();
+                        thread.Object = reader.GetString()!;
                         break;
                     case "created_at":
                         var unixTime = reader.GetInt64();

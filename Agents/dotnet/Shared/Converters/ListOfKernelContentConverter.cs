@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.SemanticKernel;
@@ -8,12 +10,6 @@ namespace Shared.Converters
     {
         public override List<KernelContent> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonTokenType.String)
-            {
-                var text = reader.GetString();
-                return [new TextContent { Text = text }];
-            }
-
             if (reader.TokenType != JsonTokenType.StartArray)
                 throw new JsonException("Expected StartArray token");
 
@@ -22,42 +18,23 @@ namespace Shared.Converters
             {
                 if (reader.TokenType == JsonTokenType.StartObject)
                 {
-                    reader.Read(); // Move to property name, assuming "type"
-                    reader.GetString(); // Skip "type"
-                    reader.Read(); // Move to property value
-                    var type = reader.GetString();
-
-                    switch (type)
+                    using (var jsonDoc = JsonDocument.ParseValue(ref reader))
                     {
-                        case "text":
-                            reader.Read(); // Move to next property name
-                            reader.GetString(); // Skip property name, assuming "text"
-                            reader.Read(); // Move to property value
-                            if (reader.TokenType == JsonTokenType.String)
-                            {
-                                var text = reader.GetString();
-                                contents.Add(new TextContent { Text = text });
-                                reader.Read(); // Skip EndObject
-                            }
-                            else if (reader.TokenType == JsonTokenType.StartObject)
-                            {
-                                reader.Read(); // Property name (assuming "value")
-                                reader.Read(); // Property value
-                                var text = reader.GetString();
-                                reader.Read(); // End object
-                                contents.Add(new TextContent { Text = text });
-                            }
-                            break;
-                        case "image_url":
-                            reader.Read(); // Move to next property name
-                            reader.GetString(); // Skip property name, assuming "url"
-                            reader.Read(); // Move to property value
-                            var url = reader.GetString();
-                            contents.Add(new ImageContent { Uri = new Uri(url!) });
-                            reader.Read(); // Skip EndObject
-                            break;
-                        default:
-                            throw new JsonException($"Unexpected content type {type}");
+                        var jsonObject = jsonDoc.RootElement;
+                        var type = jsonObject.GetProperty("type").GetString();
+
+                        KernelContent content = type switch
+                        {
+                            "text" => JsonSerializer.Deserialize<TextContent>(jsonObject.GetRawText(), options)!,
+                            "image_url" => JsonSerializer.Deserialize<ImageContent>(jsonObject.GetRawText(), options)!,
+                            #pragma warning disable SKEXP0001
+                            "functionCall" => JsonSerializer.Deserialize<FunctionCallContent>(jsonObject.GetRawText(), options)!,
+                            "functionResult" => JsonSerializer.Deserialize<FunctionResultContent>(jsonObject.GetRawText(), options)!,
+                            #pragma warning restore SKEXP0001
+                            _ => throw new JsonException($"Unexpected content type {type}")
+                        };
+
+                        contents.Add(content);
                     }
                 }
             }
@@ -75,22 +52,26 @@ namespace Shared.Converters
                 {
                     case TextContent textContent:
                         writer.WriteString("type", "text");
-                        writer.WriteStartObject("text");
-                        writer.WriteString("value", textContent.Text);
-                        writer.WriteStartArray("annotations");
-                        writer.WriteEndArray();
-                        writer.WriteEndObject();
+                        writer.WritePropertyName("text");
+                        JsonSerializer.Serialize(writer, textContent, options);
                         break;
                     case ImageContent imageContent:
-                        if(imageContent.Uri == null)
-                        {
-                            throw new JsonException("Image URL is required");
-                        }
                         writer.WriteString("type", "image_url");
-                        writer.WriteStartObject("image_url");
-                        writer.WriteString("url", imageContent.Uri.ToString());
-                        writer.WriteEndObject();
+                        writer.WritePropertyName("image_url");
+                        JsonSerializer.Serialize(writer, imageContent, options);
                         break;
+                    #pragma warning disable SKEXP0001
+                    case FunctionCallContent functionCallContent:
+                        writer.WriteString("type", "functionCall");
+                        writer.WritePropertyName("functionCall");
+                        JsonSerializer.Serialize(writer, functionCallContent, options);
+                        break;
+                    case FunctionResultContent functionResultContent:
+                        writer.WriteString("type", "functionResult");
+                        writer.WritePropertyName("functionResult");
+                        JsonSerializer.Serialize(writer, functionResultContent, options);
+                        break;
+                    #pragma warning restore SKEXP0001
                 }
                 writer.WriteEndObject();
             }

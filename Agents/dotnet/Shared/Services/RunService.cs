@@ -4,6 +4,8 @@ using MongoDB.Driver;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text;
+using Azure.AI.OpenAI;
+using System.Text.Json;
 
 namespace Shared.Services
 {
@@ -68,8 +70,50 @@ namespace Shared.Services
             // Get the new messages within the chat history
             var newMessages = chatHistory.Skip(messageCount + 1).ToList();
         
+            Dictionary<string, Tuple<string,string>> functionCallNames = new();
+        
             foreach (var message in newMessages)
             {
+                if (message.Metadata?.TryGetValue("ChatResponseMessage.FunctionToolCalls", out var toolCalls) == true)
+                {
+                    #pragma warning disable SKEXP0001
+                    List<FunctionCallContent> functionCalls = [];
+
+                    foreach (var toolCall in (List<ChatCompletionsFunctionToolCall>)toolCalls!)
+                    {
+                        string[] functionNameParts = toolCall.Name.Split('-');
+                        string pluginName = functionNameParts[0];
+                        string functionName = functionNameParts[1];
+                        functionCallNames[toolCall.Id] = new Tuple<string, string>(pluginName, functionName);
+
+                        functionCalls.Add(new FunctionCallContent(
+                            functionName: functionName,
+                            pluginName: pluginName,
+                            id: toolCall.Id,
+                            arguments: new KernelArguments(JsonSerializer.Deserialize<Dictionary<string, object>>(toolCall.Arguments!)!)
+                        ));
+
+                        message.Items = [.. functionCalls];
+                    }
+                    #pragma warning restore SKEXP0001
+                }
+
+                if (message.Role == AuthorRole.Tool && message.Metadata?.TryGetValue("ChatCompletionsToolCall.Id", out var toolId) == true)
+                {
+                    Tuple<string, string> functionCallName = functionCallNames[(string)toolId!];
+
+                    #pragma warning disable SKEXP0001
+                    message.Items = [
+                        new FunctionResultContent(
+                            functionName: functionCallName.Item2,
+                            pluginName: functionCallName.Item1,
+                            id: (string)toolId!,
+                            result: message.ToString()
+                        )
+                    ];
+                    #pragma warning restore SKEXP0001
+                }
+
                 // Save the new messages to MongoDB
                 await _messagesCollection.InsertOneAsync(
                     new AssistantMessageContent() {

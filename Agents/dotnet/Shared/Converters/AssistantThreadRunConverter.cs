@@ -22,25 +22,26 @@ public class AssistantThreadRunConverter : JsonConverter<AssistantThreadRun>
             {
                 var propertyName = reader.GetString();
                 reader.Read();
+                    
                 switch (propertyName)
                 {
                     case "id":
-                        run.Id = reader.GetString();
+                        run.Id = reader.GetString()!;
                         break;
                     case "threadId":
-                        run.ThreadId = reader.GetString();
+                        run.ThreadId = reader.GetString()!;
                         break;
                     case "assistant_id":
-                        run.AssistantId = reader.GetString();
+                        run.AssistantId = reader.GetString()!;
                         break;
                     case "model":
-                        run.Model = reader.GetString();
+                        run.Model = reader.GetString()!;
                         break;
                     case "stream":
-                        run.Stream = reader.GetBoolean();
+                        run.Stream = reader.GetBoolean()!;
                         break;
                     case "created_at":
-                        var unixTime = reader.GetInt64();
+                        var unixTime = reader.GetInt64()!;
                         run.CreatedAt = DateTimeOffset.FromUnixTimeSeconds(unixTime).UtcDateTime;
                         break;
                     default:

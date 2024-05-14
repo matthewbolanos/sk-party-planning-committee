@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Shared.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,17 +79,21 @@ builder.Services.AddSingleton((serviceProvider) => {
 });
 
 // Add controllers with JSON serialization
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    options.JsonSerializerOptions.Converters.Add(new ListOfKernelContentConverter());
-    options.JsonSerializerOptions.Converters.Add(new TextContentConverter());
-    options.JsonSerializerOptions.Converters.Add(new ImageContentConverter());
-    options.JsonSerializerOptions.Converters.Add(new AuthorRoleConverter());
-    options.JsonSerializerOptions.Converters.Add(new AssistantMessageContentConverter());
-    options.JsonSerializerOptions.Converters.Add(new AssistantThreadConverter());
-    options.JsonSerializerOptions.Converters.Add(new AssistantThreadRunConverter());
-});
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(ThreadController).Assembly)
+    .AddApplicationPart(typeof(MessageController).Assembly)
+    .AddApplicationPart(typeof(RunController).Assembly)
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new ListOfKernelContentConverter());
+        options.JsonSerializerOptions.Converters.Add(new TextContentConverter());
+        options.JsonSerializerOptions.Converters.Add(new ImageContentConverter());
+        options.JsonSerializerOptions.Converters.Add(new AuthorRoleConverter());
+        options.JsonSerializerOptions.Converters.Add(new AssistantMessageContentConverter());
+        options.JsonSerializerOptions.Converters.Add(new AssistantThreadConverter());
+        options.JsonSerializerOptions.Converters.Add(new AssistantThreadRunConverter());
+    });
 
 // Add other services
 builder.Services.AddHealthChecks();

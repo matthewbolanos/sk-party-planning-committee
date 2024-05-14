@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Shared.Models;
 
-namespace LightingAgent.Controllers
+namespace Shared.Controllers
 {
     /// <summary>
     /// Controller for the message object

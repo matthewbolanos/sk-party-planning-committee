@@ -8,7 +8,7 @@ using MongoDB.Driver;
 using Shared.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace LightingAgent.Controllers
+namespace Shared.Controllers
 {
     /// <summary>
     /// Controller for the thread object

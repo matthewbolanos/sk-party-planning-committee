@@ -4,8 +4,9 @@ using Shared.Models;
 using Microsoft.Extensions.Options;
 using Shared.Config;
 using Shared.Services;
+using Microsoft.AspNetCore.Http;
 
-namespace LightingAgent.Controllers
+namespace Shared.Controllers
 {
     /// <summary>
     /// Controller for managing runs within a specific thread.

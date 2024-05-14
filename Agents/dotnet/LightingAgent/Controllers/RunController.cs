@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Shared.Models;
-using LightingAgent.Services;
 using Microsoft.Extensions.Options;
 using Shared.Config;
 using Shared.Services;
@@ -22,13 +21,13 @@ namespace LightingAgent.Controllers
     [Route("/api/threads/{threadId}/runs")]
     public class RunController(
         IMongoDatabase database,
-        IRunService runService,
+        RunService runService,
         IOptions<AgentConfig> agentConfig,
         AssistantEventStreamService assistantEventStreamService
     ) : ControllerBase
     {
         private readonly IMongoCollection<AssistantThreadBase> _threadsCollection = database.GetCollection<AssistantThreadBase>("Threads");
-        private readonly IRunService _runService = runService;
+        private readonly RunService _runService = runService;
 
         /// <summary>
         /// Creates a new run within a specific thread.

@@ -1,14 +1,11 @@
 using Microsoft.SemanticKernel;
 using Shared.Models;
-using Microsoft.SemanticKernel.Plugins.OpenApi;
-using System.Reflection;
 using MongoDB.Driver;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text;
-using Shared.Services;
 
-namespace LightingAgent.Services
+namespace Shared.Services
 {
     /// <summary>
     /// Service for running a chat completion.
@@ -17,12 +14,12 @@ namespace LightingAgent.Services
     /// <param name="kernel"></param>
     /// <param name="chatCompletionService"></param>
     /// <param name="assistantEventStreamService"></param>
-    public class LightingAgentRunService(
+    public class RunService(
         IMongoDatabase database,
         Kernel kernel,
         IChatCompletionService chatCompletionService,
         AssistantEventStreamService assistantEventStreamService
-    ) : IRunService
+    )
     {
         private readonly IMongoCollection<AssistantMessageContent> _messagesCollection = database.GetCollection<AssistantMessageContent>("Messages");
 

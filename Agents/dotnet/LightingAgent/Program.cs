@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using Shared.Swagger;
 using Shared.Converters;
 using Shared.Config;
-using LightingAgent.Services;
 using Shared.Services;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Plugins.OpenApi;
@@ -94,7 +93,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Add other services
 builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<OpenApiResourceService>();
-builder.Services.AddSingleton<IRunService, LightingAgentRunService>();
+builder.Services.AddSingleton<RunService>();
 builder.Services.AddTransient<AssistantEventStreamService>();
 
 // Enable OpenAPI schema generation

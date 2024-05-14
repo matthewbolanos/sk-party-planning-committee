@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Shared.Models;
-using Shared.Utilities;
 using LightingAgent.Services;
 using Microsoft.Extensions.Options;
 using Shared.Config;
+using Shared.Services;
 
 namespace LightingAgent.Controllers
 {
@@ -17,14 +17,14 @@ namespace LightingAgent.Controllers
     /// <param name="database">The MongoDB database.</param>
     /// <param name="runService">The run service.</param>
     /// <param name="agentConfig">Discovery information for the agent</param>
-    /// <param name="assistantEventStreamUtility">Provides utilities to manage Assistant API stream events</param>
+    /// <param name="assistantEventStreamService">Provides utilities to manage Assistant API stream events</param>
     [ApiController]
     [Route("/api/threads/{threadId}/runs")]
     public class RunController(
         IMongoDatabase database,
         IRunService runService,
         IOptions<AgentConfig> agentConfig,
-        AssistantEventStreamUtility assistantEventStreamUtility
+        AssistantEventStreamService assistantEventStreamService
     ) : ControllerBase
     {
         private readonly IMongoCollection<AssistantThreadBase> _threadsCollection = database.GetCollection<AssistantThreadBase>("Threads");
@@ -34,7 +34,6 @@ namespace LightingAgent.Controllers
         /// Creates a new run within a specific thread.
         /// </summary>
         /// <param name="threadId">The ID of the thread to create the run in</param>
-        /// <param name="newRun">The run to be created</param>
         /// <returns>Server-sent events stream of the run</returns>
         [HttpPost]
         public async Task<IActionResult> CreateRun(string threadId)
@@ -61,20 +60,20 @@ namespace LightingAgent.Controllers
 
             async IAsyncEnumerable<string> RunEventStream()
             {
-                yield return assistantEventStreamUtility.CreateEvent("thread.run.created", newRun);
-                yield return assistantEventStreamUtility.CreateEvent("thread.run.queued", newRun);
-                yield return assistantEventStreamUtility.CreateEvent("thread.run.in_progress", newRun);
-                yield return assistantEventStreamUtility.CreateEvent("thread.run.step.created", newRun);
-                yield return assistantEventStreamUtility.CreateEvent("thread.run.step.in_progress", newRun);
+                yield return assistantEventStreamService.CreateEvent("thread.run.created", newRun);
+                yield return assistantEventStreamService.CreateEvent("thread.run.queued", newRun);
+                yield return assistantEventStreamService.CreateEvent("thread.run.in_progress", newRun);
+                yield return assistantEventStreamService.CreateEvent("thread.run.step.created", newRun);
+                yield return assistantEventStreamService.CreateEvent("thread.run.step.in_progress", newRun);
 
                 await foreach (var events in _runService.ExecuteRunAsync(newRun))
                 {
                     yield return events;
                 }
                 
-                yield return assistantEventStreamUtility.CreateEvent("thread.run.completed", newRun);
-                yield return assistantEventStreamUtility.CreateEvent("thread.run.step.completed", newRun);
-                yield return assistantEventStreamUtility.CreateDoneEvent();
+                yield return assistantEventStreamService.CreateEvent("thread.run.completed", newRun);
+                yield return assistantEventStreamService.CreateEvent("thread.run.step.completed", newRun);
+                yield return assistantEventStreamService.CreateDoneEvent();
             }
 
             Response.ContentType = "text/event-stream";

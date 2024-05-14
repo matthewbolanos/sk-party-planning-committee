@@ -6,9 +6,7 @@ using MongoDB.Driver;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text;
-using Shared.Utilities;
-using Microsoft.Extensions.Options;
-using Shared.Config;
+using Shared.Services;
 
 namespace LightingAgent.Services
 {
@@ -16,18 +14,18 @@ namespace LightingAgent.Services
     /// Service for running a chat completion.
     /// </summary>
     /// <param name="database"></param>
-    /// <param name="openAIConfig"></param>
-    /// <param name="openApiResourceService"></param>
-    /// <param name="assistantEventStreamUtility"></param>
+    /// <param name="kernel"></param>
+    /// <param name="chatCompletionService"></param>
+    /// <param name="assistantEventStreamService"></param>
     public class LightingAgentRunService(
         IMongoDatabase database,
-        IOptions<OpenAIConfig> openAIConfig,
-        OpenApiResourceService openApiResourceService,
-        AssistantEventStreamUtility assistantEventStreamUtility
+        Kernel kernel,
+        IChatCompletionService chatCompletionService,
+        AssistantEventStreamService assistantEventStreamService
     ) : IRunService
     {
         private readonly IMongoCollection<AssistantMessageContent> _messagesCollection = database.GetCollection<AssistantMessageContent>("Messages");
-        private readonly OpenAIConfig _openAIConfig = openAIConfig.Value;
+
         /// <summary>
         /// Executes a run.
         /// </summary>
@@ -36,63 +34,6 @@ namespace LightingAgent.Services
         /// <exception cref="ArgumentException"></exception>
         public async IAsyncEnumerable<string> ExecuteRunAsync(AssistantThreadRun run)
         {
-            // Create kernel
-            IKernelBuilder kernelBuilder = Kernel.CreateBuilder();
-            kernelBuilder.Services.AddLogging((builder) => builder.AddDebug().SetMinimumLevel(LogLevel.Trace));
-
-            // Add AI services
-            switch (_openAIConfig.DeploymentType)
-            {
-                case OpenAIDeploymentType.AzureOpenAI:
-                    kernelBuilder.AddAzureOpenAIChatCompletion(
-                        deploymentName: _openAIConfig.DeploymentName!,
-                        apiKey: _openAIConfig.ApiKey,
-                        endpoint: new(_openAIConfig.Endpoint!),
-                        modelId: _openAIConfig.ModelId // Optional
-                    );
-                    break;
-                case OpenAIDeploymentType.OpenAI:
-                    kernelBuilder.AddOpenAIChatCompletion(
-                        apiKey: _openAIConfig.ApiKey,
-                        modelId: _openAIConfig.ModelId,
-                        orgId: _openAIConfig.OrgId // Optional
-                    );
-                    break;
-                case OpenAIDeploymentType.Other:
-                    // With the endpoint property, you can target any OpenAI-compatible API
-                    #pragma warning disable SKEXP0010
-                    kernelBuilder.AddOpenAIChatCompletion(
-                        apiKey: _openAIConfig.ApiKey,
-                        modelId: _openAIConfig.ModelId,
-                        endpoint: new(_openAIConfig.Endpoint!)
-                    );
-                    #pragma warning restore SKEXP0010
-                    break;
-                default:
-                    throw new ArgumentException("Invalid deployment type");
-            }
-
-            // Load filters
-
-            // Build the kernel
-            Kernel kernel = kernelBuilder.Build();
-
-            // Load the OpenAPI plugins
-            #pragma warning disable SKEXP0040
-            await kernel.ImportPluginFromOpenApiAsync(
-                pluginName: "light_plugin",
-                stream: new MemoryStream(Encoding.UTF8.GetBytes(openApiResourceService.GetOpenApiResource(
-                    Assembly.GetExecutingAssembly(),
-                    "LightPlugin.swagger.json"))
-                ),
-                executionParameters: new OpenApiFunctionExecutionParameters()
-                {
-                    ServerUrlOverride = new Uri("http://localhost:5002/"),
-                    EnablePayloadNamespacing = true
-                }
-            );
-            #pragma warning restore SKEXP0040
-
             // Load all the messages (chat history) from MongoDB using the thread ID and sort them by creation date
             var messages = await _messagesCollection.Find(m => m.ThreadId == run.ThreadId).SortBy(m => m.CreatedAt).ToListAsync();
             ChatHistory chatHistory = new("If the user asks what language you've been written, reply to the user that you've been built with C#; otherwise have a nice chat!");
@@ -100,10 +41,9 @@ namespace LightingAgent.Services
             {
                 chatHistory.Add(message);
             }
-
+            int messageCount = messages.Count;
 
             // Invoke the chat completion service
-            IChatCompletionService chatCompletionService = kernel.GetRequiredService<IChatCompletionService>();
             var results = chatCompletionService.GetStreamingChatMessageContentsAsync(
                 chatHistory: chatHistory,
                 executionSettings: new OpenAIPromptExecutionSettings() {
@@ -120,22 +60,29 @@ namespace LightingAgent.Services
                 completeMessage.Append(result);
 
                 // Send the message events to the client
-                var events = assistantEventStreamUtility.CreateMessageEvent(run.Id, result);
+                var events = assistantEventStreamService.CreateMessageEvent(run.Id, result);
                 foreach (var messageEvent in events)
                 {
                     yield return messageEvent;
                 }
             }
-
-            // Save the results to MongoDB
-            await _messagesCollection.InsertOneAsync(
-                new AssistantMessageContent() {
-                    AssistantId = run.AssistantId,
-                    Role = AuthorRole.Assistant,
-                    ThreadId = run.ThreadId,
-                    Content = completeMessage.ToString()
-                }
-            );
+            chatHistory.AddAssistantMessage(completeMessage.ToString());
+            
+            // Get the new messages within the chat history
+            var newMessages = chatHistory.Skip(messageCount + 1).ToList();
+        
+            foreach (var message in newMessages)
+            {
+                // Save the new messages to MongoDB
+                await _messagesCollection.InsertOneAsync(
+                    new AssistantMessageContent() {
+                        AssistantId = run.AssistantId,
+                        Role = message.Role,
+                        ThreadId = run.ThreadId,
+                        Items = message.Items
+                    }
+                );
+            }
         }
     }
 }

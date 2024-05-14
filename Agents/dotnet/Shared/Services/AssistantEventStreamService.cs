@@ -10,9 +10,9 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using Shared.Config;
 using Shared.Models;
 
-namespace Shared.Utilities
+namespace Shared.Services
 {
-    public class AssistantEventStreamUtility(
+    public class AssistantEventStreamService(
         IOptions<AgentConfig> agentConfiguration,
         IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions
     )

@@ -5,6 +5,7 @@
         "fastapi",
         "httpx",
         "lightingagent",
+        "Namespacing",
         "OPENAI",
         "openapi",
         "partyplanning",

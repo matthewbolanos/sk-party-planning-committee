@@ -1,4 +1,4 @@
-using Shared.Models;
+using PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;

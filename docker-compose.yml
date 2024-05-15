@@ -7,7 +7,7 @@ services:
     environment:
       MONGO_INITDB_DATABASE: "PartyPlanning"
     volumes:
-      - mongo_data:/data/db
+      - mongo_data:/data/mongodb
       - ./mongodb-init:/docker-entrypoint-initdb.d
       - ./mongod.conf:/etc/mongod.conf
     healthcheck:
@@ -20,6 +20,29 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    image: cr.weaviate.io/semitechnologies/weaviate:1.25.0
+    ports:
+    - 8080:8080
+    - 50051:50051
+    volumes:
+    - weaviate_data:/data/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: 'text2vec-cohere,text2vec-huggingface,text2vec-palm,text2vec-openai,generative-openai,generative-cohere,generative-palm,ref2vec-centroid,reranker-cohere,qna-openai'
+      CLUSTER_HOSTNAME: 'node1'
 
   python-lightingagent:
     build:
@@ -95,12 +118,27 @@ services:
       mongodb:
         condition: service_healthy
 
+  sceneservice:
+    build:
+      context: ./
+      dockerfile: PluginServices/SceneService/Dockerfile
+    ports:
+      - "5003:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
   speakerservice:
     build:
       context: ./
       dockerfile: PluginServices/SpeakerService/Dockerfile
     ports:
-      - "5003:80"
+      - "5004:80"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
       interval: 2s
@@ -123,4 +161,5 @@ services:
         condition: service_healthy
 
 volumes:
+  weaviate_data:
   mongo_data:

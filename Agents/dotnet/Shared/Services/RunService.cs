@@ -1,5 +1,5 @@
 using Microsoft.SemanticKernel;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 using MongoDB.Driver;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -7,7 +7,7 @@ using System.Text;
 using Azure.AI.OpenAI;
 using System.Text.Json;
 
-namespace Shared.Services
+namespace PartyPlanning.Agents.Shared.Services
 {
     /// <summary>
     /// Service for running a chat completion.

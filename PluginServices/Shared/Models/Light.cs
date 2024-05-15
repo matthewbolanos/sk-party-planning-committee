@@ -1,6 +1,6 @@
 using Shared.Enums;
 
-namespace Shared.Models
+namespace PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers
 {
     /// <summary>
     /// Represents a light with various properties.

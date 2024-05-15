@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 using Microsoft.Extensions.Options;
-using Shared.Config;
-using Shared.Services;
+using PartyPlanning.Agents.Shared.Config;
+using PartyPlanning.Agents.Shared.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace Shared.Controllers
+namespace PartyPlanning.Agents.Shared.Controllers
 {
     /// <summary>
     /// Controller for managing runs within a specific thread.
@@ -16,14 +16,14 @@ namespace Shared.Controllers
     /// </remarks>
     /// <param name="database">The MongoDB database.</param>
     /// <param name="runService">The run service.</param>
-    /// <param name="agentConfig">Discovery information for the agent</param>
+    /// <param name="AgentConfiguration">Discovery information for the agent</param>
     /// <param name="assistantEventStreamService">Provides utilities to manage Assistant API stream events</param>
     [ApiController]
     [Route("/api/threads/{threadId}/runs")]
     public class RunController(
         IMongoDatabase database,
         RunService runService,
-        IOptions<AgentConfig> agentConfig,
+        IOptions<AgentConfiguration> AgentConfiguration,
         AssistantEventStreamService assistantEventStreamService
     ) : ControllerBase
     {
@@ -54,7 +54,7 @@ namespace Shared.Controllers
             var newRun = new AssistantThreadRun()
             {
                 ThreadId = threadId,
-                AssistantId = agentConfig.Value.Name,
+                AssistantId = AgentConfiguration.Value.Name,
                 CreatedAt = DateTime.UtcNow
             };
 

@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.SemanticKernel.ChatCompletion;
 
-namespace Shared.Converters
+namespace PartyPlanning.Agents.Shared.Converters
 {
     public class AuthorRoleConverter : JsonConverter<AuthorRole>
     {

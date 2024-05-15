@@ -4,9 +4,9 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 
-namespace Shared.Serializers
+namespace PartyPlanning.Agents.Shared.Serializers
 {
     public class AssistantMessageContentSerializer : SerializerBase<AssistantMessageContent>, IBsonSerializer<AssistantMessageContent>, IBsonDocumentSerializer
     {

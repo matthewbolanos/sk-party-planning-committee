@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
-namespace Shared.Serializers
+namespace PartyPlanning.Agents.Shared.Serializers
 {
     public class TextContentSerializer : IBsonSerializer<TextContent>
     {

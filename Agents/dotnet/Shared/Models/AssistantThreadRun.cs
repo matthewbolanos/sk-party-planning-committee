@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Serialization;
 
-namespace Shared.Models
+namespace PartyPlanning.Agents.Shared.Models
 {
     /// <summary>
     /// Model representing a run within a thread.

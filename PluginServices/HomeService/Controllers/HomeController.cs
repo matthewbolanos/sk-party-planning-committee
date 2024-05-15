@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using Shared.Models;
+using PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers;
 
 namespace HomeService.Controllers
 {

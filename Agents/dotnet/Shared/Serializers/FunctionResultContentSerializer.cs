@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 
 #pragma warning disable SKEXP0001
 
-namespace Shared.Serializers
+namespace PartyPlanning.Agents.Shared.Serializers
 {
     public class FunctionResultContentSerializer : IBsonSerializer<FunctionResultContent>
     {

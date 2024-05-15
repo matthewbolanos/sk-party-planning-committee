@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using Microsoft.SemanticKernel;
 using System;
 
-namespace Shared.Serializers
+namespace PartyPlanning.Agents.Shared.Serializers
 {
     public class ImageContentSerializer : IBsonSerializer<ImageContent>
     {

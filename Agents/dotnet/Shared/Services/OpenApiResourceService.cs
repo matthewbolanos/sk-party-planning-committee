@@ -1,28 +1,31 @@
 using System.Reflection;
 
-public class OpenApiResourceService
+namespace PartyPlanning.Agents.Shared.Services
 {
-    /// <summary>
-    /// Gets the OpenAPI resource from the assembly.
-    /// </summary>
-    /// <param name="OpenApiResourceName">The name of the OpenAPI Resource (e.g., myPlugin.swagger.json)</param>
-    /// <returns>The contents of the OpenAPI Resource</returns>
-    /// <exception cref="Exception"></exception>
-    public string GetOpenApiResource(Assembly assembly, string OpenApiResourceName)
+    public class OpenApiResourceService
     {
-        string? fullResourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =>
-            x.EndsWith(OpenApiResourceName)
-        );
-
-        if (fullResourceName == null)
+        /// <summary>
+        /// Gets the OpenAPI resource from the assembly.
+        /// </summary>
+        /// <param name="OpenApiResourceName">The name of the OpenAPI Resource (e.g., myPlugin.swagger.json)</param>
+        /// <returns>The contents of the OpenAPI Resource</returns>
+        /// <exception cref="Exception"></exception>
+        public string GetOpenApiResource(Assembly assembly, string OpenApiResourceName)
         {
-            throw new Exception($"Resource {OpenApiResourceName} not found in assembly {assembly.FullName}");
-        }
+            string? fullResourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =>
+                x.EndsWith(OpenApiResourceName)
+            );
 
-        using (Stream stream = assembly.GetManifestResourceStream(fullResourceName)!)
-        using (StreamReader reader = new StreamReader(stream))
-        {
-            return reader.ReadToEnd();
+            if (fullResourceName == null)
+            {
+                throw new Exception($"Resource {OpenApiResourceName} not found in assembly {assembly.FullName}");
+            }
+
+            using (Stream stream = assembly.GetManifestResourceStream(fullResourceName)!)
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
         }
     }
 }

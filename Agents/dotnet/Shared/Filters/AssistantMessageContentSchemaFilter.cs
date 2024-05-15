@@ -2,10 +2,10 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Shared.Swagger
+namespace PartyPlanning.Agents.Shared.Swagger
 {
     public class AssistantMessageContentSchemaFilter : ISchemaFilter
     {

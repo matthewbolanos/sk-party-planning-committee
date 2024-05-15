@@ -1,14 +1,14 @@
 using Microsoft.SemanticKernel;
 using MongoDB.Bson.Serialization;
-using Shared.Models;
-using Shared.Serializers;
+using PartyPlanning.Agents.Shared.Models;
+using PartyPlanning.Agents.Shared.Serializers;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 
-namespace Shared.Config
+namespace PartyPlanning.Agents.Shared.Config
 {
     public static class IHostApplicationBuilderExtensions
     {
@@ -39,9 +39,21 @@ namespace Shared.Config
             });
         }
 
+        public static void ConfigureWeaviate(this IHostApplicationBuilder builder)
+        {
+            builder.Services.Configure<WeaviateConfiguration>(options =>
+            {
+                IConfigurationSection? sharedConfig = SharedConfigReader.GetConfiguration()?.GetSection("Weaviate");
+                builder.Configuration.Bind("Weaviate", options);
+
+                // If there is a shared configuration, bind it to the options
+                sharedConfig?.Bind(options);
+            });
+        }
+
         public static void ConfigureAgentMetadata(this IHostApplicationBuilder builder)
         {
-            builder.Services.Configure<AgentConfig>(options =>
+            builder.Services.Configure<AgentConfiguration>(options =>
             {
                 builder.Configuration.Bind("Agent", options);
             });

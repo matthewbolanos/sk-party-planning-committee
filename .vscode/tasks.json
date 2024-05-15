@@ -144,6 +144,42 @@
                 "${workspaceFolder}/PartyPlanningSolution.sln"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build - SceneService",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish - SceneService",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/PartyPlanningSolution.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch - SceneService",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/PartyPlanningSolution.sln"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }

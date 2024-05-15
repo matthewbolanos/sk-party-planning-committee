@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MongoDB.Bson;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 
 public class AssistantThreadConverter : JsonConverter<AssistantThreadBase>
 {

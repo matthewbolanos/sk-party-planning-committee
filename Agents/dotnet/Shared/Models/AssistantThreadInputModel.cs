@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Shared.Models
+namespace PartyPlanning.Agents.Shared.Models
 {
     /// <summary>
     /// Represents a thread input model.

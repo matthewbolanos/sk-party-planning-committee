@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.SemanticKernel;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 
-namespace Shared.Controllers
+namespace PartyPlanning.Agents.Shared.Controllers
 {
     /// <summary>
     /// Controller for the message object

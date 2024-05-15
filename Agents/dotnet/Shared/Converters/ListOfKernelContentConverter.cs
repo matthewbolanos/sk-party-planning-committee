@@ -4,16 +4,23 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.SemanticKernel;
 
-namespace Shared.Converters
+namespace PartyPlanning.Agents.Shared.Converters
 {
     public class ListOfKernelContentConverter : JsonConverter<List<KernelContent>>
     {
         public override List<KernelContent> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            var contents = new List<KernelContent>();
+
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                contents.Add(new TextContent { Text = reader.GetString() });
+                return contents;
+            }
+
             if (reader.TokenType != JsonTokenType.StartArray)
                 throw new JsonException("Expected StartArray token");
 
-            var contents = new List<KernelContent>();
             while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
             {
                 if (reader.TokenType == JsonTokenType.StartObject)

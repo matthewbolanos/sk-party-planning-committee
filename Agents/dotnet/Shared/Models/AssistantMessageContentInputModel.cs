@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Shared.Converters;
+using PartyPlanning.Agents.Shared.Converters;
 
 #pragma warning disable CS8618
 
-namespace Shared.Models
+namespace PartyPlanning.Agents.Shared.Models
 {
     /// <summary>
     /// Represents a thread input model.

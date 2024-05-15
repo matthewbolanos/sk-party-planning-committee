@@ -1,8 +1,8 @@
 #pragma warning disable CS8618
 
-namespace Shared.Config
+namespace PartyPlanning.Agents.Shared.Config
 {
-    public class AgentConfig
+    public class AgentConfiguration
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }

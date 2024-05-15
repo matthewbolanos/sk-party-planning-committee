@@ -4,11 +4,12 @@ import httpx
 from openai import AsyncOpenAI
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import OptionList, Rule
+from textual.widgets import OptionList, Rule, Markdown
 from textual.widgets.option_list import Option
 from textual.containers import Horizontal, Vertical
 from widgets.chat_history import ChatHistory
 from widgets.message_input import MessageInput
+import webbrowser
 
 class TerminalGui(App):
     CSS_PATH = "style.tcss"
@@ -36,6 +37,12 @@ class TerminalGui(App):
     @on(OptionList.OptionHighlighted, "#languages")  
     def change_language(self, event: OptionList.OptionMessage):
         self.set_client(event.option_id)
+
+    
+    @on(Markdown.LinkClicked, "Markdown")  
+    def go_to_link(self, event: Markdown.LinkClicked):
+        # Open the link in the browser
+        webbrowser.open(event.href)
 
     def set_client(self, option_id: str):
         deploy_env = os.getenv('DEPLOY_ENV', 'development')

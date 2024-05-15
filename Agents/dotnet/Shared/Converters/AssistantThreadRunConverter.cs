@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 
 public class AssistantThreadRunConverter : JsonConverter<AssistantThreadRun>
 {

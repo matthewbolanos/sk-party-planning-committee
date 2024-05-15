@@ -1,6 +1,6 @@
 
 
-namespace Shared.Models
+namespace PartyPlanning.Agents.Shared.Models
 {
     /// <summary>
     /// Represents a thread resource.

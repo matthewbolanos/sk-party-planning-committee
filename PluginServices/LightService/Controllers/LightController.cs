@@ -1,4 +1,4 @@
-using Shared.Models;
+using PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using LightService.Models;
@@ -8,7 +8,7 @@ namespace LightService.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class LightsController(IMongoDatabase database) : ControllerBase
+    public class LightController(IMongoDatabase database) : ControllerBase
     {
         private readonly IMongoCollection<BsonDocument> _smartDevices = database.GetCollection<BsonDocument>("SmartDevices");
         private readonly IMongoCollection<Light> _lights = database.GetCollection<Light>("Lights");

@@ -1,17 +1,18 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Shared.Swagger;
-using Shared.Converters;
-using Shared.Config;
-using Shared.Services;
+using PartyPlanning.Agents.Shared.Swagger;
+using PartyPlanning.Agents.Shared.Converters;
+using PartyPlanning.Agents.Shared.Config;
+using PartyPlanning.Agents.Shared.Services;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Plugins.OpenApi;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Shared.Controllers;
+using PartyPlanning.Agents.Shared.Controllers;
+using Microsoft.SemanticKernel.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,17 +60,32 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
 // Create kernel
 builder.Services.AddTransient((serviceProvider) => {
     Kernel kernel = new(serviceProvider);
+
     var openApiResourceService = serviceProvider.GetRequiredService<OpenApiResourceService>();
     var lightPluginFile = new MemoryStream(Encoding.UTF8.GetBytes(
         openApiResourceService.GetOpenApiResource(Assembly.GetExecutingAssembly(),"LightPlugin.swagger.json")));
+    var scenePluginFile = new MemoryStream(Encoding.UTF8.GetBytes(
+        openApiResourceService.GetOpenApiResource(Assembly.GetExecutingAssembly(),"ScenePlugin.swagger.json")));
 
     #pragma warning disable SKEXP0040
+    // Plugin for changing lights
     kernel.ImportPluginFromOpenApiAsync(
         pluginName: "light_plugin",
         stream: lightPluginFile,
         executionParameters: new OpenApiFunctionExecutionParameters()
         {
             ServerUrlOverride = new Uri("http://localhost:5002/"),
+            EnablePayloadNamespacing = true
+        }
+    ).Wait();
+    
+    // Plugin for getting scene recommendations
+    kernel.ImportPluginFromOpenApiAsync(
+        pluginName: "scene_plugin",
+        stream: scenePluginFile,
+        executionParameters: new OpenApiFunctionExecutionParameters()
+        {
+            ServerUrlOverride = new Uri("http://localhost:5003/"),
             EnablePayloadNamespacing = true
         }
     ).Wait();
@@ -102,6 +118,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddSingleton<OpenApiResourceService>();
 builder.Services.AddSingleton<RunService>();
 builder.Services.AddTransient<AssistantEventStreamService>();
+builder.Services.AddLogging((loggingBuilder) => {loggingBuilder.AddDebug().AddConsole().SetMinimumLevel(LogLevel.Trace);});
 
 // Enable OpenAPI schema generation
 builder.Services.AddEndpointsApiExplorer();

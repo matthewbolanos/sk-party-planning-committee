@@ -9,7 +9,7 @@ using System.Text.Json;
 
 #pragma warning disable SKEXP0001
 
-namespace Shared.Serializers
+namespace PartyPlanning.Agents.Shared.Serializers
 {
     public class FunctionCallContentSerializer : IBsonSerializer<FunctionCallContent>
     {

@@ -7,5 +7,9 @@
       "DeploymentName": "your-models-deployment-name",
       "Endpoint": "your-endpoint",
       "OrgId": "your-org-id"
+  },
+  "Weaviate": {
+    "Endpoint": "your-endpoint",
+    "ApiKey": "your-api-key"
   }
 }

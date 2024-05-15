@@ -5,10 +5,10 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Shared.Controllers
+namespace PartyPlanning.Agents.Shared.Controllers
 {
     /// <summary>
     /// Controller for the thread object

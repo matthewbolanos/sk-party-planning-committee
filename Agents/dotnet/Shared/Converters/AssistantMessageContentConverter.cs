@@ -2,9 +2,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Models;
 
-namespace Shared.Converters
+namespace PartyPlanning.Agents.Shared.Converters
 {
     /// <summary>
     /// Converts JSON to <see cref="AssistantMessageContent"/> and vice versa.

@@ -4,7 +4,7 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Shared.Swagger
+namespace PartyPlanning.Agents.Shared.Swagger
 {
     public class AuthorRoleSchemaFilter : ISchemaFilter
     {

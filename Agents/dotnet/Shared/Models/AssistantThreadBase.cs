@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 
-namespace Shared.Models
+namespace PartyPlanning.Agents.Shared.Models
 {
     /// <summary>
     /// Represents a base thread resource

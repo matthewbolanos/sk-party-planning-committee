@@ -5,10 +5,10 @@
         "version": "v1"
     },
     "paths": {
-        "/Lights": {
+        "/Light": {
             "get": {
                 "tags": [
-                    "Lights"
+                    "Light"
                 ],
                 "summary": "Retrieves all lights in the system.",
                 "operationId": "get_all_lights",
@@ -19,10 +19,10 @@
                 }
             }
         },
-        "/Lights/{id}": {
+        "/Light/{id}": {
             "get": {
                 "tags": [
-                    "Lights"
+                    "Light"
                 ],
                 "summary": "Retrieves a specific light by its ID.",
                 "operationId": "get_light",
@@ -46,7 +46,7 @@
             },
             "post": {
                 "tags": [
-                    "Lights"
+                    "Light"
                 ],
                 "summary": "Changes the state of a light.",
                 "operationId": "change_light_state",
@@ -119,9 +119,9 @@
                         "format": "int32"
                     },
                     "scheduledTime": {
-                        "type": "integer",
+                        "type": "string",
                         "description": "The time at which the change should occur.",
-                        "format": "int32"
+                        "format": "date-time"
                     }
                 },
                 "additionalProperties": false,

@@ -1,0 +1,68 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Light API",
+        "version": "v1"
+    },
+    "paths": {
+        "/Scene": {
+            "post": {
+                "tags": [
+                    "Scene"
+                ],
+                "summary": "Generates a light color palette for a scene based on a description; _must_ use when setting the color of lights",
+                "operationId": "generate_scene_pallette",
+                "requestBody": {
+                    "description": "The details about the scene to generate",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SceneRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SceneRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SceneRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SceneRequest": {
+                "required": [
+                    "recommendedColors",
+                    "threeWordDescription"
+                ],
+                "type": "object",
+                "properties": {
+                    "threeWordDescription": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "The palette to generate in 1-3 sentence. Feel free to be creative, but it most also pass safety filters! (don't be risque!)"
+                    },
+                    "recommendedColors": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "The name of 3 recommended colors for the scene based on your expertise (no need to ask the user; just do it!)"
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    }
+}

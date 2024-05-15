@@ -7,19 +7,19 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using Shared.Config;
-using Shared.Models;
+using PartyPlanning.Agents.Shared.Config;
+using PartyPlanning.Agents.Shared.Models;
 
-namespace Shared.Services
+namespace PartyPlanning.Agents.Shared.Services
 {
     public class AssistantEventStreamService(
-        IOptions<AgentConfig> agentConfiguration,
+        IOptions<AgentConfiguration> AgentConfigurationuration,
         IOptions<Microsoft.AspNetCore.Mvc.JsonOptions> jsonOptions
     )
     {
         private string? _currentThreadId = null;
         private AssistantMessageContent? _currentMessage = null;
-        private AgentConfig _agentConfiguration = agentConfiguration.Value;
+        private AgentConfiguration _AgentConfigurationuration = AgentConfigurationuration.Value;
         private StringBuilder _messageBuilder = new();
 
         public IEnumerable<string> CreateMessageEvent(string runId, StreamingChatMessageContent data)
@@ -51,7 +51,7 @@ namespace Shared.Services
                     ThreadId = _currentThreadId,
                     CreatedAt = DateTime.Now,
                     Role = AuthorRole.Assistant,
-                    AssistantId = _agentConfiguration.Name,
+                    AssistantId = _AgentConfigurationuration.Name,
                     RunId = runId,
                     Items = []
                 };

@@ -3,7 +3,7 @@ using Microsoft.SemanticKernel;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Shared.Models
+namespace PartyPlanning.Agents.Shared.Models
 {
     /// <summary>
     /// Model representing a run within a thread.

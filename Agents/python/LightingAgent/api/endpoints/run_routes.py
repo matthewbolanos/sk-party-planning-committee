@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 from fastapi import APIRouter, HTTPException, Depends, Response
 from pydantic import BaseModel
-from utilities.assistant_event_stream_utility import AssistantEventStreamUtility
+from utilities.assistant_event_stream_utility import AssistantEventStreamService
 from models.assistant_message_content import AssistantMessageContent
 from models.assistant_thread_run import AssistantThreadRun
 from services.lighting_agent_run_service import LightingAgentRunService
@@ -29,7 +29,7 @@ async def create_run(
         raise HTTPException(status_code=404, detail=f"Thread with ID '{thread_id}' not found.")
     
     new_run = AssistantThreadRun(thread_id=thread_id, created_at=datetime.utcnow())
-    streamingUtility = AssistantEventStreamUtility()
+    streamingUtility = AssistantEventStreamService()
     run_service = LightingAgentRunService()  # No need to pass db_manager to constructor
 
     async def create_event_stream(run: AssistantThreadRun):

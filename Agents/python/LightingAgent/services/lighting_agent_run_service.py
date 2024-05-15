@@ -4,7 +4,7 @@ import aiohttp
 import httpx
 from semantic_kernel.kernel import Kernel
 from semantic_kernel.contents import TextContent
-from semantic_kernel.contents.chat_message_content import ITEM_TYPES, AuthorRole
+from semantic_kernel.contents.chat_message_content import ITEM_TYPES, AuthorRole, ChatMessageContent
 from semantic_kernel.contents.chat_history import ChatHistory
 from semantic_kernel.connectors.ai.function_call_behavior import FunctionCallBehavior
 from semantic_kernel.contents.streaming_chat_message_content import StreamingChatMessageContent
@@ -22,7 +22,7 @@ from models.assistant_message_content import AssistantMessageContent
 from models.config import Config
 from database_manager import DatabaseManager, get_database_manager
 from models.assistant_thread_run import AssistantThreadRun
-from utilities.assistant_event_stream_utility import AssistantEventStreamUtility
+from utilities.assistant_event_stream_utility import AssistantEventStreamService
 from utilities.chat_message_conversion_utility import process_messages
 from semantic_kernel.functions.kernel_arguments import KernelArguments
 
@@ -30,7 +30,7 @@ class LightingAgentRunService:
     async def execute_run_async(
             self,
             run: AssistantThreadRun,
-            event_stream_utility: AssistantEventStreamUtility,
+            event_stream_utility: AssistantEventStreamService,
             db_manager: DatabaseManager
         ):
 
@@ -73,7 +73,7 @@ class LightingAgentRunService:
             openapi_document_path="../../../plugins/OpenApiPlugins/LightPlugin.swagger.json",
             execution_settings=OpenAPIFunctionExecutionParameters(
                 http_client=httpx.AsyncClient(verify=False), # Disable SSL verification (for development only
-                server_url_override="https://localhost:5002",
+                server_url_override="http://localhost:5002/",
                 enable_payload_namespacing=True,
             ),
         )
@@ -84,8 +84,9 @@ class LightingAgentRunService:
         ).sort("created_at").to_list(None)
         history = ChatHistory(
             system_message="If the user asks what language you've been written, reply to the user that you've been built with Python; otherwise have a nice chat!",
-            messages=process_messages(messages)
+            messages=[AssistantMessageContent.from_bson(message) for message in messages]
         )
+        messageCount = len(messages);
 
         # Invoke the chat completion service
         chatCompletion: ChatCompletionClientBase = kernel.get_service(type=ChatCompletionClientBase)
@@ -107,14 +108,18 @@ class LightingAgentRunService:
             events = event_stream_utility.create_message_event(run, result[0])
             for event in events:
                 yield event
+        history.add_assistant_message(completeMessage)
 
-        # Save the completed message to MongoDB
-        await db_manager.messages_collection.insert_one(
-            AssistantMessageContent(
-                thread_id=run.thread_id,
-                role=AuthorRole.ASSISTANT,
-                items=[TextContent(text=completeMessage)]
-            ).to_bson()
-        )
+        newMessages:List[ChatMessageContent] = history[(messageCount + 1):]
+
+        # Save the new messages to MongoDB
+        for message in newMessages:
+            await db_manager.messages_collection.insert_one(
+                AssistantMessageContent(
+                    thread_id=run.thread_id,
+                    role=message.role,
+                    items=message.items
+                ).to_bson()
+            )
 
 run_service = LightingAgentRunService()

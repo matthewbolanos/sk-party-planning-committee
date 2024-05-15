@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @Component
-public class AssistantEventStreamUtility {
+public class AssistantEventStreamService {
     @Autowired
-    private ObjectMapper objectMapper; // This will use the ObjectMapper configured in JacksonConfig
+    private ObjectMapper objectMapper;
 
     public void sendEvent(SseEmitter emitter, String eventType, Object data) {
         try {

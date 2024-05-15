@@ -7,13 +7,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.microsoft.semantickernel.services.KernelContent;
 import com.microsoft.semantickernel.services.textcompletion.TextContent;
-import com.partyplanning.lightingagent.models.AssistantMessageContent;
 import com.partyplanning.lightingagent.models.AssistantMessageContentInputModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class AssistantMessageContentInputModelDeserializer extends StdDeserializer<AssistantMessageContentInputModel> {
 

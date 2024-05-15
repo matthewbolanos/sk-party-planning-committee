@@ -92,7 +92,7 @@ async def list_messages(
     messages = await db_manager.messages_collection.find(query_filter, **options).to_list(limit)
 
     # Convert BSON documents to Pydantic models
-    messages = [AssistantMessageContentOutputModel.from_bson(message) for message in messages]
+    messages = [AssistantMessageContent.from_bson(message) for message in messages]
 
     return {
         "object": "list",

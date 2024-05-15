@@ -26,11 +26,15 @@ class ChatMessage(Static):
         # else:
         #     self.markdown.styles.width = None
         await self.markdown.update(self.text)
+        # if (self.update_count == 1):
+        #     await self.recompose()
+
         # await self.refresh()
 
     def compose(self) -> ComposeResult:
         children = [self.markdown]
         message_container = Container(*children)
+        # if len(self.text) > 0:
         yield message_container
 
     async def append_text(self, text: List[MessageContent] | str):

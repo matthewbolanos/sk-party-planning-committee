@@ -12,11 +12,20 @@ public class TextContentConverter : JsonConverter<TextContent>
             throw new JsonException("Expected StartObject token");
 
         string text = "";
+
         List<string> annotations = [];
 
         while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
         {
-            if (reader.TokenType == JsonTokenType.PropertyName)
+            reader.Read();
+            reader.Read();
+            reader.Read();
+
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                text = reader.GetString()!;
+            }
+            else if (reader.TokenType == JsonTokenType.PropertyName)
             {
                 var propertyName = reader.GetString();
                 reader.Read(); // Move to property value

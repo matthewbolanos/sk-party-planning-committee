@@ -22,7 +22,6 @@ import java.util.List;
 @Document(collection = "Messages")
 public class AssistantMessageContent {
 
-
     @PersistenceCreator
     public AssistantMessageContent(
         @Param("threadId") String threadId,

@@ -5,12 +5,24 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.azure.ai.openai.OpenAIClientBuilder;
+import com.azure.ai.openai.models.ChatCompletionsFunctionToolCall;
+import com.azure.ai.openai.models.ChatRequestAssistantMessage;
+import com.azure.ai.openai.models.FunctionCall;
 import com.azure.core.credential.AzureKeyCredential;
+import com.azure.core.util.Context;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
+import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatMessageContent;
+import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIFunctionToolCall;
+import com.microsoft.semantickernel.contextvariables.CaseInsensitiveMap;
+import com.microsoft.semantickernel.contextvariables.ContextVariable;
+import com.microsoft.semantickernel.contextvariables.ContextVariableType;
+import com.microsoft.semantickernel.contextvariables.ContextVariableTypeConverter;
+import com.microsoft.semantickernel.orchestration.FunctionResultMetadata;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
 import com.microsoft.semantickernel.orchestration.ToolCallBehavior;
 import com.microsoft.semantickernel.plugin.KernelPlugin;
+import com.microsoft.semantickernel.semanticfunctions.KernelFunctionArguments;
 import com.microsoft.semantickernel.services.KernelContent;
 import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
 import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
@@ -19,8 +31,12 @@ import com.microsoft.semantickernel.services.textcompletion.TextContent;
 import com.partyplanning.lightingagent.config.OpenAIProperties;
 import com.partyplanning.lightingagent.models.AssistantMessageContent;
 import com.partyplanning.lightingagent.models.AssistantThreadRun;
+import com.partyplanning.lightingagent.models.FunctionCallContent;
+import com.partyplanning.lightingagent.models.FunctionResultContent;
 import com.partyplanning.lightingagent.semantickernel.openapi.SemanticKernelOpenAPIImporter;
-import com.partyplanning.lightingagent.utils.AssistantEventStreamUtility;
+import com.partyplanning.lightingagent.utils.AssistantEventStreamService;
+import org.apache.commons.text.StringEscapeUtils;
+import javax.annotation.Nullable;
 
 import org.aopalliance.intercept.Invocation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +46,10 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings({ "rawtypes" })
@@ -44,7 +62,7 @@ public class LightingAgentRunService {
     private OpenAIProperties openAIProperties;
 
     @Autowired
-    private AssistantEventStreamUtility assistantEventStreamUtility;
+    private AssistantEventStreamService assistantEventStreamService;
 
     @Autowired
     private OpenApiSpecLoaderService openApiSpecLoaderService;
@@ -101,9 +119,41 @@ public class LightingAgentRunService {
         ChatHistory chatHistory = new ChatHistory("If the user asks what language you've been written, reply to the user that you've been built with Java; otherwise have a nice chat!");
         for (AssistantMessageContent assistantMessageContent : messages) {
             // convert to ChatMessageContent
-            ChatMessageContent chatMessageContent = new ChatMessageContent(
+            List<OpenAIFunctionToolCall> toolCalls = new ArrayList<>();
+            FunctionResultMetadata metadata = null;
+            
+
+            for(KernelContent<?> item : assistantMessageContent.getItems()) {
+                if (item instanceof FunctionCallContent) {
+                    FunctionCallContent<?> functionCallContent = (FunctionCallContent<?>) item;
+                    toolCalls.add(new OpenAIFunctionToolCall(
+                        functionCallContent.getId(),
+                        functionCallContent.getPluginName(),
+                        functionCallContent.getFunctionName(),
+                        functionCallContent.getArguments()
+                    ));
+                } else if (item instanceof FunctionResultContent) {
+                    FunctionResultContent<?> functionResultContent = (FunctionResultContent<?>) item;
+
+                    CaseInsensitiveMap<ContextVariable<?>> metadataMap = new CaseInsensitiveMap<>();
+                    metadataMap.put("id", ContextVariable.of(functionResultContent.getId()));
+                    metadata = new FunctionResultMetadata(metadataMap);
+                }
+            }
+
+            // CaseInsensitiveMap<ContextVariable<?>> metadata = new CaseInsensitiveMap<>();
+            // metadata.put("id", new ContextVariable(
+            //     new ContextVariableType<>(new ContextVariableTypeConverter<>(getClass(), null, null, null), getClass())
+            // ) ((FunctionResultContent)assistantMessageContent.getItems().get(0)).getId());
+
+            ChatMessageContent chatMessageContent = new OpenAIChatMessageContent<Object>(
                 assistantMessageContent.getAuthorRole(),
-                assistantMessageContent.getItems().get(0).getContent()
+                assistantMessageContent.getItems().get(0).getContent(),
+                null,
+                null,
+                null,
+                metadata,
+                toolCalls.isEmpty() ? null : toolCalls
             );
             chatHistory.addMessage(chatMessageContent);
         }
@@ -113,10 +163,9 @@ public class LightingAgentRunService {
             .build();
         List<ChatMessageContent<?>> results  = chat.getChatMessageContentsAsync(chatHistory, kernel, invocationContext)
         .block();
-    
 
         for (ChatMessageContent<?> result : results) {
-            assistantEventStreamUtility.sendMessageEvent(emitter, run, result);
+            assistantEventStreamService.sendMessageEvent(emitter, run, result);
 
             ArrayList<KernelContent<?>> items = new ArrayList<>();
             items.add(new TextContent(result.getContent(), null, null));

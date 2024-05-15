@@ -38,7 +38,7 @@ namespace Shared.Serializers
                     { "pluginName", value.PluginName },
                     { "functionName", value.FunctionName },
                     { "id", value.Id },
-                    { "result", (string)JsonSerializer.Deserialize<JsonObject>((string)value.Result!)!["Content"]! }
+                    { "result", (string)value.Result! }
                 } }
             };
 

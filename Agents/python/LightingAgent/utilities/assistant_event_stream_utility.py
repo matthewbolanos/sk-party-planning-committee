@@ -18,7 +18,7 @@ class StreamingChatCompletionsUpdate:
     Id: str
     FinishReason: Optional[str]
 
-class AssistantEventStreamUtility:
+class AssistantEventStreamService:
     _current_message: Optional[AssistantMessageContent] = None
 
     def create_message_event(self, run: AssistantThreadRun, data: StreamingChatMessageContent) -> Generator[str, None, None]:

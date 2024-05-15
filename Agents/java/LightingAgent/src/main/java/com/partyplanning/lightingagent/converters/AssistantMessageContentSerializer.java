@@ -1,15 +1,18 @@
 package com.partyplanning.lightingagent.converters;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.microsoft.semantickernel.services.KernelContent;
-import com.microsoft.semantickernel.services.textcompletion.TextContent;
 import com.partyplanning.lightingagent.models.AssistantMessageContent;
 
 import java.io.IOException;
 
 public class AssistantMessageContentSerializer extends StdSerializer<AssistantMessageContent> {
+
+    private final ObjectMapper objectMapper;
 
     public AssistantMessageContentSerializer() {
         this(null);
@@ -17,6 +20,10 @@ public class AssistantMessageContentSerializer extends StdSerializer<AssistantMe
 
     public AssistantMessageContentSerializer(Class<AssistantMessageContent> t) {
         super(t);
+        this.objectMapper = new ObjectMapper();
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(KernelContent.class, new KernelContentSerializer());
+        this.objectMapper.registerModule(module);
     }
 
     @Override
@@ -30,22 +37,7 @@ public class AssistantMessageContentSerializer extends StdSerializer<AssistantMe
         gen.writeStringField("role", value.getAuthorRole().toString().toLowerCase());
         gen.writeArrayFieldStart("content");
         for (KernelContent<?> content : value.getItems()) {
-            gen.writeStartObject();
-
-            // check if the content is an instance of TextContent
-            if (content instanceof TextContent) {
-                TextContent textContent = (TextContent) content;
-                gen.writeStringField("type", "text");
-                gen.writeFieldName("text");
-                gen.writeStartObject();
-                gen.writeStringField("value", textContent.getContent());
-                gen.writeArrayFieldStart("annotations");
-                // Assuming annotations need to be an empty array if null
-                gen.writeEndArray();
-                gen.writeEndObject();
-            }
-
-            gen.writeEndObject();
+            objectMapper.writeValue(gen, content);
         }
         gen.writeEndArray();
         gen.writeEndObject();

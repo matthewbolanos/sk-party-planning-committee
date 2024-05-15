@@ -14,7 +14,7 @@ class AssistantMessageContentOutputModel(BaseModel):
     run_id: Optional[str] = None
     assistant_id: Optional[str] = None
     created_at: datetime = None
-    content: Optional[List[ITEM_TYPES]] = None
+    items: Optional[List[ITEM_TYPES]] = None
 
     class Config():
         json_encoders = {

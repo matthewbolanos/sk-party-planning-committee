@@ -65,17 +65,21 @@ builder.Services.AddSingleton<ITextEmbeddingGenerationService>((serviceProvider)
 #pragma warning restore SKEXP0001, SKEXP0010
 
 #pragma warning disable SKEXP0020, SKEXP0001
-builder.Services.AddSingleton<IMemoryStore>((serviceProvider) => {
+builder.Services.AddSingleton<ISemanticTextMemory>((serviceProvider) => {
     var weaviateConfig = serviceProvider.GetRequiredService<IOptions<WeaviateConfiguration>>().Value;
 
-    WeaviateMemoryStore store = new(weaviateConfig.Endpoint!, weaviateConfig.ApiKey == null ? string.Empty : weaviateConfig.ApiKey);
-    
+    MemoryBuilder memoryBuilder = new();
+    WeaviateMemoryStore store = new(weaviateConfig.Endpoint!, weaviateConfig.ApiKey ?? string.Empty);
+    memoryBuilder.WithMemoryStore(store);
+    memoryBuilder.WithTextEmbeddingGeneration(serviceProvider.GetRequiredService<ITextEmbeddingGenerationService>());
+    ISemanticTextMemory weaviateTextMemory = memoryBuilder.Build();
+
     if (!store.DoesCollectionExistAsync("scenes").Result)
     {
         store.CreateCollectionAsync("scenes").Wait();
     }
 
-    return store;
+    return weaviateTextMemory;
 });
 #pragma warning restore SKEXP0020, SKEXP0001
 

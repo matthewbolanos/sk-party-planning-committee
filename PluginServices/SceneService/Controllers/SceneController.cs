@@ -14,8 +14,7 @@ namespace SceneService.Controllers
     [Route("[controller]")]
     public class SceneController(
         ITextToImageService textToImageService,
-        IMemoryStore memoryStore,
-        ITextEmbeddingGenerationService textEmbeddingGenerationService
+        ISemanticTextMemory memoryStore
     ) : ControllerBase
     {
         /// <summary>
@@ -31,17 +30,19 @@ namespace SceneService.Controllers
             // Check cache for scene
             try
             {
-                var matches = await memoryStore.GetNearestMatchAsync(
-                    collectionName: "scene",
-                    embedding: await textEmbeddingGenerationService.GenerateEmbeddingAsync(completePrompt),
-                    minRelevanceScore: 1
-                );
-                var distance = matches.Value.Item2;
+                var enumerator = memoryStore.SearchAsync(
+                    collection: "scene",
+                    query: completePrompt,
+                    minRelevanceScore: 1,
+                    limit: 1
+                ).GetAsyncEnumerator();
+                await enumerator.MoveNextAsync();
+                var match = enumerator.Current;
 
-                if (distance < 0.1)
+                if (match.Relevance < 0.1)
                 {
                     // Return the scene
-                    var metadata = matches.Value.Item1.Metadata;
+                    var metadata = match.Metadata;
                     return Ok(
                         new ScenePallette(
                             metadata.AdditionalMetadata,
@@ -61,20 +62,12 @@ namespace SceneService.Controllers
             List<string> hexColors = GetTopColors(localImagePath, 5);
 
             // Cache the scene
-            await memoryStore.UpsertAsync(
+            await memoryStore.SaveInformationAsync(
                 "scene",
-                new MemoryRecord(
-                    metadata: new MemoryRecordMetadata(
-                        isReference: false,
-                        id: Guid.NewGuid().ToString(),
-                        text: sceneRequest.ThreeWordDescription,
-                        description: JsonSerializer.Serialize(hexColors),
-                        externalSourceName: string.Empty,
-                        additionalMetadata: imageUrl
-                    ),
-                    embedding: await textEmbeddingGenerationService.GenerateEmbeddingAsync(completePrompt),
-                    null
-                )
+                text: sceneRequest.ThreeWordDescription,
+                id: Guid.NewGuid().ToString(),
+                description: JsonSerializer.Serialize(hexColors),
+                additionalMetadata: imageUrl
             );
 
             return Ok(new ScenePallette(imageUrl, hexColors));

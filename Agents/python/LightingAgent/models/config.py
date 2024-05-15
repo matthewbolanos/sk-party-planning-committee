@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
 
 class OpenAIConfig(BaseModel):
@@ -9,5 +9,9 @@ class OpenAIConfig(BaseModel):
     endpoint: Optional[str] = Field(None, alias="Endpoint")
     org_id: Optional[str] = Field(None, alias="OrgId")
 
+class PluginService(BaseModel):
+    endpoints: List[str] = Field(..., alias="Endpoints")
+
 class Config(BaseModel):
     openai: OpenAIConfig = Field(..., alias="OpenAI")
+    plugin_services: Dict[str, PluginService] = Field(..., alias="PluginServices")

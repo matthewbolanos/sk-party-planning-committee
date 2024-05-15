@@ -4,7 +4,7 @@ namespace PartyPlanning.Agents.Shared.Config
 {
     public class WeaviateConfiguration
     {
-        public string? Endpoint { get; set; }
+        public List<string> Endpoints { get; set; }
         public string ApiKey { get; set; }
     }
 }

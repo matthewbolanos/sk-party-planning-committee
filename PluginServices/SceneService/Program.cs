@@ -65,27 +65,25 @@ builder.Services.AddSingleton<ITextEmbeddingGenerationService>((serviceProvider)
 #pragma warning restore SKEXP0001, SKEXP0010
 
 #pragma warning disable SKEXP0020, SKEXP0001
-builder.Services.AddSingleton<ISemanticTextMemory>((serviceProvider) => {
+builder.Services.AddSingleton<IMemoryStore>((serviceProvider) => {
     var weaviateConfig = serviceProvider.GetRequiredService<IOptions<WeaviateConfiguration>>().Value;
+    var weaviateEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(weaviateConfig.Endpoints, "/v1/.well-known/ready").Result;
 
-    MemoryBuilder memoryBuilder = new();
-    WeaviateMemoryStore store = new(weaviateConfig.Endpoint!, weaviateConfig.ApiKey ?? string.Empty);
-    memoryBuilder.WithMemoryStore(store);
-    memoryBuilder.WithTextEmbeddingGeneration(serviceProvider.GetRequiredService<ITextEmbeddingGenerationService>());
-    ISemanticTextMemory weaviateTextMemory = memoryBuilder.Build();
+    WeaviateMemoryStore store = new(weaviateEndpoint, weaviateConfig.ApiKey ?? string.Empty);
 
     if (!store.DoesCollectionExistAsync("scenes").Result)
     {
         store.CreateCollectionAsync("scenes").Wait();
     }
 
-    return weaviateTextMemory;
+    return store;
 });
 #pragma warning restore SKEXP0020, SKEXP0001
 
 // Register services
 builder.ConfigureOpenAI();
 builder.ConfigureWeaviate();
+builder.ConfigureHealthCheckService();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
 builder.Services.AddLogging((loggingBuilder) => {loggingBuilder.AddDebug().AddConsole();});

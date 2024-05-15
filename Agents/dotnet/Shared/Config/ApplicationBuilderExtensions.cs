@@ -59,6 +59,24 @@ namespace PartyPlanning.Agents.Shared.Config
             });
         }
 
+        public static void ConfigurePluginServices(this IHostApplicationBuilder builder)
+        {
+            builder.Services.Configure<PluginServicesConfiguration>(options =>
+            {
+                IConfigurationSection? sharedConfig = SharedConfigReader.GetConfiguration()?.GetSection("PluginServices");
+                builder.Configuration.Bind("PluginServices", options);
+
+                // If there is a shared configuration, bind it to the options
+                sharedConfig?.Bind(options);
+            });
+        }
+
+        public static void ConfigureHealthCheckService(this IHostApplicationBuilder builder)
+        {
+            builder.Services.AddHttpClient<HealthCheckService>();
+            builder.Services.AddSingleton<HealthCheckService>();
+        }
+
         private static void RegisterClassMaps()
         {
             BsonClassMap.RegisterClassMap<KernelContent>(cm =>

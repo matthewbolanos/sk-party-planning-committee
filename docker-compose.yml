@@ -88,10 +88,10 @@ services:
       speakerservice:
         condition: service_healthy
 
-  homeservice:
+  lightservice:
     build:
       context: ./
-      dockerfile: PluginServices/HomeService/Dockerfile
+      dockerfile: PluginServices/LightService/Dockerfile
     ports:
       - "5001:80"
     healthcheck:
@@ -103,27 +103,12 @@ services:
       mongodb:
         condition: service_healthy
 
-  lightservice:
+  homeservice:
     build:
       context: ./
-      dockerfile: PluginServices/LightService/Dockerfile
+      dockerfile: PluginServices/HomeService/Dockerfile
     ports:
       - "5002:80"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 2s
-      timeout: 5s
-      retries: 10
-    depends_on:
-      mongodb:
-        condition: service_healthy
-
-  sceneservice:
-    build:
-      context: ./
-      dockerfile: PluginServices/SceneService/Dockerfile
-    ports:
-      - "5003:80"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80/health"]
       interval: 2s
@@ -137,6 +122,21 @@ services:
     build:
       context: ./
       dockerfile: PluginServices/SpeakerService/Dockerfile
+    ports:
+      - "5003:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  sceneservice:
+    build:
+      context: ./
+      dockerfile: PluginServices/SceneService/Dockerfile
     ports:
       - "5004:80"
     healthcheck:

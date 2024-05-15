@@ -9,7 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.partyplanning.lightingagent.models.AssistantThreadBase;
 import com.partyplanning.lightingagent.models.AssistantThreadRun;
-import com.partyplanning.lightingagent.services.LightingAgentRunService;
+import com.partyplanning.lightingagent.services.RunService;
 import com.partyplanning.lightingagent.utils.AssistantEventStreamService;
 
 import java.util.concurrent.ExecutorService;
@@ -23,7 +23,7 @@ public class RunController {
     private MongoTemplate mongoTemplate;
 
     @Autowired
-    private LightingAgentRunService runService;
+    private RunService runService;
 
     @Autowired
     private AssistantEventStreamService assistantEventStreamService;

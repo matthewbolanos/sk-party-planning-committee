@@ -16,7 +16,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["app:app", "--reload", "--host", "0.0.0.0", "--port", "7001"],
+      "args": ["app:app", "--reload", "--host", "0.0.0.0", "--port", "8001"],
       "jinja": true,
       "cwd": "${workspaceFolder}/Agents/python/LightingAgent",
       "justMyCode": false,
@@ -45,7 +45,7 @@
       },
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:7101"
+        "ASPNETCORE_URLS": "http://localhost:8101"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
@@ -60,7 +60,7 @@
       "cwd": "${workspaceFolder}/Agents/java/LightingAgent",
       "vmArgs": "--add-opens java.base/java.nio.charset=ALL-UNNAMED",
       "env": {
-          "server.port": "7201"
+          "server.port": "8201"
       }
     },
     {
@@ -82,7 +82,8 @@
         "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
       },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7001"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
@@ -107,7 +108,8 @@
         "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
       },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7002"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
@@ -132,7 +134,8 @@
         "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
       },
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7003"
       },
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
@@ -157,7 +160,8 @@
             "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
         },
         "env": {
-            "ASPNETCORE_ENVIRONMENT": "Development"
+            "ASPNETCORE_ENVIRONMENT": "Development",
+            "ASPNETCORE_URLS": "http://localhost:7004"
         },
         "sourceFileMap": {
             "/Views": "${workspaceFolder}/Views"

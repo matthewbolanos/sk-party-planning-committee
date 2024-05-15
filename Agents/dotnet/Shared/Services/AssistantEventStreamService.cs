@@ -24,6 +24,7 @@ namespace PartyPlanning.Agents.Shared.Services
 
         public IEnumerable<string> CreateMessageEvent(string runId, StreamingChatMessageContent data)
         {
+
             // Check if the type is not OpenAIStreamingChatMessageContent (if so, fail)
             if (data.GetType() != typeof(OpenAIStreamingChatMessageContent))
             {
@@ -41,44 +42,58 @@ namespace PartyPlanning.Agents.Shared.Services
                 yield break;
             }
 
-            // Check if the message is new
-            if (_currentMessage == null)
+            // Ignore empty updates
+            if (streamingChatCompletionsUpdate.ToolCallUpdate == null && streamingChatCompletionsUpdate.ContentUpdate == null)
             {
-                // Create new message object
-                _currentMessage = new AssistantMessageContent()
+                // Check if the message is done and there is text content
+                if (streamingChatCompletionsUpdate.FinishReason != null && _messageBuilder.Length > 0)
                 {
-                    Id = streamingChatCompletionsUpdate.Id,
-                    ThreadId = _currentThreadId,
-                    CreatedAt = DateTime.Now,
-                    Role = AuthorRole.Assistant,
-                    AssistantId = _AgentConfigurationuration.Name,
-                    RunId = runId,
-                    Items = []
-                };
+                    // Update the message content
+                    _currentMessage!.Items = [new TextContent(_messageBuilder.ToString())];
 
-                // Create new message events
-                yield return CreateEvent("thread.message.created", _currentMessage);
-                yield return CreateEvent("thread.message.in_progress", _currentMessage);
+                    // Create done message events
+                    yield return CreateEvent("thread.message.completed", _currentMessage);
+
+                    // Reset the current message
+                    _currentMessage = null;
+
+                    // Reset the message builder
+                    _messageBuilder.Clear();
+                }
+
+                yield break;
             }
-
-            // Add the message delta to the complete message
-            _messageBuilder.Append(data.Content);
-
-            // Create message delta event
-            yield return CreateEvent("thread.message.delta", data);
-
-            // Check if the message is done
-            if (streamingChatCompletionsUpdate.FinishReason != null)
+            
+            if (streamingChatCompletionsUpdate.ContentUpdate != null)
             {
-                // Update the message content
-                _currentMessage.Items = [new TextContent(_messageBuilder.ToString())];
+                // Check if the message is new
+                if (_currentMessage == null)
+                {
+                    // Create new message object
+                    _currentMessage = new AssistantMessageContent()
+                    {
+                        Id = streamingChatCompletionsUpdate.Id,
+                        ThreadId = _currentThreadId,
+                        CreatedAt = DateTime.Now,
+                        Role = AuthorRole.Assistant,
+                        AssistantId = _AgentConfigurationuration.Name,
+                        RunId = runId,
+                        Items = []
+                    };
 
-                // Create done message events
-                yield return CreateEvent("thread.message.completed", _currentMessage);
-                _currentMessage = null;
+                    // Create new message events
+                    yield return CreateEvent("thread.message.created", _currentMessage);
+                    yield return CreateEvent("thread.message.in_progress", _currentMessage);
+                }
+
+                // Add the message delta to the complete message
+                _messageBuilder.Append(data.Content);
+
+                // Create message delta event
+                yield return CreateEvent("thread.message.delta", data);
             }
         }
-
+        
         public string CreateEvent<T>(string eventType, T data)
         {
             string jsonData = JsonSerializer.Serialize(data, options: jsonOptions.Value.JsonSerializerOptions);

@@ -6,9 +6,9 @@ import org.springframework.context.annotation.PropertySource;
 import com.partyplanning.lightingagent.factories.JsonPropertySourceFactory;
 
 @Configuration
-@PropertySource(value = "${openai.config.location}", factory = JsonPropertySourceFactory.class)
+@PropertySource(value = "${shared.config.location}", factory = JsonPropertySourceFactory.class)
 @ConfigurationProperties(prefix = "openai")
-public class OpenAIProperties {
+public class OpenAIConfig {
 
     private String deploymentType;
     private String apiKey;

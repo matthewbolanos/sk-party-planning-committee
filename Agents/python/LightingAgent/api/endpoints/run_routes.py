@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from utilities.assistant_event_stream_utility import AssistantEventStreamService
 from models.assistant_message_content import AssistantMessageContent
 from models.assistant_thread_run import AssistantThreadRun
-from services.lighting_agent_run_service import LightingAgentRunService
+from services.run_service import RunService
 from database_manager import DatabaseManager, get_database_manager
 from starlette.responses import StreamingResponse
 from semantic_kernel.contents import AuthorRole, TextContent
@@ -30,7 +30,7 @@ async def create_run(
     
     new_run = AssistantThreadRun(thread_id=thread_id, created_at=datetime.utcnow())
     streamingUtility = AssistantEventStreamService()
-    run_service = LightingAgentRunService()  # No need to pass db_manager to constructor
+    run_service = RunService()  # No need to pass db_manager to constructor
 
     async def create_event_stream(run: AssistantThreadRun):
         db_manager = DatabaseManager(os.getenv('MONGODB_URL'))

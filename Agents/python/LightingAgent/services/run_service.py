@@ -18,6 +18,7 @@ from semantic_kernel.connectors.openapi_plugin.openapi_function_execution_parame
 )
 from semantic_kernel.connectors.ai.chat_completion_client_base import ChatCompletionClientBase
 from fastapi import Depends
+from services.health_check_service import HealthCheckService
 from models.assistant_message_content import AssistantMessageContent
 from models.config import Config
 from database_manager import DatabaseManager, get_database_manager
@@ -26,7 +27,7 @@ from utilities.assistant_event_stream_utility import AssistantEventStreamService
 from utilities.chat_message_conversion_utility import process_messages
 from semantic_kernel.functions.kernel_arguments import KernelArguments
 
-class LightingAgentRunService:
+class RunService:
     async def execute_run_async(
             self,
             run: AssistantThreadRun,
@@ -39,6 +40,8 @@ class LightingAgentRunService:
             json_data = json.load(file)
             config: Config = Config(**json_data)
         deployment_type, api_key, ai_model_id, deployment_name, endpoint, org_id = config.openai.model_dump().values()
+        plugin_services = config.plugin_services
+        health_check_service = HealthCheckService()
 
         # Create kernel
         kernel: Kernel = Kernel()
@@ -68,12 +71,14 @@ class LightingAgentRunService:
         # Load hooks
 
         # Load the OpenAPI plugins
+        light_service_endpoint = await health_check_service.get_healthy_endpoint(plugin_services['LightService'].endpoints)
+
         kernel.add_plugin_from_openapi(
             plugin_name="light_plugin",
             openapi_document_path="../../../plugins/OpenApiPlugins/LightPlugin.swagger.json",
             execution_settings=OpenAPIFunctionExecutionParameters(
                 http_client=httpx.AsyncClient(verify=False), # Disable SSL verification (for development only
-                server_url_override="http://localhost:5002/",
+                server_url_override=light_service_endpoint,
                 enable_payload_namespacing=True,
             ),
         )
@@ -122,4 +127,4 @@ class LightingAgentRunService:
                 ).to_bson()
             )
 
-run_service = LightingAgentRunService()
+run_service = RunService()

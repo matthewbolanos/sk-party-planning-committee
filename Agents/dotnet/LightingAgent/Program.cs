@@ -12,7 +12,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using PartyPlanning.Agents.Shared.Controllers;
-using Microsoft.SemanticKernel.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +20,8 @@ builder.Configuration.AddUserSecrets<Program>();
 builder.ConfigureMongoDB();
 builder.ConfigureOpenAI();
 builder.ConfigureAgentMetadata();
+builder.ConfigurePluginServices();
+builder.ConfigureHealthCheckService();
 
 // Add chat completion service
 builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
@@ -60,6 +61,9 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
 // Create kernel
 builder.Services.AddTransient((serviceProvider) => {
     Kernel kernel = new(serviceProvider);
+    var pluginServicesConfig = serviceProvider.GetRequiredService<IOptions<PluginServicesConfiguration>>().Value;
+    var lightPluginEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(pluginServicesConfig["LightService"].Endpoints).Result;
+    var scenePluginEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(pluginServicesConfig["SceneService"].Endpoints).Result;
 
     var openApiResourceService = serviceProvider.GetRequiredService<OpenApiResourceService>();
     var lightPluginFile = new MemoryStream(Encoding.UTF8.GetBytes(
@@ -74,7 +78,7 @@ builder.Services.AddTransient((serviceProvider) => {
         stream: lightPluginFile,
         executionParameters: new OpenApiFunctionExecutionParameters()
         {
-            ServerUrlOverride = new Uri("http://localhost:5002/"),
+            ServerUrlOverride = new Uri(lightPluginEndpoint),
             EnablePayloadNamespacing = true
         }
     ).Wait();
@@ -85,7 +89,7 @@ builder.Services.AddTransient((serviceProvider) => {
         stream: scenePluginFile,
         executionParameters: new OpenApiFunctionExecutionParameters()
         {
-            ServerUrlOverride = new Uri("http://localhost:5003/"),
+            ServerUrlOverride = new Uri(scenePluginEndpoint),
             EnablePayloadNamespacing = true
         }
     ).Wait();

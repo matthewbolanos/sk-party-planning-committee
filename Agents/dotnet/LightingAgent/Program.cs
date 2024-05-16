@@ -60,29 +60,6 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
     }
 });
 
-// Create native plugin collection
-builder.Services.AddSingleton<KernelPluginCollection>((serviceProvider)=>{
-    var codeInterpreterConfiguration = serviceProvider.GetRequiredService<IOptions<CodeInterpreterConfiguration>>().Value;
-    var tokenProvider = serviceProvider.GetRequiredService<AzureContainerAppTokenService>();
-
-    KernelPluginCollection pluginCollection = new();
-
-    var settings = new SessionsPythonSettings(
-        sessionId: Guid.NewGuid().ToString(),
-        endpoint: new Uri(codeInterpreterConfiguration.Endpoint));
-
-
-    pluginCollection.AddFromObject(
-        new SessionsPythonPlugin(
-                new (sessionId: Guid.NewGuid().ToString(), endpoint: new Uri(codeInterpreterConfiguration.Endpoint)),
-                serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                tokenProvider.GetTokenAsync,
-                serviceProvider.GetRequiredService<ILoggerFactory>()
-            )
-        );
-
-    return pluginCollection;
-});
 
 // Create kernel
 builder.Services.AddTransient((serviceProvider) => {

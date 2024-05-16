@@ -21,7 +21,7 @@ public class HealthCheckService
             }
         }
 
-        throw new Exception("All endpoints are down.");
+        throw new Exception("All endpoints are down: "+ string.Join(", ", endpoints));
     }
 
     private async Task<bool> IsEndpointHealthyAsync(string endpoint, string healthCheckPath = "/health")

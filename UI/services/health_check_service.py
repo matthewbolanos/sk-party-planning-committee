@@ -1,5 +1,4 @@
 from httpx import AsyncClient
-import httpx
 
 class HealthCheckService:
     client: AsyncClient

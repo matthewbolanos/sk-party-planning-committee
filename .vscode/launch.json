@@ -6,6 +6,7 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/UI/main.py",
+      "cwd": "${workspaceFolder}/UI",
       "console": "integratedTerminal",
       "env": {
         "DEPLOY_ENV": "development"
@@ -58,9 +59,10 @@
       "mainClass": "com.partyplanning.lightingagent.LightingAgentApplication",
       "projectName": "lighting-agent",
       "cwd": "${workspaceFolder}/Agents/java/LightingAgent",
-      "vmArgs": "--add-opens java.base/java.nio.charset=ALL-UNNAMED",
+      "vmArgs": "--add-opens java.base/java.nio.charset=ALL-UNNAMED -Dmanagement.server.port=8201",
       "env": {
-          "server.port": "8201"
+          "server.port": "8201",
+          "MONGO_URI": "mongodb://localhost:27017"
       }
     },
     {

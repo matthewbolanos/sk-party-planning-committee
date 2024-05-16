@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 import httpx
 from openai import AsyncOpenAI
@@ -7,19 +8,33 @@ from textual.app import App, ComposeResult
 from textual.widgets import OptionList, Rule, Markdown
 from textual.widgets.option_list import Option
 from textual.containers import Horizontal, Vertical
+from services.health_check_service import HealthCheckService
+from config.config import Config
 from widgets.chat_history import ChatHistory
 from widgets.message_input import MessageInput
 import webbrowser
 
 class TerminalGui(App):
     CSS_PATH = "style.tcss"
+
+    agent_services = None
+    health_check_service: HealthCheckService = None
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         # Initialize the HTTP async client
         self.http_client = httpx.AsyncClient(verify=False, follow_redirects=True)
-        self.set_client("python")
+        self.health_check_service = HealthCheckService(self.http_client)
+
+        # Load variables from config.json at the root of the solution
+        with open('../config.json') as file:
+            json_data = json.load(file)
+            config: Config = Config(**json_data)
+        self.agent_services = config.agent_services
+
+        # Set the client to Python by default with asyncio
+        asyncio.run(self.set_client("python"))
 
         self.thread = None  # Initialized later in an async method
         self.input_widget: MessageInput = MessageInput(on_message=self.handle_user_input)
@@ -35,32 +50,21 @@ class TerminalGui(App):
         self.option_list.highlighted = self.option_list.get_option_index("python")
 
     @on(OptionList.OptionHighlighted, "#languages")  
-    def change_language(self, event: OptionList.OptionMessage):
-        self.set_client(event.option_id)
+    async def change_language(self, event: OptionList.OptionMessage):
+        await self.set_client(event.option_id)
 
-    
     @on(Markdown.LinkClicked, "Markdown")  
     def go_to_link(self, event: Markdown.LinkClicked):
         # Open the link in the browser
         webbrowser.open(event.href)
 
-    def set_client(self, option_id: str):
-        deploy_env = os.getenv('DEPLOY_ENV', 'development')
+    async def set_client(self, option_id: str):
         if (option_id == "python"):
-            if deploy_env == 'docker':
-                base_url = "http://python-lightingagent/api"
-            else:
-                base_url = "http://localhost:8001/api"
+            base_url = await self.health_check_service.get_healthy_endpoint(self.agent_services['python']['LightingAgent'].endpoints) + "/api"
         elif (option_id == "csharp"):
-            if deploy_env == 'docker':
-                base_url = "http://csharp-lightingagent/api"
-            else:
-                base_url = "http://localhost:8101/api"
+            base_url = await self.health_check_service.get_healthy_endpoint(self.agent_services['csharp']['LightingAgent'].endpoints) + "/api"
         elif (option_id == "java"):
-            if deploy_env == 'docker':
-                base_url = "http://java-lightingagent/api"
-            else:
-                base_url = "http://localhost:8201/api"
+            base_url = await self.health_check_service.get_healthy_endpoint(self.agent_services['java']['LightingAgent'].endpoints, "/actuator/health") + "/api"
 
         self.client = AsyncOpenAI(
             api_key="no-api-key-needed-here", # The API key is managed by the server

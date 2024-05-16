@@ -2,11 +2,11 @@ package com.partyplanning.lightingagent.config;
 
 import java.util.List;
 
-public class PluginServiceConfig {
-    public List<String> endpoints;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public PluginServiceConfig() {
-    }
+public class PluginServiceConfig {
+    @JsonProperty("Endpoints")
+    private List<String> endpoints;
 
     public List<String> getEndpoints() {
         return endpoints;

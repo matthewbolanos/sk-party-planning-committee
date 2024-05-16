@@ -32,8 +32,10 @@ class RunService:
             self,
             run: AssistantThreadRun,
             event_stream_utility: AssistantEventStreamService,
-            db_manager: DatabaseManager
+            db_manager: DatabaseManager,
+            http_client: httpx.AsyncClient
         ):
+        
 
         # Load variables from config.json at the root of the solution
         with open('../../../config.json') as file:
@@ -41,7 +43,7 @@ class RunService:
             config: Config = Config(**json_data)
         deployment_type, api_key, ai_model_id, deployment_name, endpoint, org_id = config.openai.model_dump().values()
         plugin_services = config.plugin_services
-        health_check_service = HealthCheckService()
+        health_check_service = HealthCheckService(http_client)
 
         # Create kernel
         kernel: Kernel = Kernel()
@@ -77,7 +79,7 @@ class RunService:
             plugin_name="light_plugin",
             openapi_document_path="../../../plugins/OpenApiPlugins/LightPlugin.swagger.json",
             execution_settings=OpenAPIFunctionExecutionParameters(
-                http_client=httpx.AsyncClient(verify=False), # Disable SSL verification (for development only
+                http_client=http_client, # Disable SSL verification (for development only
                 server_url_override=light_service_endpoint,
                 enable_payload_namespacing=True,
             ),

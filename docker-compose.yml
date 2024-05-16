@@ -20,6 +20,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - party_planning_committee_network
 
   weaviate:
     command:
@@ -43,6 +45,8 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'none'
       ENABLE_MODULES: 'text2vec-cohere,text2vec-huggingface,text2vec-palm,text2vec-openai,generative-openai,generative-cohere,generative-palm,ref2vec-centroid,reranker-cohere,qna-openai'
       CLUSTER_HOSTNAME: 'node1'
+    networks:
+      - party_planning_committee_network
 
   python-lightingagent:
     build:
@@ -66,6 +70,8 @@ services:
         condition: service_healthy
       speakerservice:
         condition: service_healthy
+    networks:
+      - party_planning_committee_network
 
   csharp-lightingagent:
     build:
@@ -87,6 +93,34 @@ services:
         condition: service_healthy
       speakerservice:
         condition: service_healthy
+    networks:
+      - party_planning_committee_network
+  
+
+  java-lightingagent:
+    build:
+      context: ./
+      dockerfile: Agents/java/LightingAgent/Dockerfile
+    ports:
+      - "6201:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+    environment:
+      MONGO_URI: "mongodb://mongo:27017"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      homeservice:
+        condition: service_healthy
+      lightservice:
+        condition: service_healthy
+      speakerservice:
+        condition: service_healthy
+    networks:
+      - party_planning_committee_network
 
   lightservice:
     build:
@@ -102,6 +136,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+      - party_planning_committee_network
 
   homeservice:
     build:
@@ -117,6 +153,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+      - party_planning_committee_network
 
   speakerservice:
     build:
@@ -132,6 +170,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+      - party_planning_committee_network
 
   sceneservice:
     build:
@@ -147,9 +187,13 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+      - party_planning_committee_network
 
   ui:
-    build: ./UI
+    build:
+      context: ./
+      dockerfile: UI/Dockerfile
     stdin_open: true
     tty: true
     environment:
@@ -159,7 +203,15 @@ services:
         condition: service_healthy
       csharp-lightingagent:
         condition: service_healthy
+      java-lightingagent:
+        condition: service_healthy
+    networks:
+      - party_planning_committee_network
 
 volumes:
   weaviate_data:
   mongo_data:
+
+networks:
+  party_planning_committee_network:
+    driver: bridge

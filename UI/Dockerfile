@@ -3,9 +3,12 @@ FROM python:3.12
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY UI/requirements.txt ./
+COPY config.json ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY ./UI ./UI
+
+WORKDIR /app/UI
 
 CMD [ "python", "./main.py" ]

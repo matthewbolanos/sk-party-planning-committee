@@ -1,14 +1,13 @@
 from datetime import datetime
 import os
 from fastapi import APIRouter, HTTPException, Depends, Response
-from pydantic import BaseModel
+import httpx
+from http_manager import get_http_client
 from utilities.assistant_event_stream_utility import AssistantEventStreamService
-from models.assistant_message_content import AssistantMessageContent
 from models.assistant_thread_run import AssistantThreadRun
 from services.run_service import RunService
 from database_manager import DatabaseManager, get_database_manager
 from starlette.responses import StreamingResponse
-from semantic_kernel.contents import AuthorRole, TextContent
 from bson import ObjectId
 from pymongo.errors import ConnectionFailure
 
@@ -22,7 +21,8 @@ run_router = APIRouter()
 async def create_run(
     thread_id: str, 
     response: Response, 
-    db_manager: DatabaseManager = Depends(get_database_manager)  # Dependency is injected here
+    db_manager: DatabaseManager = Depends(get_database_manager),  # Dependency is injected here
+    http_client: httpx.AsyncClient = Depends(get_http_client)  # Dependency is injected here
 ):
     thread = await db_manager.threads_collection.find_one({"_id": ObjectId(thread_id)})
     if not thread:
@@ -37,7 +37,7 @@ async def create_run(
         await db_manager.connect()  # Explicitly managing connection
         try:
             yield streamingUtility.create_event("thread.run.created", run)
-            async for event in run_service.execute_run_async(run, streamingUtility, db_manager):
+            async for event in run_service.execute_run_async(run, streamingUtility, db_manager, http_client):
                 yield event  # Each event generated here
             yield streamingUtility.create_done_event()
 

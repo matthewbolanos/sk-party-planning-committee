@@ -38,7 +38,8 @@ public class MongoConfig {
 
     @Bean
     public MongoDatabaseFactory mongoDatabaseFactory() {
-        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+        String mongoUri = System.getenv("MONGO_URI");
+        MongoClient mongoClient = MongoClients.create(mongoUri);
         return new SimpleMongoClientDatabaseFactory(mongoClient, "PartyPlanning");
     }
 

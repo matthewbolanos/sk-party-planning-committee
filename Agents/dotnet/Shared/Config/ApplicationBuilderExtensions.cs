@@ -7,6 +7,7 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using PartyPlanning.Agents.Shared.Services;
 
 namespace PartyPlanning.Agents.Shared.Config
 {
@@ -37,6 +38,19 @@ namespace PartyPlanning.Agents.Shared.Config
                 // If there is a shared configuration, bind it to the options
                 sharedConfig?.Bind(options);
             });
+        }
+
+        public static void ConfigureCodeInterpreter(this IHostApplicationBuilder builder)
+        {
+            builder.Services.Configure<CodeInterpreterConfiguration>(options =>
+            {
+                IConfigurationSection? sharedConfig = SharedConfigReader.GetConfiguration()?.GetSection("CodeInterpreter");
+                builder.Configuration.Bind("CodeInterpreter", options);
+
+                // If there is a shared configuration, bind it to the options
+                sharedConfig?.Bind(options);
+            });
+            builder.Services.AddSingleton<AzureContainerAppTokenService>();
         }
 
         public static void ConfigureWeaviate(this IHostApplicationBuilder builder)

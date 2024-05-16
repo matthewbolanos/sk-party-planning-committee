@@ -8,6 +8,7 @@
     <!-- AspNetCore -->
     <PackageVersion Include="Azure.AI.OpenAI" Version="1.0.0-beta.17" />
     <PackageVersion Include="Azure.AI.OpenAI.Assistants" Version="1.0.0-beta.4" />
+    <PackageVersion Include="Azure.Identity" Version="1.11.3" />
     <PackageVersion Include="ColorThief.ImageSharp" Version="1.0.0" />
     <PackageVersion Include="ksemenenko.ColorThief" Version="1.1.1.4" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using PartyPlanning.Agents.Shared.Controllers;
+using Microsoft.SemanticKernel.Plugins.Core.CodeInterpreter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.ConfigureOpenAI();
 builder.ConfigureAgentMetadata();
 builder.ConfigurePluginServices();
 builder.ConfigureHealthCheckService();
+builder.ConfigureCodeInterpreter();
 
 // Add chat completion service
 builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
@@ -56,6 +58,30 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
         default:
             throw new ArgumentException("Invalid deployment type");
     }
+});
+
+// Create native plugin collection
+builder.Services.AddSingleton<KernelPluginCollection>((serviceProvider)=>{
+    var codeInterpreterConfiguration = serviceProvider.GetRequiredService<IOptions<CodeInterpreterConfiguration>>().Value;
+    var tokenProvider = serviceProvider.GetRequiredService<AzureContainerAppTokenService>();
+
+    KernelPluginCollection pluginCollection = new();
+
+    var settings = new SessionsPythonSettings(
+        sessionId: Guid.NewGuid().ToString(),
+        endpoint: new Uri(codeInterpreterConfiguration.Endpoint));
+
+
+    pluginCollection.AddFromObject(
+        new SessionsPythonPlugin(
+                new (sessionId: Guid.NewGuid().ToString(), endpoint: new Uri(codeInterpreterConfiguration.Endpoint)),
+                serviceProvider.GetRequiredService<IHttpClientFactory>(),
+                tokenProvider.GetTokenAsync,
+                serviceProvider.GetRequiredService<ILoggerFactory>()
+            )
+        );
+
+    return pluginCollection;
 });
 
 // Create kernel

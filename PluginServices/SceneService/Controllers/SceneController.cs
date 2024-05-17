@@ -38,7 +38,7 @@ namespace SceneService.Controllers
                 );
                 var distance = matches.Value.Item2;
 
-                if (distance < 0.1)
+                if (distance < 0.3)
                 {
                     // Return the scene
                     var metadata = matches.Value.Item1.Metadata;

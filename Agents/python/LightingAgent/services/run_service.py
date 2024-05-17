@@ -97,7 +97,7 @@ class RunService:
 
         # Invoke the chat completion service
         chatCompletion: ChatCompletionClientBase = kernel.get_service(type=ChatCompletionClientBase)
-        results = chatCompletion.complete_chat_stream(
+        results = chatCompletion.get_streaming_chat_message_contents(
             chat_history=history,
             settings=OpenAIChatPromptExecutionSettings(
                 function_call_behavior=FunctionCallBehavior.AutoInvokeKernelFunctions()

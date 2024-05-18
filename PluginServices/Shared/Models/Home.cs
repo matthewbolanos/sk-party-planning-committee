@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers
+namespace PartyPlanning.PluginServices.Shared.Models
 {
     /// <summary>
     /// Represents a home with multiple rooms.

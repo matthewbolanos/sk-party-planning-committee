@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="../../../config.json" />
+    <EmbeddedResource Include="../../../PythonInterpreter/**/*.py" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Identity" />

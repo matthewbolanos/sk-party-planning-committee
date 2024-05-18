@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
+namespace PartyPlanning.PluginServices.Shared.Models;
 
 /// <summary>
 /// Represents a room with multiple smart devices.

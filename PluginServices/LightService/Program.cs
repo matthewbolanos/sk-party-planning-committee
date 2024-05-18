@@ -2,10 +2,12 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using MongoDB.Driver;
+using PartyPlanning.PluginServices.LightService.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Register services
+builder.ConfigureHueServices();
 builder.Services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(builder.Configuration.GetConnectionString("MongoDb")));
 builder.Services.AddSingleton(provider => provider.GetRequiredService<IMongoClient>().GetDatabase("PartyPlanning"));
 builder.Services.AddControllers();
@@ -34,6 +36,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>

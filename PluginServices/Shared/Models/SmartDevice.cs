@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers
+namespace PartyPlanning.PluginServices.Shared.Models
 {
     ///<summary>
     /// Represents an abstract smart device that can be inherited by other devices.

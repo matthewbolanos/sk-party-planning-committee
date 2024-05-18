@@ -1,4 +1,4 @@
-namespace PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers
+namespace PartyPlanning.PluginServices.Shared.Models
 {
     /// <summary>
     /// Represents a speaker with various properties.

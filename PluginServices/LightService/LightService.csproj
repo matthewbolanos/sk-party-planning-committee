@@ -13,6 +13,8 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="MongoDB.Driver" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Q42.HueApi" />
+    <PackageReference Include="Q42.HueApi.ColorConverters"  />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,4 @@
-using Shared.Enums;
-
-namespace PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers
+namespace PartyPlanning.PluginServices.Shared.Models
 {
     /// <summary>
     /// Represents a light with various properties.
@@ -20,7 +18,7 @@ namespace PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers
         /// <summary>
         /// The brightness level of the light.
         /// </summary>
-        public Brightness Brightness { get; private set; } = Brightness.Medium;
+        public byte Brightness { get; private set; } = 255;
 
         /// <summary>
         /// Changes the state of the light.
@@ -32,7 +30,7 @@ namespace PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers
         public void ChangeState(
             bool? isOn,
             string? hexColor,
-            Brightness? brightness,
+            byte? brightness,
             int? fadeDurationInMilliseconds)
         {
             IsOn = isOn ?? IsOn;

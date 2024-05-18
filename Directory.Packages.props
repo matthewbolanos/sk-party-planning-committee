@@ -20,6 +20,8 @@
     <PackageVersion Include="Microsoft.SemanticKernel.Connectors.Weaviate" Version="1.11.1-alpha" />
     <PackageVersion Include="Microsoft.SemanticKernel.Plugins.OpenApi" Version="1.11.1-alpha" />
     <PackageVersion Include="Microsoft.SemanticKernel.Plugins.OpenApi.Extensions" Version="1.11.1-alpha" />
+    <PackageVersion Include="Q42.HueApi" Version="3.23.0" />
+    <PackageVersion Include="Q42.HueApi.ColorConverters" Version="3.23.0" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.4" />
     <PackageVersion Include="SkiaSharp" Version="3.0.0-preview.3.1" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.4.0" />

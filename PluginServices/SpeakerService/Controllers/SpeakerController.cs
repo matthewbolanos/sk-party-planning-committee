@@ -1,8 +1,8 @@
-using PartyPlanning.Agents.PartyPlanning.Agents.Shared.Serializers;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using SpeakerService.Models;
+using PartyPlanning.PluginServices.Shared.Models;
 
 namespace SpeakerService.Controllers
 {

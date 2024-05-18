@@ -31,7 +31,7 @@ namespace PartyPlanning.Agents.Shared.Serializers
 
         public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, FunctionResultContent value)
         {
-            // try to decode value.Result to get "content"
+            // try to decode value.Result to get "content" from OpenAPI plugins
             string result = (string)value.Result!;
             if (value.Result != null)
             {
@@ -46,10 +46,8 @@ namespace PartyPlanning.Agents.Shared.Serializers
                         result = content!;
                     }
                 }
-                catch (JsonException)
-                {
-                    // ignore
-                }
+                catch (JsonException) {}
+                catch (KeyNotFoundException) {}
             }
 
             var doc = new BsonDocument

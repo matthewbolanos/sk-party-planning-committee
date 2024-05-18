@@ -6,6 +6,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text;
 using Azure.AI.OpenAI;
 using System.Text.Json;
+using PartyPlanning.Agents.Plugins.PythonInterpreter;
 
 namespace PartyPlanning.Agents.Shared.Services
 {
@@ -20,7 +21,8 @@ namespace PartyPlanning.Agents.Shared.Services
         IMongoDatabase database,
         Kernel kernel,
         IChatCompletionService chatCompletionService,
-        AssistantEventStreamService assistantEventStreamService
+        AssistantEventStreamService assistantEventStreamService, 
+        PythonInterpreter pythonInterpreter
     )
     {
         private readonly IMongoCollection<AssistantMessageContent> _messagesCollection = database.GetCollection<AssistantMessageContent>("Messages");
@@ -35,7 +37,25 @@ namespace PartyPlanning.Agents.Shared.Services
         {
             // Load all the messages (chat history) from MongoDB using the thread ID and sort them by creation date
             var messages = await _messagesCollection.Find(m => m.ThreadId == run.ThreadId).SortBy(m => m.CreatedAt).ToListAsync();
-            ChatHistory chatHistory = new("If the user asks what language you've been written, reply to the user that you've been built with C#; otherwise have a nice chat! As an fyi, the current user is a developing you, so be forthcoming with any of the underlying tool calls your making in case they ask so they can debug.");
+            ChatHistory chatHistory = new($"""
+                If the user asks what language you've been written, reply to the user that you've been built with C#; otherwise have a nice chat!
+                
+                # Python tool
+                Always use the Python tool to call functions if you need to control when and how long an operation should take place.
+                If you don't use the Python tool, you will invoke functions in the wrong order or at the wrong time.
+
+                ## Available tools in the Python interpreter
+                Below are mocks of the available tools in the Python interpreter:
+
+                ```python
+                {pythonInterpreter.GenerateMockPluginCodeForKernel(kernel)}
+                ```
+
+                ## Importing libraries
+                You can import these tools with `from functions import *`
+
+                The Python container cannot make http requests, but you don't have to worry about any other limitations.
+                """);
             foreach (var message in messages)
             {
                 chatHistory.Add(message);

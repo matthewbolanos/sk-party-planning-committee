@@ -11,7 +11,7 @@ namespace PartyPlanning.Agents.Shared.Config
             var resources = typeof(SharedConfigReader).Assembly.GetManifestResourceNames();
 
             var resourceStream = typeof(SharedConfigReader).Assembly
-                .GetManifestResourceStream("PartyPlanning.Agents.config.json");
+                .GetManifestResourceStream("PartyPlanning.Agents.Shared.config.json");
 
             // Check if the resource stream is null
             if (resourceStream == null)

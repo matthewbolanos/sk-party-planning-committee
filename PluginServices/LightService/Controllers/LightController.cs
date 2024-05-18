@@ -22,6 +22,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         /// </summary>
         /// <returns>Returns the current state of the light and its 6 character long ID for other API requests</returns>
         [HttpGet(Name="get_all_lights")]
+        [ProducesResponseType(typeof(IEnumerable<LightStateModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLightsAsync()
         {   
             // Get the list of lights from the bridge
@@ -47,6 +48,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         /// <param name="id">The ID of the light from the get_all_lights tool.</param>
         /// <returns>The requested light or a 404 error if not found.</returns>
         [HttpGet("{id}", Name="get_light")]
+        [ProducesResponseType(typeof(LightStateModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLightAsync(string id)
         {
             // Remove prefix from the ID
@@ -72,6 +74,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         /// <param name="changeStateRequest">The new state of the light and change parameters.</param>
         /// <returns>The updated light or a 404 error if not found.</returns>
         [HttpPost("{id}", Name="change_light_state")]
+        [ProducesResponseType(typeof(LightStateModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> ChangeLightStateAsync(string id, ChangeStateRequest changeStateRequest)
         {
             // Remove prefix from the ID

@@ -3,12 +3,12 @@
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace Microsoft.SemanticKernel.Plugins.Core.CodeInterpreter;
+namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
 
 /// <summary>
 /// Settings for a Python Sessions Plugin.
 /// </summary>
-public class SessionsPythonSettings
+public class PythonInterpreterSettings
 {
     /// <summary>
     /// Determines if the input should be sanitized.
@@ -44,15 +44,15 @@ public class SessionsPythonSettings
     /// Timeout in seconds for the code execution.
     /// </summary>
     [JsonPropertyName("timeoutInSeconds")]
-    public int TimeoutInSeconds { get; set; } = 100;
+    public int TimeoutInSeconds { get; set; } = 10;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SessionsPythonSettings"/> class.
+    /// Initializes a new instance of the <see cref="PythonInterpreterSettings"/> class.
     /// </summary>
     /// <param name="sessionId">Session identifier.</param>
     /// <param name="endpoint">Azure Container Apps Endpoint.</param>
     [JsonConstructor]
-    public SessionsPythonSettings(string sessionId, Uri endpoint)
+    public PythonInterpreterSettings(string sessionId, Uri endpoint)
     {
         this.SessionId = sessionId;
         this.Endpoint = endpoint;

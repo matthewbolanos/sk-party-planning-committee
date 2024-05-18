@@ -60,35 +60,40 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
     }
 });
 
-// Create native plugin collection
-builder.Services.AddSingleton<KernelPluginCollection>((serviceProvider)=>{
+builder.Services.AddSingleton((serviceProvider)=> {
     var PythonInterpreterConfiguration = serviceProvider.GetRequiredService<IOptions<PythonInterpreterConfiguration>>().Value;
     var tokenProvider = serviceProvider.GetRequiredService<AzureContainerAppTokenService>();
-
-    KernelPluginCollection pluginCollection = new();
 
     var settings = new PythonInterpreterSettings(
         sessionId: Guid.NewGuid().ToString(),
         endpoint: new Uri(PythonInterpreterConfiguration.Endpoint));
+    
+    return new PythonInterpreter(
+        new (sessionId: Guid.NewGuid().ToString(), endpoint: new Uri(PythonInterpreterConfiguration.Endpoint)),
+            serviceProvider.GetRequiredService<IHttpClientFactory>(),
+            tokenProvider.GetTokenAsync,
+            serviceProvider.GetRequiredService<ILoggerFactory>()
+    );
+});
 
-    pluginCollection.AddFromObject(
-        new PythonInterpreter(
-                new (sessionId: Guid.NewGuid().ToString(), endpoint: new Uri(PythonInterpreterConfiguration.Endpoint)),
-                serviceProvider.GetRequiredService<IHttpClientFactory>(),
-                tokenProvider.GetTokenAsync,
-                serviceProvider.GetRequiredService<ILoggerFactory>()
-            )
-        );
+// Create native plugin collection
+builder.Services.AddSingleton((serviceProvider)=>{
+    var pythonInterpreter = serviceProvider.GetRequiredService<PythonInterpreter>();
+
+    KernelPluginCollection pluginCollection = [];
+    pluginCollection.AddFromObject(pythonInterpreter, pluginName: "python");
 
     return pluginCollection;
 });
 
 // Create kernel
 builder.Services.AddTransient((serviceProvider) => {
-    Kernel kernel = new(serviceProvider);
     var pluginServicesConfig = serviceProvider.GetRequiredService<IOptions<PluginServicesConfiguration>>().Value;
     var lightPluginEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(pluginServicesConfig["LightService"].Endpoints).Result;
     var scenePluginEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(pluginServicesConfig["SceneService"].Endpoints).Result;
+    var pluginCollection = serviceProvider.GetRequiredService<KernelPluginCollection>();
+
+    Kernel kernel = new(serviceProvider, pluginCollection);
 
     var openApiResourceService = serviceProvider.GetRequiredService<OpenApiResourceService>();
     var lightPluginFile = new MemoryStream(Encoding.UTF8.GetBytes(

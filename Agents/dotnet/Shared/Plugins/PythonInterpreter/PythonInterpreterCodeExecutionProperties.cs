@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved.
 
 using System.Text.Json.Serialization;
-using static Microsoft.SemanticKernel.Plugins.Core.CodeInterpreter.SessionsPythonSettings;
+using static PartyPlanning.Agents.Plugins.PythonInterpreter.PythonInterpreterSettings;
 
-namespace Microsoft.SemanticKernel.Plugins.Core.CodeInterpreter;
+namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
 
-internal sealed class SessionsPythonCodeExecutionProperties
+internal sealed class PythonInterpreterCodeExecutionProperties
 {
     /// <summary>
     /// The session identifier.
@@ -29,7 +29,7 @@ internal sealed class SessionsPythonCodeExecutionProperties
     /// Timeout in seconds for the code execution.
     /// </summary>
     [JsonPropertyName("timeoutInSeconds")]
-    public int TimeoutInSeconds { get; } = 100;
+    public int TimeoutInSeconds { get; } = 10;
 
     /// <summary>
     /// The Python code to execute.
@@ -37,7 +37,7 @@ internal sealed class SessionsPythonCodeExecutionProperties
     [JsonPropertyName("pythonCode")]
     public string? PythonCode { get; }
 
-    public SessionsPythonCodeExecutionProperties(SessionsPythonSettings settings, string pythonCode)
+    public PythonInterpreterCodeExecutionProperties(PythonInterpreterSettings settings, string pythonCode)
     {
         this.Identifier = settings.SessionId;
         this.PythonCode = pythonCode;
@@ -46,3 +46,4 @@ internal sealed class SessionsPythonCodeExecutionProperties
         this.CodeExecutionType = settings.CodeExecutionType;
     }
 }
+

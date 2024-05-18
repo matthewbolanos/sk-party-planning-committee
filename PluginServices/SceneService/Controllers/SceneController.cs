@@ -24,6 +24,7 @@ namespace SceneService.Controllers
         /// <param name="sceneRequest">The details about the scene to generate</param>
         /// <returns>Returns a list of colors for a scene</returns>
         [HttpPost(Name="generate_scene_pallette")]
+        [ProducesResponseType(typeof(ScenePallette), StatusCodes.Status200OK)]
         public async Task<IActionResult> GenerateScenePallette([FromBody, Required] SceneRequest sceneRequest)
         {
             string completePrompt = $"{sceneRequest.ThreeWordDescription}{(string.IsNullOrEmpty(sceneRequest.RecommendedColors) ?"" : $"; {sceneRequest.RecommendedColors}")}";

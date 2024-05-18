@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "Light API",
+        "title": "Scene API",
         "version": "v1"
     },
     "paths": {

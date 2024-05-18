@@ -89,7 +89,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddLogging((loggingBuilder) => {loggingBuilder.AddDebug().AddConsole();});
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Light API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Scene API", Version = "v1" });
     c.UseInlineDefinitionsForEnums();
 
     // Include XML comments
@@ -120,7 +120,7 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Light API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Scene API v1");
     c.RoutePrefix = string.Empty; // Set Swagger UI at the root
 });
 app.UseHealthChecks("/health");

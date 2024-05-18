@@ -131,7 +131,7 @@ builder.Services.AddLogging((loggingBuilder) => {loggingBuilder.AddDebug().AddCo
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Light API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lighting Agent API", Version = "v1" });
     c.UseInlineDefinitionsForEnums();
     c.EnableAnnotations();
 
@@ -154,7 +154,7 @@ app.UseHealthChecks("/health");
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Light API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lighting Agent API v1");
     c.RoutePrefix = string.Empty; // Set Swagger UI at the root
 });
 

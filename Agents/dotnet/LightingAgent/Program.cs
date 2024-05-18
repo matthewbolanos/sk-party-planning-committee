@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using PartyPlanning.Agents.Shared.Controllers;
-using Microsoft.SemanticKernel.Plugins.Core.CodeInterpreter;
+using PartyPlanning.Agents.Plugins.PythonInterpreter;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +23,7 @@ builder.ConfigureOpenAI();
 builder.ConfigureAgentMetadata();
 builder.ConfigurePluginServices();
 builder.ConfigureHealthCheckService();
-builder.ConfigureCodeInterpreter();
+builder.ConfigurePythonInterpreter();
 
 // Add chat completion service
 builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
@@ -60,6 +60,28 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
     }
 });
 
+// Create native plugin collection
+builder.Services.AddSingleton<KernelPluginCollection>((serviceProvider)=>{
+    var PythonInterpreterConfiguration = serviceProvider.GetRequiredService<IOptions<PythonInterpreterConfiguration>>().Value;
+    var tokenProvider = serviceProvider.GetRequiredService<AzureContainerAppTokenService>();
+
+    KernelPluginCollection pluginCollection = new();
+
+    var settings = new PythonInterpreterSettings(
+        sessionId: Guid.NewGuid().ToString(),
+        endpoint: new Uri(PythonInterpreterConfiguration.Endpoint));
+
+    pluginCollection.AddFromObject(
+        new PythonInterpreter(
+                new (sessionId: Guid.NewGuid().ToString(), endpoint: new Uri(PythonInterpreterConfiguration.Endpoint)),
+                serviceProvider.GetRequiredService<IHttpClientFactory>(),
+                tokenProvider.GetTokenAsync,
+                serviceProvider.GetRequiredService<ILoggerFactory>()
+            )
+        );
+
+    return pluginCollection;
+});
 
 // Create kernel
 builder.Services.AddTransient((serviceProvider) => {

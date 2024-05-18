@@ -31,6 +31,27 @@ namespace PartyPlanning.Agents.Shared.Serializers
 
         public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, FunctionResultContent value)
         {
+            // try to decode value.Result to get "content"
+            string result = (string)value.Result!;
+            if (value.Result != null)
+            {
+                try
+                {
+                    var jsonDocument = JsonDocument.Parse((string)value.Result!);
+                    var rootElement = jsonDocument.RootElement;
+
+                    if (rootElement.ValueKind == JsonValueKind.Object)
+                    {
+                        var content = rootElement.GetProperty("Content").GetString();
+                        result = content!;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // ignore
+                }
+            }
+
             var doc = new BsonDocument
             {
                 { "type", "functionResult" },
@@ -38,7 +59,7 @@ namespace PartyPlanning.Agents.Shared.Serializers
                     { "pluginName", value.PluginName },
                     { "functionName", value.FunctionName },
                     { "id", value.Id },
-                    { "result", (string)value.Result! }
+                    { "result", result }
                 } }
             };
 

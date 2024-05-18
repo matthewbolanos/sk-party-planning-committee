@@ -36,7 +36,7 @@ public class AssistantMessageContentReadConverter implements Converter<Document,
 
     @Override
     public AssistantMessageContent convert(Document source) throws RuntimeException{
-        AuthorRoleReaderConverter roleConverter = new AuthorRoleReaderConverter();
+        AuthorRoleReadConverter roleConverter = new AuthorRoleReadConverter();
         AssistantMessageContent messageContent;
         var items = new ArrayList<KernelContent<?>>();
 
@@ -66,10 +66,10 @@ public class AssistantMessageContentReadConverter implements Converter<Document,
 
                     KernelFunctionArguments arguments = KernelFunctionArguments.builder().build();
 
-                    JsonNode jsonToolCallArguments;
                     ObjectMapper mapper = new ObjectMapper();
                     try {
-                        jsonToolCallArguments = mapper.readTree(functionCallDocument.getString("arguments"));
+                        // Convert document into JsonNode
+                        JsonNode jsonToolCallArguments = mapper.readTree(functionCallDocument.toJson());
 
                         jsonToolCallArguments.fields().forEachRemaining(
                         entry -> {
@@ -84,8 +84,6 @@ public class AssistantMessageContentReadConverter implements Converter<Document,
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException("Error parsing JSON", e);
                     }
-
-                    
                     
                     items.add(new FunctionCallContent<Object>(
                         pluginNameValue,

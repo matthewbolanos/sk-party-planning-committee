@@ -9,16 +9,15 @@ import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.partyplanning.lightingagent.converters.AssistantMessageContentReadConverter;
 import com.partyplanning.lightingagent.converters.AssistantMessageContentWriteConverter;
-import com.partyplanning.lightingagent.converters.AuthorRoleReaderConverter;
-import com.partyplanning.lightingagent.converters.AuthorRoleWriterConverter;
+import com.partyplanning.lightingagent.converters.AuthorRoleReadConverter;
+import com.partyplanning.lightingagent.converters.AuthorRoleWriteConverter;
+import com.partyplanning.lightingagent.converters.KernelFunctionArgumentsWriteConverter;
 
 import org.springframework.context.annotation.Configuration;
 import java.util.Arrays;
@@ -46,10 +45,10 @@ public class MongoConfig {
     @Bean
     public MongoCustomConversions customConversions() {
         return new MongoCustomConversions(Arrays.asList(
-            new AuthorRoleReaderConverter(),
-            new AuthorRoleWriterConverter(),
+            new AuthorRoleReadConverter(),
+            new AuthorRoleWriteConverter(),
             new AssistantMessageContentReadConverter(),
-            new AssistantMessageContentWriteConverter()
+            new AssistantMessageContentWriteConverter(new KernelFunctionArgumentsWriteConverter())
         ));
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.data.convert.WritingConverter;
 import com.microsoft.semantickernel.services.chatcompletion.AuthorRole;
 
 @WritingConverter
-public class AuthorRoleWriterConverter implements Converter<AuthorRole, String> {
+public class AuthorRoleWriteConverter implements Converter<AuthorRole, String> {
     public String convert(AuthorRole source) {
         return source.toString();
     }

@@ -1,18 +1,27 @@
 package com.partyplanning.lightingagent.converters;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.WritingConverter;
 import com.partyplanning.lightingagent.models.AssistantMessageContent;
+import com.partyplanning.lightingagent.models.FunctionCallContent;
+import com.partyplanning.lightingagent.models.FunctionResultContent;
 import com.microsoft.semantickernel.services.KernelContent;
 import com.microsoft.semantickernel.services.textcompletion.TextContent;
 
 @WritingConverter
 public class AssistantMessageContentWriteConverter implements Converter<AssistantMessageContent, Document> {
+
+    private final KernelFunctionArgumentsWriteConverter kernelFunctionArgumentsWriteConverter;
+
+    public AssistantMessageContentWriteConverter(KernelFunctionArgumentsWriteConverter kernelFunctionArgumentsWriteConverter) {
+        this.kernelFunctionArgumentsWriteConverter = kernelFunctionArgumentsWriteConverter;
+    }
+
     @Override
     public Document convert(AssistantMessageContent source) {
         Document doc = new Document();
@@ -32,13 +41,32 @@ public class AssistantMessageContentWriteConverter implements Converter<Assistan
             if (item instanceof TextContent) {
                 TextContent textContent = (TextContent) item;
                 itemDoc.put("type", "text");
-                itemDoc.put("text", new Document(new HashMap<>(){
-                    {
-                        put("value", textContent.getContent());
-                        put("annotations", new ArrayList<>());
-                    }
-                }));
+                Document textDocument = new Document();
+                textDocument.put("value", textContent.getContent());
+                textDocument.put("annotations", new ArrayList<>());
+                itemDoc.put("text", textDocument);
+            } else if (item instanceof FunctionCallContent) {
+                FunctionCallContent<?> functionCallContent = (FunctionCallContent<?>) item;
+                Document argumentsDocument = kernelFunctionArgumentsWriteConverter.convert(functionCallContent.getArguments());
+            
+                itemDoc.put("type", "functionCall");
+                Document functionCallDocument = new Document();
+                functionCallDocument.put("id", functionCallContent.getId());
+                functionCallDocument.put("pluginName", functionCallContent.getPluginName());
+                functionCallDocument.put("functionName", functionCallContent.getFunctionName());
+                functionCallDocument.put("arguments", argumentsDocument);
+                itemDoc.put("functionCall", functionCallDocument);
+            } else if (item instanceof FunctionResultContent) {
+                FunctionResultContent<?> functionResultContent = (FunctionResultContent<?>) item;
+                itemDoc.put("type", "functionResult");
+                Document functionResultDocument = new Document();
+                functionResultDocument.put("id", functionResultContent.getId());
+                functionResultDocument.put("pluginName", functionResultContent.getPluginName());
+                functionResultDocument.put("functionName", functionResultContent.getFunctionName());
+                functionResultDocument.put("result", functionResultContent.getContent());
+                itemDoc.put("functionResult", functionResultDocument);
             }
+            
 
             items.add(itemDoc);
         }

@@ -5,7 +5,7 @@ import org.springframework.data.convert.ReadingConverter;
 import com.microsoft.semantickernel.services.chatcompletion.AuthorRole;
 
 @ReadingConverter
-public class AuthorRoleReaderConverter implements Converter<String, AuthorRole> {
+public class AuthorRoleReadConverter implements Converter<String, AuthorRole> {
     public AuthorRole convert(String source) {
         switch(source) {
             case "assistant":

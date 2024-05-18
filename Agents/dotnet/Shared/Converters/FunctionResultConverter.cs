@@ -60,8 +60,7 @@ public class FunctionResultContentConverter : JsonConverter<FunctionResultConten
         writer.WriteString("pluginName", value.PluginName);
         writer.WriteString("functionName", value.FunctionName);
         writer.WriteString("id", value.Id);
-        writer.WritePropertyName("result");
-        JsonSerializer.Serialize(writer, value.Result, options);
+        writer.WriteString("result", (string)value.Result!);
         writer.WriteEndObject();
         writer.WriteEndObject();
     }

@@ -25,7 +25,7 @@ public class AssistantMessageContentInputModelDeserializer extends StdDeserializ
     @Override
     public AssistantMessageContentInputModel deserialize(JsonParser jp, DeserializationContext ctxt) 
         throws IOException, JsonProcessingException {
-        AuthorRoleReaderConverter roleConverter = new AuthorRoleReaderConverter();
+        AuthorRoleReadConverter roleConverter = new AuthorRoleReadConverter();
         
         JsonNode node = jp.getCodec().readTree(jp);
         AssistantMessageContentInputModel content = new AssistantMessageContentInputModel();

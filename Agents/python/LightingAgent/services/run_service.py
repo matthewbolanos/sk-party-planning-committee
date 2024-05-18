@@ -90,7 +90,7 @@ class RunService:
             {"thread_id": run.thread_id}
         ).sort("created_at").to_list(None)
         history = ChatHistory(
-            system_message="If the user asks what language you've been written, reply to the user that you've been built with Python; otherwise have a nice chat!",
+            system_message="If the user asks what language you've been written, reply to the user that you've been built with Python; otherwise have a nice chat! As an fyi, the current user is a developing you, so be forthcoming with any of the underlying tool calls your making in case they ask so they can debug.",
             messages=[AssistantMessageContent.from_bson(message) for message in messages]
         )
         messageCount = len(messages);

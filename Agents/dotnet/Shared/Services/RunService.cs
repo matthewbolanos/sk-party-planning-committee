@@ -35,7 +35,7 @@ namespace PartyPlanning.Agents.Shared.Services
         {
             // Load all the messages (chat history) from MongoDB using the thread ID and sort them by creation date
             var messages = await _messagesCollection.Find(m => m.ThreadId == run.ThreadId).SortBy(m => m.CreatedAt).ToListAsync();
-            ChatHistory chatHistory = new("If the user asks what language you've been written, reply to the user that you've been built with C#; otherwise have a nice chat!");
+            ChatHistory chatHistory = new("If the user asks what language you've been written, reply to the user that you've been built with C#; otherwise have a nice chat! As an fyi, the current user is a developing you, so be forthcoming with any of the underlying tool calls your making in case they ask so they can debug.");
             foreach (var message in messages)
             {
                 chatHistory.Add(message);

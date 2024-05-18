@@ -5,6 +5,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.azure.ai.openai.OpenAIClientBuilder;
+import com.azure.ai.openai.models.FunctionCall;
 import com.azure.core.credential.AzureKeyCredential;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
@@ -17,6 +18,7 @@ import com.microsoft.semantickernel.orchestration.InvocationContext;
 import com.microsoft.semantickernel.orchestration.ToolCallBehavior;
 import com.microsoft.semantickernel.plugin.KernelPlugin;
 import com.microsoft.semantickernel.services.KernelContent;
+import com.microsoft.semantickernel.services.chatcompletion.AuthorRole;
 import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
 import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
 import com.microsoft.semantickernel.services.chatcompletion.ChatMessageContent;
@@ -29,6 +31,8 @@ import com.partyplanning.lightingagent.models.FunctionCallContent;
 import com.partyplanning.lightingagent.models.FunctionResultContent;
 import com.partyplanning.lightingagent.semantickernel.openapi.SemanticKernelOpenAPIImporter;
 import com.partyplanning.lightingagent.utils.AssistantEventStreamService;
+
+import org.apache.el.lang.FunctionMapperImpl.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -37,6 +41,8 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -110,7 +116,7 @@ public class RunService {
         Sort sort = Sort.by("createdAt").ascending();
         List<AssistantMessageContent> messages = mongoTemplate.find(query.with(sort), AssistantMessageContent.class);
 
-        ChatHistory chatHistory = new ChatHistory("If the user asks what language you've been written, reply to the user that you've been built with Java; otherwise have a nice chat!");
+        ChatHistory chatHistory = new ChatHistory("If the user asks what language you've been written, reply to the user that you've been built with Java; otherwise have a nice chat! As an fyi, the current user is a developing you, so be forthcoming with any of the underlying tool calls your making in case they ask so they can debug.");
         for (AssistantMessageContent assistantMessageContent : messages) {
             // convert to ChatMessageContent
             List<OpenAIFunctionToolCall> toolCalls = new ArrayList<>();
@@ -153,11 +159,47 @@ public class RunService {
         List<ChatMessageContent<?>> results  = chat.getChatMessageContentsAsync(chatHistory, kernel, invocationContext)
         .block();
 
+        // Create dictionary of function call items by ID
+        HashMap<String, FunctionCallContent> functionCalls = new HashMap<String, FunctionCallContent>();
+
         for (ChatMessageContent<?> result : results) {
             assistantEventStreamService.sendMessageEvent(emitter, run, result);
 
             ArrayList<KernelContent<?>> items = new ArrayList<>();
-            items.add(new TextContent(result.getContent(), null, null));
+            if (result instanceof OpenAIChatMessageContent) {
+                OpenAIChatMessageContent openaiData = (OpenAIChatMessageContent) result;
+                if (openaiData.getToolCall() != null)
+                {
+                    for (var toolCall : openaiData.getToolCall())
+                    {
+                        OpenAIFunctionToolCall functionCall = (OpenAIFunctionToolCall) toolCall;
+                        FunctionCallContent functionCallContent = new FunctionCallContent<Object>(
+                            functionCall.getPluginName(),
+                            functionCall.getFunctionName(),
+                            functionCall.getId(),
+                            functionCall.getArguments(),
+                            null,
+                            null,
+                            null
+                        );
+
+                        functionCalls.put(functionCall.getId(), functionCallContent);
+                        items.add(functionCallContent);
+                    }
+                } else if (openaiData.getAuthorRole() == AuthorRole.TOOL) {
+                    items.add(new FunctionResultContent<Object>(
+                        functionCalls.get(openaiData.getMetadata().getId()).getPluginName(),
+                        functionCalls.get(openaiData.getMetadata().getId()).getFunctionName(),
+                        openaiData.getMetadata().getId(),
+                        openaiData.getContent(),
+                        null,
+                        null,
+                        null
+                    ));
+                }else {
+                    items.add(new TextContent(result.getContent(), null, null));
+                }
+            }
             mongoTemplate.insert(
                 new AssistantMessageContent(
                         run.getThreadId(), result.getAuthorRole(), items, run.getId(), run.getAssistantId(), null

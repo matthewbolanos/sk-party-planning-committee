@@ -7,9 +7,13 @@ import org.springframework.data.convert.ReadingConverter;
 import com.partyplanning.lightingagent.models.AssistantMessageContent;
 import com.partyplanning.lightingagent.models.FunctionCallContent;
 import com.partyplanning.lightingagent.models.FunctionResultContent;
+import com.azure.json.implementation.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ContainerNode;
+import com.microsoft.semantickernel.contextvariables.ContextVariable;
 import com.microsoft.semantickernel.semanticfunctions.KernelFunctionArguments;
 import com.microsoft.semantickernel.services.KernelContent;
 import com.microsoft.semantickernel.services.textcompletion.TextContent;
@@ -31,7 +35,7 @@ public class AssistantMessageContentReadConverter implements Converter<Document,
     }
 
     @Override
-    public AssistantMessageContent convert(Document source) {
+    public AssistantMessageContent convert(Document source) throws RuntimeException{
         AuthorRoleReaderConverter roleConverter = new AuthorRoleReaderConverter();
         AssistantMessageContent messageContent;
         var items = new ArrayList<KernelContent<?>>();
@@ -59,21 +63,35 @@ public class AssistantMessageContentReadConverter implements Converter<Document,
                     String pluginNameValue = functionCallDocument.getString("pluginName");
                     String functionNameValue = functionCallDocument.getString("functionName");
                     String idValue = functionCallDocument.getString("id");
-                    KernelFunctionArguments argumentsValue;
+
+                    KernelFunctionArguments arguments = KernelFunctionArguments.builder().build();
+
+                    JsonNode jsonToolCallArguments;
+                    ObjectMapper mapper = new ObjectMapper();
                     try {
-                        argumentsValue = objectMapper.readValue(
-                            functionCallDocument.getString("arguments"),
-                            KernelFunctionArguments.class
-                        );
+                        jsonToolCallArguments = mapper.readTree(functionCallDocument.getString("arguments"));
+
+                        jsonToolCallArguments.fields().forEachRemaining(
+                        entry -> {
+                            if (entry.getValue() instanceof ContainerNode) {
+                                arguments.put(entry.getKey(),
+                                    ContextVariable.of(entry.getValue().toPrettyString()));
+                            } else {
+                                arguments.put(entry.getKey(),
+                                    ContextVariable.of(entry.getValue().asText()));
+                            }
+                        });
                     } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Failed to parse function arguments", e);
+                        throw new RuntimeException("Error parsing JSON", e);
                     }
+
+                    
                     
                     items.add(new FunctionCallContent<Object>(
                         pluginNameValue,
                         functionNameValue,
                         idValue,
-                        argumentsValue,
+                        arguments,
                         null,
                         null,
                         null

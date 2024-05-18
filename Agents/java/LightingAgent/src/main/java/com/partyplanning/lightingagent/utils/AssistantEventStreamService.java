@@ -1,12 +1,14 @@
 package com.partyplanning.lightingagent.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.semantickernel.services.chatcompletion.AuthorRole;
 import com.microsoft.semantickernel.services.chatcompletion.ChatMessageContent;
 import com.microsoft.semantickernel.services.textcompletion.TextContent;
 import com.partyplanning.lightingagent.models.AssistantMessageContent;
 import com.partyplanning.lightingagent.models.AssistantThreadRun;
 import com.partyplanning.lightingagent.models.MessageDelta;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -38,26 +40,30 @@ public class AssistantEventStreamService {
 
         OpenAIChatMessageContent openaiData = (OpenAIChatMessageContent) data;
 
-        var items = new ArrayList();
-        items.add(new TextContent(data.getContent(), null, null));
+        if (openaiData.getToolCall() == null && openaiData.getAuthorRole() != AuthorRole.TOOL && !StringUtils.isEmpty(openaiData.getContent()))
+        {
+            var items = new ArrayList();
+            items.add(new TextContent(data.getContent(), null, null));
 
-        AssistantMessageContent currentMessage = new AssistantMessageContent(
-            run.getThreadId(),
-            openaiData.getAuthorRole(),
-            items,
-            run.getId(),
-            run.getAssistantId(),
-            new Date()
-        );
+            AssistantMessageContent currentMessage = new AssistantMessageContent(
+                run.getThreadId(),
+                openaiData.getAuthorRole(),
+                items,
+                run.getId(),
+                run.getAssistantId(),
+                new Date()
+            );
 
-        MessageDelta delta = new MessageDelta();
-        delta.setId(run.getId());
-        delta.setContent(items);
+            MessageDelta delta = new MessageDelta();
+            delta.setId(run.getId());
+            delta.setContent(items);
 
-        sendEvent(emitter, "thread.message.created", currentMessage);
-        sendEvent(emitter, "thread.message.in_progress", currentMessage);
-        sendEvent(emitter, "thread.message.delta", delta);
-        sendEvent(emitter, "thread.message.completed", currentMessage);
+            sendEvent(emitter, "thread.message.created", currentMessage);
+            sendEvent(emitter, "thread.message.in_progress", currentMessage);
+            sendEvent(emitter, "thread.message.delta", delta);
+            sendEvent(emitter, "thread.message.completed", currentMessage);
+        }
+        
     }
 
     public void sendErrorEvent(SseEmitter emitter, String message) {

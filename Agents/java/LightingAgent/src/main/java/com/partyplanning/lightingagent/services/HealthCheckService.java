@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,11 +24,16 @@ public class HealthCheckService {
     public CompletableFuture<String> getHealthyEndpointAsync(List<String> endpoints, String healthCheckPath) {
         // for some reason the first endpoint always has "[" prepended and the last one has "]" appended
         // so we need to remove them
-        endpoints.set(0, endpoints.get(0).substring(1));
-        endpoints.set(endpoints.size() - 1, endpoints.get(endpoints.size() - 1).substring(0, endpoints.get(endpoints.size() - 1).length() - 1));
+        //var newendpoint = endpoints.set(0, endpoints.get(0).substring(1));
+        var newEndpoints = new ArrayList<String>();
+        newEndpoints.add(endpoints.get(0).substring(1));
+        for (int i = 1; i < endpoints.size() - 1; i++) {
+            newEndpoints.add(endpoints.get(i));
+        }
+        newEndpoints.add(endpoints.get(endpoints.size() - 1).substring(0, endpoints.get(endpoints.size() - 1).length() - 1));
 
         return CompletableFuture.supplyAsync(() -> {
-            for (String endpoint : endpoints) {
+            for (String endpoint : newEndpoints) {
                 if (isEndpointHealthy(endpoint, healthCheckPath).block()) {
                     return endpoint;
                 }

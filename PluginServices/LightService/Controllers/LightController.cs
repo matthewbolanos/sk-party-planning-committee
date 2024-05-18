@@ -6,11 +6,13 @@ using Q42.HueApi.ColorConverters.HSB;
 using Q42.HueApi.ColorConverters.Original;
 
 namespace PartyPlanning.PluginServices.LightService.Controllers
-{
+{   
     [ApiController]
     [Route("[controller]")]
     public class LightController(LocalHueClient client) : ControllerBase
     {
+        const string ID_PREFIX = "xyz";
+
         // private readonly IMongoCollection<BsonDocument> _smartDevices = database.GetCollection<BsonDocument>("SmartDevices");
         // private readonly IMongoCollection<Light> _lights = database.GetCollection<Light>("Lights");
         private const int LatencyBuffer = 300; // milliseconds
@@ -21,7 +23,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         /// <returns>Returns the current state of the light and its 6 character long ID for other API requests</returns>
         [HttpGet(Name="get_all_lights")]
         public async Task<IActionResult> GetLightsAsync()
-        {
+        {   
             // Get the list of lights from the bridge
             var lights = await client.GetLightsAsync().ConfigureAwait(false);
 
@@ -30,7 +32,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
             return Ok(lights.Select(light => {
                 HSB color = new(light.State.Hue!.Value, light.State.Saturation!.Value, light.State.Brightness);
                 return new LightStateModel() {
-                    Id = "xyz"+light.Id,
+                    Id = ID_PREFIX+light.Id,
                     Name = light.Name,
                     On = light.State.On,
                     Brightness = light.State.Brightness,
@@ -47,6 +49,9 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         [HttpGet("{id}", Name="get_light")]
         public async Task<IActionResult> GetLightAsync(string id)
         {
+            // Remove prefix from the ID
+            id = id[3..];
+
             // Get the state of the light with the specified ID
             var light = await client.GetLightAsync(id).ConfigureAwait(false);
             HSB color = new(light!.State.Hue!.Value, light.State.Saturation!.Value, light.State.Brightness);
@@ -69,6 +74,9 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         [HttpPost("{id}", Name="change_light_state")]
         public async Task<IActionResult> ChangeLightStateAsync(string id, ChangeStateRequest changeStateRequest)
         {
+            // Remove prefix from the ID
+            id = id[3..];
+
             // Get the state of the light with the specified ID
             var light = await client.GetLightAsync(id).ConfigureAwait(false);
 
@@ -101,7 +109,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
             }
 
             // Return the updated state of the light
-            return await GetLightAsync(id);
+            return await GetLightAsync(ID_PREFIX+id);
         }
     }
 }

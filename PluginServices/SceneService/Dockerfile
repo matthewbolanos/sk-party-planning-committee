@@ -14,6 +14,7 @@ WORKDIR /src
 
 # Copy Directory.Packages.props to the build directory
 COPY ["Directory.Packages.props", "./"]
+COPY ["config.json", "./"]
 
 # Copy the project files and restore dependencies
 COPY ["/PluginServices/SceneService/SceneService.csproj", "PluginServices/SceneService/"]

@@ -14,6 +14,7 @@ WORKDIR /src
 
 # Copy Directory.Packages.props to the build directory which is two levels up
 COPY ["Directory.Packages.props", "./"]
+COPY ["config.json", "./"]
 
 # Copy the project files and restore dependencies
 COPY ["/PluginServices/SpeakerService/SpeakerService.csproj", "PluginServices/SpeakerService/"]

@@ -16,7 +16,7 @@ public class PythonPlannerResult
     public string Stderr { get; set; }
 
     [JsonPropertyName("result")]
-    public string Result { get; set; }
+    public string? Result { get; set; }
 
     [JsonPropertyName("executionTimeInMilliseconds")]
     public int ExecutionTimeInMilliseconds { get; set; }

@@ -1,28 +1,36 @@
-import sys,os,asyncio,time,json
+import sys,os,asyncio,time,json,random,traceback,subprocess,tempfile
 from IPython import get_ipython as gi
 from IPython.utils.capture import capture_output
-f=["/mnt/data/.cache","/mnt/data/.scripts","/mnt/data/.scripts/modules"]
+f=["/mnt/data/.cache","/mnt/data/.io", "/mnt/data/.io/function_results","/mnt/data/.main", "/mnt/data/.background/"]
 os.environ['NUMBA_CACHE_DIR'],os.environ['PYTHONASYNCIODEBUG']=f[0],'1'
 for d in f: os.makedirs(d,exist_ok=True)
-for i in [f"{f[1]}/__init__.py",f"{f[2]}/__init__.py"]: open(i,'w').close()
+
+final_results_path = os.path.join("/mnt/data/.io", "final_results.txt")
+function_calls_path = os.path.join("/mnt/data/.io", "function_calls.txt")
+with open(function_calls_path, 'w') as function_calls_file:
+	function_calls_file.write("")
+
 if f[1] not in sys.path: sys.path.append(f[1])
 class functions: pass
 _fc,_fr,_res={},{},{}
-async def _run(code):
- ip=gi()
- await asyncio.sleep(0)
- with capture_output() as captured:
-  _res['_']=(captured,ip.run_cell(code))
-def _rca(code):
- asyncio.create_task(_run(code))
-def _wfc(plugin,func,args):
- _fcid=random.randint(0,1000000000)
- _fc[_fcid]=json.dumps({'plugin': plugin,'func': func,'args':json.dumps(args)})
- return _fcid
-def _pfr(_k):
- while True:
-  if _k in _fr:
-   r=_fr[_k]
-   del _fr[_k]
-   return r
-  time.sleep(1)
+def _run(code):
+	try:
+		temp_dir = "/mnt/data/.main/"
+		os.makedirs(temp_dir, exist_ok=True)
+		tf = tempfile.NamedTemporaryFile(delete=False, suffix='.py', dir=temp_dir)
+		try:
+			with open(tf.name, "w") as f:
+				f.write(code)
+		finally:
+			tf.close()
+	finally:
+		tf.close()
+try:
+	temp_dir = "/mnt/data/.background/"
+	_r = {{mainRunner}}
+	tf = tempfile.NamedTemporaryFile(delete=False, suffix='.py', dir=temp_dir)
+	with open(tf.name, "w") as f:
+		f.write(_r)
+	process = subprocess.Popen(f"python {tf.name} &", shell=True)
+finally:
+	tf.close()

@@ -49,7 +49,8 @@ public class PythonPluginGenerator
             };
 
         var handlebarsTemplate = this._templateFactory.Create(promptTemplateConfig);
-        return await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        var renderedTemplate = await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        return System.Net.WebUtility.HtmlDecode(renderedTemplate);
     }
 
     public async Task<string> GeneratePythonFunctionsAsync(
@@ -76,7 +77,8 @@ public class PythonPluginGenerator
             };
 
         var handlebarsTemplate = this._templateFactory.Create(promptTemplateConfig);
-        return await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        var renderedTemplate = await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        return System.Net.WebUtility.HtmlDecode(renderedTemplate);
     }
 
     public async Task<string> GeneratePythonSetupCodeAsync(
@@ -85,6 +87,7 @@ public class PythonPluginGenerator
     {
         // Construct prompt from Partials and Prompt Template
         var pythonScript = this.ConstructHandlebarsTemplate("StartEnvSetup");
+        var mainRunnerScript = this.ConstructHandlebarsTemplate("MainRunner");
 
         // Render the prompt
         var promptTemplateConfig = new PromptTemplateConfig()
@@ -93,10 +96,14 @@ public class PythonPluginGenerator
             TemplateFormat = HandlebarsPromptTemplateFactory.HandlebarsTemplateFormat,
         };
 
-        var arguments = new KernelArguments();
+        var arguments = new KernelArguments()
+        {
+            { "mainRunner", JsonSerializer.Serialize(mainRunnerScript) }
+        };
 
         var handlebarsTemplate = this._templateFactory.Create(promptTemplateConfig);
-        return await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        var renderedTemplate = await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        return System.Net.WebUtility.HtmlDecode(renderedTemplate);
     }
 
     public async Task<string> GeneratePythonRunCodeAsync(
@@ -120,7 +127,8 @@ public class PythonPluginGenerator
             };
 
         var handlebarsTemplate = this._templateFactory.Create(promptTemplateConfig);
-        return await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        var renderedTemplate = await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        return System.Net.WebUtility.HtmlDecode(renderedTemplate);
     }
 
     public async Task<string> GeneratePythonRelayCodeAsync(
@@ -141,11 +149,17 @@ public class PythonPluginGenerator
         var arguments = new KernelArguments()
             {
                 { "hasFunctionResult", functionResults.Count > 0 },
-                { "functionResults", JsonSerializer.Serialize(functionResults)}
+                { "functionResults", functionResults.Select(result => new 
+                    {
+                        id = result.Id,
+                        result = JsonSerializer.Serialize(result.Result)
+                    }).ToList()
+                }
             };
 
         var handlebarsTemplate = this._templateFactory.Create(promptTemplateConfig);
-        return await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        var renderedTemplate = await handlebarsTemplate!.RenderAsync(kernel, arguments, cancellationToken).ConfigureAwait(true);
+        return System.Net.WebUtility.HtmlDecode(renderedTemplate);
     }
 
     private List<PythonFunctionMetadata> GetAvailableFunctionsManual(

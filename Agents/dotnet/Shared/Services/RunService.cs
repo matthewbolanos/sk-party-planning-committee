@@ -50,11 +50,9 @@ namespace PartyPlanning.Agents.Shared.Services
                 ```python
                 {await pythonInterpreter.GenerateMockPluginCodeForKernelAsync(kernel)}
                 ```
+                These tools have already been imported in the Python interpreter and can be accessed from within the functions class.
 
-                ## Importing libraries
-                You can import these tools with `from functions import *`
-
-                The Python container cannot make http requests, but you don't have to worry about any other limitations.
+                The Python container cannot make http requests, but it does have access to loops and the time library.
                 """);
             foreach (var message in messages)
             {
@@ -101,16 +99,30 @@ namespace PartyPlanning.Agents.Shared.Services
 
                     foreach (var toolCall in (List<ChatCompletionsFunctionToolCall>)toolCalls!)
                     {
-                        string[] functionNameParts = toolCall.Name.Split('-');
-                        string pluginName = functionNameParts[0];
-                        string functionName = functionNameParts[1];
+                        string pluginName;
+                        string functionName;
+                        try {
+                            string[] functionNameParts = toolCall.Name.Split('-');
+                            pluginName = functionNameParts[0];
+                            functionName = functionNameParts[1];
+                        } catch (IndexOutOfRangeException) {
+                            pluginName = "Unknown";
+                            functionName = "Unknown";
+                        }
                         functionCallNames[toolCall.Id] = new Tuple<string, string>(pluginName, functionName);
+
+                        KernelArguments arguments;
+                        try {
+                            arguments = new(JsonSerializer.Deserialize<Dictionary<string, object>>(toolCall.Arguments!)!);
+                        } catch (JsonException) {
+                            arguments = new() { { "invalid_content", toolCall.Arguments! } };
+                        }
 
                         functionCalls.Add(new FunctionCallContent(
                             functionName: functionName,
                             pluginName: pluginName,
                             id: toolCall.Id,
-                            arguments: new KernelArguments(JsonSerializer.Deserialize<Dictionary<string, object>>(toolCall.Arguments!)!)
+                            arguments: arguments
                         ));
 
                         message.Items = [.. functionCalls];

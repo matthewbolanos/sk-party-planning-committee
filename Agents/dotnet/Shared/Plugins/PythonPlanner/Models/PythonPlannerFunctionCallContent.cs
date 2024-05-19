@@ -9,15 +9,12 @@ public class PythonPlannerFunctionCallContent
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("plugin_name")]
+    [JsonPropertyName("plugin")]
     public string PluginName { get; set; }
 
-    [JsonPropertyName("function_name")]
+    [JsonPropertyName("function")]
     public string FunctionName { get; set; }
 
     [JsonPropertyName("args")]
     public string Arguments { get; set; }
-
-    [JsonPropertyName("waited_time")]
-    public float WaitedTime { get; set; }
 }

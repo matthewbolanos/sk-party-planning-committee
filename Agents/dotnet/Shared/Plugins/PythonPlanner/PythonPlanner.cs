@@ -77,7 +77,7 @@ public partial class PythonPlanner
     /// <param name="code">The Python code to execute.</param>
     /// <returns>The Python execution result.</returns>
     [KernelFunction("run")]
-    [Description("Executes Python code in a container and returns the stdout, stderr, and result.")]
+    [Description("Executes Python code in a jupyter notebook cell and returns the stdout, stderr, and result.")]
     public async Task<PythonPlannerResult> ExecuteAsync(Kernel kernel, string code)
     {
         if (!_isInitialized)
@@ -140,6 +140,9 @@ public partial class PythonPlanner
             }
         }
 
+        // Remove any lines that start with "import functions" or "from functions import"
+        code = RemoveImportAndFromFunctionsLines(code);
+
         // 5. Upload the main code and any new plugins
         ////////////////////////////////////////////////
         string startScriptCode = await generator.GeneratePythonRunCodeAsync(kernel, code);
@@ -169,8 +172,19 @@ public partial class PythonPlanner
                     functionTasks.Add(Task.Run(async () =>
                     {
                         var function = kernel.Plugins.GetFunction(functionCall.PluginName, functionCall.FunctionName);
-                        var args = JsonSerializer.Deserialize<Dictionary<string, object>>(functionCall.Arguments);
-                        var results = await kernel.InvokeAsync(function, new KernelArguments(args!));
+                        var args = JsonSerializer.Deserialize<Dictionary<string, object?>?>(functionCall.Arguments);
+                        KernelArguments kernelArgs = [];
+
+                        // Add parameters to arguments
+                        if (args is not null)
+                        {
+                            foreach (var parameter in args)
+                            {
+                                args[parameter.Key] = parameter.Value?.ToString();
+                            }
+                        }
+
+                        var results = await kernel.InvokeAsync(function, kernelArgs);
                         var schema = function.Metadata.ReturnParameter.Schema;
                         string serializedResult = "null";
                         if (schema != null)
@@ -448,6 +462,12 @@ public partial class PythonPlanner
         return await generator.GeneratePythonPluginManualAsync(kernel);
     }
 
+    static string RemoveImportAndFromFunctionsLines(string code)
+    {
+        // Use regex to match lines starting with "import functions" or "from functions"
+        string pattern = @"^(import functions|from functions).*?(\r?\n|$)";
+        return Regex.Replace(code, pattern, string.Empty, RegexOptions.Multiline);
+    }
     
 
 #if NET

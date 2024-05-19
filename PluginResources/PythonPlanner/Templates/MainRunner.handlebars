@@ -1,0 +1,164 @@
+import os, time, queue, threading, contextlib, io, json, random, asyncio, logging
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import ast
+
+# Set up logging
+log_file_path = '/mnt/data/.io/debug.log'
+os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
+logging.basicConfig(filename=log_file_path, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+class FH(FileSystemEventHandler):
+    def __init__(self, q, processed_files):
+        self.q = q
+        self.processed_files = processed_files
+
+    def on_created(self, e):
+        if not e.is_directory and e.src_path.endswith('.py'):
+            logging.debug(f"File created: {e.src_path}")
+            if e.src_path not in self.processed_files:
+                self.q.put(e.src_path)
+
+def execute_with_last_result(code):
+    if not code.strip():
+        return None
+    
+    # Parse the code into an AST
+    try:
+        parsed_code = ast.parse(code)
+    except SyntaxError as e:
+        logging.error(f"Syntax error: {e}")
+        return None
+    
+    # Find the last expression in the AST
+    last_expr = None
+    last_stmt = None
+    for node in reversed(parsed_code.body):
+        if isinstance(node, ast.Expr):
+            last_expr = node
+            parsed_code.body.remove(node)
+            break
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Assign, ast.AugAssign, ast.AnnAssign)):
+            last_stmt = node
+            parsed_code.body.remove(node)
+            break
+
+    # Prepare the context for execution
+    local_context = {}
+    global_context = {}
+
+    # Compile and execute the code without the last expression/statement
+    try:
+        exec(compile(parsed_code, filename="<ast>", mode="exec"), global_context, local_context)
+    except Exception as e:
+        logging.error(f"Error executing code: {e}")
+        return None
+    
+    # Evaluate the last expression or execute the last statement if it exists
+    if last_expr is not None:
+        try:
+            last_result = eval(compile(ast.Expression(last_expr.value), filename="<ast>", mode="eval"), global_context, local_context)
+        except Exception as e:
+            logging.error(f"Error evaluating last expression: {e}")
+            return None
+    elif last_stmt is not None:
+        try:
+            exec(compile(ast.Module([last_stmt]), filename="<ast>", mode="exec"), global_context, local_context)
+            last_result = None
+        except Exception as e:
+            logging.error(f"Error executing last statement: {e}")
+            return None
+    else:
+        last_result = None
+    
+    return last_result
+
+def process_q(q, processed_files):
+    _p = '/mnt/data/.io/final_results.txt'
+    os.makedirs(os.path.dirname(_p), exist_ok=True)
+    while True:
+        _f = q.get()
+        if _f is None:
+            break
+        try:
+            logging.debug(f"Processing file: {_f}")
+            with open(_f, 'r') as file:
+                _s = file.read()
+            logging.debug(f"File content of {_f}: {_s}")
+            _o, _e = io.StringIO(), io.StringIO()
+            with contextlib.redirect_stdout(_o), contextlib.redirect_stderr(_e):
+                _ns = {"_wfc": _wfc, "_pfr": _pfr}
+                _r = execute_with_last_result(_s)
+            _output = {
+                "stdout": _o.getvalue().strip(),
+                "stderr": _e.getvalue().strip(),
+                "result": json.dumps(_r)
+            }
+            logging.debug(f"Output for {_f}: {_output}")
+            with open(_p, 'w') as rf:
+                rf.write(json.dumps(_output) + '\n')
+            logging.debug(f"Written result for file: {_f}")
+            processed_files.add(_f)
+        except Exception as ex:
+            logging.error(f"Error processing {_f}: {ex}")
+        finally:
+            q.task_done()
+
+def _wfc(plugin, func, args=None):
+    _fcid = random.randint(0, 1000000000)
+    _call = {'id': _fcid, 'plugin': plugin, 'function': func, 'args': json.dumps(args)}
+    with open('/mnt/data/.io/function_calls.txt', 'a') as f:
+        f.write(json.dumps(_call) + '\n')
+    return _fcid
+
+async def _pfr(_k):
+    _result_path = f'/mnt/data/.io/function_results/{_k}.json'
+    while True:
+        if os.path.exists(_result_path):
+            with open(_result_path, 'r') as f:
+                _res = json.load(f)
+                os.remove(_result_path)
+                return _res
+        await asyncio.sleep(0.001)
+
+def scan_directory(directory, q, processed_files):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if file_path.endswith('.py') and file_path not in processed_files:
+            logging.debug(f"Found unprocessed file: {file_path}")
+            q.put(file_path)
+
+def main():
+    global _fr
+    _fr = {}
+
+    _d = '/mnt/data/.main/'
+    if not os.path.exists(_d):
+        logging.error(f"Directory {_d} does not exist")
+        return
+
+    processed_files = set()
+    _q = queue.Queue()
+    _eh = FH(_q, processed_files)
+    _obs = Observer()
+    _obs.schedule(_eh, path=_d, recursive=False)
+    _obs.start()
+    logging.debug(f"Started observer on {_d}")
+
+    _t = threading.Thread(target=process_q, args=(_q, processed_files), daemon=True)
+    _t.start()
+    logging.debug("Started processing thread")
+
+    try:
+        while True:
+            logging.debug("Main loop running...")
+            scan_directory(_d, _q, processed_files)
+            time.sleep(1)
+    except KeyboardInterrupt:
+        _obs.stop()
+    _obs.join()
+    _q.put(None)
+    _t.join()
+
+if __name__ == "__main__":
+    main()

@@ -1,6 +1,7 @@
 {{#each functions}}
-functions.{{toSnakeCase PluginName}}__{{toSnakeCase Name}}=lambda _a: (
-    _fcid := _wfc('{{PluginName}}', '{{Name}}', _a),
-    _fr.__setitem__(_fcid, _pfr(_fcid))
-)
+async def {{toSnakeCase PluginName}}__{{toSnakeCase Name}}(_a=None):
+ global _fr
+ _fcid=_wfc('{{PluginName}}','{{Name}}',_a)
+ return await _pfr(_fcid)
+functions.{{toSnakeCase PluginName}}__{{toSnakeCase Name}}={{toSnakeCase PluginName}}__{{toSnakeCase Name}}
 {{/each}}

@@ -1,5 +1,5 @@
 .nav_pane {
-    width:20;
+    height:3;
 }
 
 MessageInput {

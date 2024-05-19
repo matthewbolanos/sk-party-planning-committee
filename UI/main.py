@@ -5,9 +5,10 @@ import httpx
 from openai import AsyncOpenAI
 from textual import on
 from textual.app import App, ComposeResult
-from textual.widgets import OptionList, Rule, Markdown
+from textual.widgets import OptionList, Rule, Markdown, Select
 from textual.widgets.option_list import Option
 from textual.containers import Horizontal, Vertical
+from textual.types import SelectType
 from services.health_check_service import HealthCheckService
 from config.config import Config
 from widgets.chat_history import ChatHistory
@@ -19,6 +20,10 @@ class TerminalGui(App):
 
     agent_services = None
     health_check_service: HealthCheckService = None
+
+    LINES = """Python
+    C#
+    Java""".splitlines()
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -34,24 +39,18 @@ class TerminalGui(App):
         self.agent_services = config.agent_services
 
         # Set the client to Python by default with asyncio
-        asyncio.run(self.set_client("python"))
+        asyncio.run(self.set_client("Python"))
 
         self.thread = None  # Initialized later in an async method
         self.input_widget: MessageInput = MessageInput(on_message=self.handle_user_input)
         self.chat_history: ChatHistory = ChatHistory()
-        self.option_list = OptionList(
-            Option("Python", id="python"),
-            Option("C#", id="csharp"),
-            Option("Java", id="java"),
-            id="languages"
-        )
+        self.option_list = Select(((line, line) for line in ["Python", "C#", "Java"]),
+            id="languages")
+        self.option_list.value = "Python"
 
-        # Get the index of the option with the id "csharp" and highlight it
-        self.option_list.highlighted = self.option_list.get_option_index("python")
-
-    @on(OptionList.OptionHighlighted, "#languages")  
-    async def change_language(self, event: OptionList.OptionMessage):
-        await self.set_client(event.option_id)
+    @on(Select.Changed, "#languages")  
+    async def change_language(self, event: Select.Changed):
+        await self.set_client(event.value)
 
     @on(Markdown.LinkClicked, "Markdown")  
     def go_to_link(self, event: Markdown.LinkClicked):
@@ -59,11 +58,11 @@ class TerminalGui(App):
         webbrowser.open(event.href)
 
     async def set_client(self, option_id: str):
-        if (option_id == "python"):
+        if (option_id == "Python"):
             base_url = await self.health_check_service.get_healthy_endpoint(self.agent_services['python']['LightingAgent'].endpoints) + "/api"
-        elif (option_id == "csharp"):
+        elif (option_id == "C#"):
             base_url = await self.health_check_service.get_healthy_endpoint(self.agent_services['csharp']['LightingAgent'].endpoints) + "/api"
-        elif (option_id == "java"):
+        elif (option_id == "Java"):
             base_url = await self.health_check_service.get_healthy_endpoint(self.agent_services['java']['LightingAgent'].endpoints, "/actuator/health") + "/api"
 
         self.client = AsyncOpenAI(
@@ -77,12 +76,12 @@ class TerminalGui(App):
         self.loop = asyncio.get_running_loop()
 
     def compose(self) -> ComposeResult:
-        yield Horizontal(
+        yield Vertical(
             Vertical(
                 self.option_list,
                 classes="nav_pane"
             ),
-            Rule(orientation="vertical", line_style="heavy"),
+            Rule(orientation="horizontal", line_style="heavy"),
             Vertical(
                 self.chat_history,
                 self.input_widget,

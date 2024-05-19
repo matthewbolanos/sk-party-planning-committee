@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.SemanticKernel;
 using PartyPlanning.Agents.Shared.Plugins.PythonPlanner.CodeGen;
+using PartyPlanning.Agents.Shared.Plugins.PythonPlanner.CodeGen.Models;
 
 namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
@@ -21,13 +22,15 @@ public partial class PythonPlanner
     private static readonly string s_assemblyVersion = typeof(Kernel).Assembly.GetName().Version!.ToString();
 
     private readonly Uri _poolManagementEndpoint;
-    private readonly PythonPlannerExecutionSettings _settings;
     private readonly Func<Task<string>>? _authTokenProvider;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ILogger _logger;
-    private Assembly _assembly = Assembly.GetExecutingAssembly();
-    private readonly string _identifier;
+    private readonly PythonPlannerExecutionSettings _settings;
+    private readonly Assembly _assembly = Assembly.GetExecutingAssembly();
     private readonly PythonPluginGenerator generator = new();
+    private readonly ILogger _logger;
+    private readonly string _identifier;
+    private readonly HashSet<KernelFunction> _kernelFunctions = [];
+    private bool _isInitialized = false;
 
     /// <summary>
     /// Initializes a new instance of the PythonPlannerTool class.
@@ -42,70 +45,84 @@ public partial class PythonPlanner
         Func<Task<string>>? authTokenProvider = null,
         ILoggerFactory? loggerFactory = null)
     {
+        // Setup settings
         this._settings = settings;
-
-        // Ensure the endpoint won't change by reference 
         this._poolManagementEndpoint = GetBaseEndpoint(settings.Endpoint);
 
         this._authTokenProvider = authTokenProvider;
         this._httpClientFactory = httpClientFactory;
         this._identifier = Guid.NewGuid().ToString();
         this._logger = loggerFactory?.CreateLogger(typeof(PythonPlanner)) ?? NullLogger.Instance;
-
-        InitializeAsync().Wait();
     }
 
-    public async Task InitializeAsync()
+    /// <summary>
+    /// Initializes the Python environment for a new execution.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    public async Task InitializeAsync(Kernel kernel)
     {
-        // get list of resources in the assembly
-        var resources = _assembly.GetManifestResourceNames();
+        // Run setup script which does the following:
+        // 1. Setup caching for Librosa cache
+        // 2. Setup __init__.py files in the scripts folder and its subfolders
+        // 3. Setup environment variables
 
-        using Stream resourceStream = _assembly.GetManifestResourceStream("PartyPlanning.Agents.Shared.scripts.setup_env.py")!;
-        using StreamReader reader = new StreamReader(resourceStream);
-        string setupEnvCode = reader.ReadToEnd();
-        var setupEnvCodeResults = await BaseExecuteAsync(setupEnvCode);
-
-        var filesToUpload = new[]
-        {
-            "PartyPlanning.Agents.Shared.scripts.main_runner.py",
-            "PartyPlanning.Agents.Shared.scripts.modules.connection_helpers.py",
-            "PartyPlanning.Agents.Shared.scripts.modules.function_helpers.py"
-        };
-        await Task.WhenAll(filesToUpload.Select(async resourcePath =>
-        {
-            using Stream resourceStream = _assembly.GetManifestResourceStream(resourcePath)!;
-            using StreamReader reader = new StreamReader(resourceStream);
-            string code = reader.ReadToEnd();
-
-            // Get the file name (the last two portions of the resource path)
-            var fileName = resourcePath.Split('.')[^2..].Aggregate((a, b) => a + "." + b);
-
-            // Get the folder name (everything after python and before the file name)
-            var folderName = resourcePath.Split('.')[3..^2].Aggregate((a, b) => a + "/" + b);
-
-            // Turn the code into a binary stream
-            byte[] fileBytes = Encoding.UTF8.GetBytes(code);
-
-            var uploadResponse = await UploadBinaryAsync(fileBytes, folderName, fileName);
-        }));
+        var initCode = await generator.GeneratePythonSetupCodeAsync(kernel);
+        await BaseExecuteAsync(initCode);
     }
 
+    /// <summary>
+    /// Executes Python code in a container and returns the stdout, stderr, and result.
+    /// </summary>
+    /// <param name="kernel">The kernel.</param>
+    /// <param name="code">The Python code to execute.</param>
+    /// <returns>The Python execution result.</returns>
     [KernelFunction("run")]
     [Description("Executes Python code in a container and returns the stdout, stderr, and result.")]
     public async Task<PythonPlannerResult> ExecuteAsync(Kernel kernel, string code)
     {
-        // Create plugin files and upload them to the Python container asynchronously
-        var uploadTasks = new List<Task<PythonPlannerFileUploadResponse>>();
+        if (!_isInitialized)
+        {
+            await InitializeAsync(kernel);
+            _isInitialized = true;
+        }
 
-        string pluginsCode = "from modules.function_helpers import poll_for_results, write_function_call\n\n";
-        pluginsCode += await generator.GeneratePluginCodeAsync(kernel, new (){IsMock = false});
-        uploadTasks.Add(UploadBinaryAsync(Encoding.UTF8.GetBytes(pluginsCode), "scripts", $"functions.py"));
+        // This is the main function that is provided to the LLM to execute Python code in the Python container
+        // The code is executed in the following steps:
+        // 1. The code is sanitized to remove any leading or trailing whitespace, backticks, or the word "python"
+        // 2. Determine which functions are "new" and need to be uploaded to the Python container
+        // 3. Generate Python code to add the new functions to the Python container
+        // 4. Standardization of function names is done (TODO: align separators across Semantic Kernel to make this unnecessary)
+        // 5. Run the start_script.py to add the new functions to the Python container and execute the main code
+        // 6. Perform "function calling" loop until the final result is returned
 
-        // Wait for all the plugin files to be uploaded
-        await Task.WhenAll(uploadTasks);
+        // 1. Sanitize the input
+        ////////////////////////////////////////////////
+        if (_settings.SanitizeInput)
+        {
+            code = SanitizeCodeInput(code);
+        }
 
-        // Save the main code to the python container
-        // Replace "-" separators with "__" to avoid issues running the code
+        // 2. Check for "new" functions
+        ////////////////////////////////////////////////
+        HashSet<KernelFunction> kernelFunctions = kernel.Plugins.SelectMany(p => p).ToHashSet();
+        var newFunctions = kernelFunctions.Except(_kernelFunctions).ToList();
+        _kernelFunctions.UnionWith(kernelFunctions);
+        
+        // 3. Generate Python code for new functions
+        ////////////////////////////////////////////////
+        var newFunctionsCode = "";
+        if (newFunctions.Count != 0)
+        {
+            newFunctionsCode = await generator.GeneratePythonFunctionsAsync(kernel, new (){
+                FunctionFilters = new FunctionFilters
+                {
+                    IncludedFunctions = newFunctions.Select(f => new FunctionName(f.PluginName!, f.Name)).ToList()
+                }
+            });
+        }
+
+        // 4. Standardize function names
+        ////////////////////////////////////////////////
         foreach (var plugin in kernel.Plugins)
         {
             foreach (var function in plugin)
@@ -123,174 +140,69 @@ public partial class PythonPlanner
             }
         }
 
-        code = "import functions as functions\nfrom functions import *\n\n" + code;
-        await UploadBinaryAsync(Encoding.UTF8.GetBytes(code), "scripts", "main.py");
+        // 5. Upload the main code and any new plugins
+        ////////////////////////////////////////////////
+        string startScriptCode = await generator.GeneratePythonRunCodeAsync(kernel, code);
+        var startScriptCodeResults = await BaseExecuteAsync(newFunctionsCode+"\n"+startScriptCode);
 
-        // Initialize the Python environment for a new execution
-        using Stream startScriptResourceStream = _assembly.GetManifestResourceStream("PartyPlanning.Agents.Shared.scripts.start_script.py")!;
-        using StreamReader startScriptReader = new(startScriptResourceStream);
-        string startScriptCode = startScriptReader.ReadToEnd();
-        var startScriptCodeResults = await BaseExecuteAsync(startScriptCode);
 
-        int iterator = 0;
-        var sendResponseScriptCode = "";
+        // 6. Perform "function calling" loop 
+        ////////////////////////////////////////////////
 
-        // Loop until the final result is returned
+        List<PythonPlannerFunctionResultContent> functionResults = [];
         while (true)
         {
-            // Create a connection to the Python container to get function calls or the final result
-            using Stream connectionScriptResourceStream = _assembly.GetManifestResourceStream("PartyPlanning.Agents.Shared.scripts.connection.py")!;
-            using StreamReader connectionScriptReader = new(connectionScriptResourceStream);
-            string connectionScriptCode = connectionScriptReader.ReadToEnd();
-            PythonPlannerResult connectionScriptResults;
-            try
-            {
-                connectionScriptResults = await BaseExecuteAsync(sendResponseScriptCode + connectionScriptCode);
-            }
-            catch
-            {
-                return new PythonPlannerResult();
-            }
+            // 6.a. Create a relay to the Python container
+            ////////////////////////////////////////////////
+            var relayCode = await generator.GeneratePythonRelayCodeAsync(kernel, functionResults);
+            var relayCodeResults = await BaseExecuteAsync(relayCode);
 
-            // if the connection script results in a function call, execute the function
-            // we'll know if it's a function call if connectionScriptResults can be deserialized into a PythonExecutionFunctionCall
-            var connectionResult = DeserializeConnectionJson(connectionScriptResults!.Result);
+            // 6.b. Deserialize the relay code results
+            ////////////////////////////////////////////////
 
+            try {
+                var relayCodeResultsDeserialized = JsonSerializer.Deserialize<List<PythonPlannerFunctionCallContent>>(relayCodeResults.Result)!;
+                List<Task> functionTasks = [];
 
-            switch (connectionResult)
-            {
-                case List<PythonPlannerFunctionCallContent> functionCalls:
+                foreach (var functionCall in relayCodeResultsDeserialized)
+                {
+                    functionTasks.Add(Task.Run(async () =>
                     {
-                        List<PythonPlannerFunctionResultContent> functionResults = new();
-                        foreach (var functionCall in functionCalls)
+                        var function = kernel.Plugins.GetFunction(functionCall.PluginName, functionCall.FunctionName);
+                        var args = JsonSerializer.Deserialize<Dictionary<string, object>>(functionCall.Arguments);
+                        var results = await kernel.InvokeAsync(function, new KernelArguments(args!));
+                        var schema = function.Metadata.ReturnParameter.Schema;
+                        string serializedResult = "null";
+                        if (schema != null)
                         {
-                            KernelArguments args = [];
-                            if (functionCall!.Arguments != null && functionCall!.Arguments != "null")
-                            {
-                                var arguments = JsonSerializer.Deserialize<Dictionary<string, object>>(functionCall!.Arguments);
-                                if (arguments != null)
-                                {
-                                    foreach (var argument in arguments)
-                                    {
-                                        if (argument.Value is JsonElement jsonElement)
-                                        {
-                                            object deserializedValue;
-
-                                            // Deserialize based on JsonElement type
-                                            switch (jsonElement.ValueKind)
-                                            {
-                                                case JsonValueKind.Null:
-                                                    deserializedValue = null;
-                                                    break;
-                                                case JsonValueKind.True:
-                                                case JsonValueKind.False:
-                                                    deserializedValue = jsonElement.GetBoolean();
-                                                    break;
-                                                case JsonValueKind.String:
-                                                    deserializedValue = jsonElement.GetString();
-                                                    break;
-                                                case JsonValueKind.Number:
-                                                    if (jsonElement.TryGetInt32(out int intVal))
-                                                    {
-                                                        deserializedValue = intVal;
-                                                    }
-                                                    else if (jsonElement.TryGetDouble(out double doubleVal))
-                                                    {
-                                                        deserializedValue = doubleVal;
-                                                    }
-                                                    else
-                                                    {
-                                                        deserializedValue = jsonElement.GetRawText();
-                                                    }
-                                                    break;
-                                                case JsonValueKind.Object:
-                                                case JsonValueKind.Array:
-                                                    deserializedValue = jsonElement.GetRawText();
-                                                    break;
-                                                default:
-                                                    deserializedValue = jsonElement.GetRawText();
-                                                    break;
-                                            }
-
-                                            args.Add(argument.Key, deserializedValue);
-                                        }
-                                        else if (argument.Value is string stringValue)
-                                        {
-                                            args.Add(argument.Key, stringValue);
-                                        }
-                                        else
-                                        {
-                                            // Serialize the argument value
-                                            args.Add(argument.Key, JsonSerializer.Serialize(argument.Value));
-                                        }
-                                    }
-                                }
+                            try {
+                                serializedResult = results.GetValue<RestApiOperationResponse>()!.Content.ToString()!;
+                            } catch {
+                                serializedResult = JsonSerializer.Serialize(results.GetValue<object>());
                             }
-
-                            // Get the function
-                            KernelFunction function = kernel.Plugins.GetFunction(functionCall!.PluginName, functionCall!.FunctionName);
-
-                            // Invoke the function
-                            FunctionResult results = await kernel.InvokeAsync(
-                                function,
-                                args
-                            );
-
-                            // Get the result type
-                            KernelJsonSchema schema = function.Metadata.ReturnParameter.Schema;
-
-                            string serializedResult = "null";
-
-                            // if the resultType is System.Void, then the result is null
-                            if (schema != null)
-                            {
-                                try {
-                                    serializedResult = results.GetValue<RestApiOperationResponse>().Content.ToString()!;
-                                } catch {
-                                    serializedResult = JsonSerializer.Serialize(results.GetValue<object>());
-                                }
-                            }
-
-                            // Add to list of functionResults
-                            functionResults.Add(new PythonPlannerFunctionResultContent
-                            {
-                                Id = functionCall!.Id,
-                                PluginName = functionCall!.PluginName,
-                                FunctionName = functionCall!.FunctionName,
-                                Result = serializedResult
-                            });
                         }
+                        functionResults.Add(new PythonPlannerFunctionResultContent
+                        {
+                            Id = functionCall.Id,
+                            PluginName = functionCall.PluginName,
+                            FunctionName = functionCall.FunctionName,
+                            Result = serializedResult
+                        });
+                    }));
+                }
 
-                        // Create a response 
-                        string json = JsonSerializer.Serialize(functionResults);
-
-                        // Tell the current Python execution that the response has been sent
-                        sendResponseScriptCode = $$"""
-                            from modules.function_helpers import write_function_result
-                            data = {{json}}
-                            write_function_result(data)
-
-
-                            """;
-                        break;
-                    }
-                default:
-                    return connectionScriptResults!;
+                await Task.WhenAll(functionTasks);
+            } catch {
+                // 7. Return the final result
+                ////////////////////////////////////////////////
+                return JsonSerializer.Deserialize<PythonPlannerResult>(relayCodeResults.Result)!;
             }
-
-            iterator++;
         }
     }
-
-    
     private async Task<PythonPlannerResult> BaseExecuteAsync(string code)
     {
-        if (this._settings.SanitizeInput)
-        {
-            code = SanitizeCodeInput(code);
-        }
-
-        // _logger.LogTrace("Executing Python code: {Code}", code);
+        // log the code
+        this._logger.LogTrace("Executing code: {Code}", code);
 
         using var httpClient = this._httpClientFactory.CreateClient();
 
@@ -299,7 +211,7 @@ public partial class PythonPlanner
             properties = new CodeInterpreterRequestSettings(this._settings, code)
         };
 
-        await this.AddHeadersAsync(httpClient).ConfigureAwait(false);
+        await AddHeadersAsync(httpClient).ConfigureAwait(false);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, this._poolManagementEndpoint + "python/execute")
         {
@@ -314,8 +226,12 @@ public partial class PythonPlanner
             throw new HttpRequestException($"Failed to execute python code. Status: {response.StatusCode}. Details: {errorBody}.");
         }
 
-        return JsonSerializer.Deserialize<PythonPlannerResult>(await response.Content.ReadAsStringAsync().ConfigureAwait(false))!;
+        var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
+        // log the response
+        this._logger.LogTrace("Response: {Response}", responseContent);
+
+        return JsonSerializer.Deserialize<PythonPlannerResult>(responseContent)!;
     }
 
     private async Task AddHeadersAsync(HttpClient httpClient)
@@ -527,26 +443,9 @@ public partial class PythonPlanner
         return code;
     }
 
-    private static object? DeserializeConnectionJson(string json)
-    {
-        if (json == null)
-        {
-            return null;
-        }
-
-        try
-        {
-            return JsonSerializer.Deserialize<List<PythonPlannerFunctionCallContent>>(json)!;
-        }
-        catch (JsonException)
-        {
-            return null;
-        }
-    }
-
     public async Task<string> GenerateMockPluginCodeForKernelAsync(Kernel kernel)
     {
-        return await generator.GeneratePluginCodeAsync(kernel, new (){IsMock = true});
+        return await generator.GeneratePythonPluginManualAsync(kernel);
     }
 
     

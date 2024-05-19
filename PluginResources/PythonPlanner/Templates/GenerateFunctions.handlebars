@@ -1,0 +1,6 @@
+{{#each functions}}
+functions.{{toSnakeCase PluginName}}__{{toSnakeCase Name}}=lambda _a: (
+    _fcid := _wfc('{{PluginName}}', '{{Name}}', _a),
+    _fr.__setitem__(_fcid, _pfr(_fcid))
+)
+{{/each}}

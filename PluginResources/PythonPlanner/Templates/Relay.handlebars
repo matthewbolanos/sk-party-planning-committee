@@ -1,0 +1,18 @@
+{{#if hasFunctionResult}}
+{{#each functionResults}}
+_fr[{{id}}]={{result}}
+{{/each}}
+{{/if}}
+def _wd():
+ global _fc,_res
+ while True:
+  if '_' in _fc:
+   c=_fc.copy()
+   _fc.clear()
+   return c
+  if '_' in _res and _res['_']:
+   o,c=_res['_']
+   del _res['_']
+   return json.dumps({'stdout':o.stdout,'stderr':c.error_in_exec,'result': json.dumps(c.result)})
+  time.sleep(1)
+_wd()

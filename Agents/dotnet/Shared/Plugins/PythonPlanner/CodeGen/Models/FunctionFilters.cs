@@ -54,17 +54,22 @@ namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner.CodeGen.Models
         {
             var function = new FunctionName(functionName);
 
+            return ShouldIncludeFunction(function);
+        }
+
+        public bool ShouldIncludeFunction(FunctionName functionName)
+        {
             if (_includedFunctions == null && _excludedFunctions == null)
             {
                 return true;
             }
 
-            if (_includedFunctions != null && !_includedFunctions.Any(f => f.FullName == function.FullName))
+            if (_includedFunctions != null && !_includedFunctions.Any(f => f.FullName == functionName.FullName))
             {
                 return false;
             }
 
-            if (_excludedFunctions != null && _excludedFunctions.Any(f => f.FullName == function.FullName))
+            if (_excludedFunctions != null && _excludedFunctions.Any(f => f.FullName == functionName.FullName))
             {
                 return false;
             }

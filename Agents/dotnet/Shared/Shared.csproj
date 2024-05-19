@@ -8,8 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="../../../config.json" />
-    <EmbeddedResource Include="../../../PluginResources/PythonPlanner/**/*.py" />
-    <EmbeddedResource Include="Plugins/PythonPlanner/CodeGen/**/*.handlebars" RootNamespace="PartyPlanning.Agents.Shared.Plugins.PythonPlanner.CodeGen">  
+    <EmbeddedResource Include="../../../PluginResources/PythonPlanner/Templates/**/*.handlebars" RootNamespace="PartyPlanning.Agents.Shared.Plugins.PythonPlanner.CodeGen">  
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>  
     </EmbeddedResource>
   </ItemGroup>

@@ -45,8 +45,9 @@ class TerminalGui(App):
         self.input_widget: MessageInput = MessageInput(on_message=self.handle_user_input)
         self.chat_history: ChatHistory = ChatHistory()
         self.option_list = Select(((line, line) for line in ["Python", "C#", "Java"]),
+            prompt="Select a language:",
+            value="Python",
             id="languages")
-        self.option_list.value = "Python"
 
     @on(Select.Changed, "#languages")  
     async def change_language(self, event: Select.Changed):

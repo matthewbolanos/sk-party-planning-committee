@@ -34,14 +34,8 @@ internal static class PythonPluginGeneratorExtensions
     /// <returns>The stream for the given file name.</returns>
     public static Stream ReadPlannerTemplateStream(this PythonPluginGenerator pythonPluginGenerator, string fileName, string? additionalNamespace = "")
     {
-        // output all resources in the assembly
-        var resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-        
-
         var assembly = Assembly.GetExecutingAssembly();
-        var plannerNamespace = pythonPluginGenerator.GetType().Namespace;
-        var targetNamespace = !string.IsNullOrEmpty(additionalNamespace) ? $".{additionalNamespace}" : string.Empty;
-        var resourceName = $"{plannerNamespace}{targetNamespace}.{fileName}";
+        var resourceName = $"PartyPlanning.Agents.Shared.{fileName}";
 
         return assembly.GetManifestResourceStream(resourceName)!;
     }

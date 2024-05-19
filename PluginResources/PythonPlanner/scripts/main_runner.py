@@ -95,7 +95,7 @@ def write_to_file(stdout, stderr, result):
         stderr (str or None): Captured standard error, if any.
         result (any): Result of the last evaluated expression, if any.
     """
-    termination_file_path = '/mnt/data/scripts/io/termination.txt'
+    termination_file_path = '/mnt/data/.io/termination.txt'
     data = {
         'stdout': stdout,
         'stderr': stderr,
@@ -107,4 +107,4 @@ def write_to_file(stdout, stderr, result):
 
 
 # Execute the target script
-run_script_as_main('/mnt/data/scripts/main.py')
+run_script_as_main('/mnt/data/.scripts/main.py')

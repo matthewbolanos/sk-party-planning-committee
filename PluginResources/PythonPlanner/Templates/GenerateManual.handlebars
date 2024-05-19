@@ -1,0 +1,23 @@
+class functions:
+{{#each functions}}
+def {{toSnakeCase PluginName}}__{{toSnakeCase Name}}({{#if Arguments.Properties}}arguments: {{#if Arguments.IsRequired}}{{Arguments.PythonType}}{{else}}Optional[{{Arguments.PythonType}}] = None{{/if}}{{/if}}) -> {{Returns.PythonType}}:
+  """
+  {{#if Description}}
+  {{Description}}
+  {{/if}}
+  {{#if Arguments.Properties}}
+  Arguments:
+  {{#each Arguments.Properties}}
+  - {{Name}} ({{#if IsRequired}}{{PythonType}}{{else}}Optional[{{PythonType}}]{{/if}}){{#if Description}}: {{Description}}{{/if}}
+  {{/each}}
+  {{/if}}
+  {{#if Returns.Description}}
+  Returns:
+  - {{Returns.PythonType}}: {{Returns.Description}}
+    {{#each Returns.Properties}}
+    - {{Name}} ({{#if IsRequired}}{{PythonType}}{{else}}Optional[{{PythonType}}]{{/if}}){{#if Description}}: {{Description}}{{/if}}
+    {{/each}}
+  {{/if}}
+  """
+  pass
+{{/each}}

@@ -54,8 +54,8 @@ if __name__ == "__main__":
 
     # Clear all io files
     io_files = [
-        "/mnt/data/scripts/io/last_function_call.txt",
-        "/mnt/data/scripts/io/function_calls.txt"
+        "/mnt/data/.io/last_function_call.txt",
+        "/mnt/data/.io/function_calls.txt"
     ]
 
     for file_path in io_files:
@@ -63,12 +63,12 @@ if __name__ == "__main__":
             file.write("")
     
     # Delete the termination file
-    termination_file_path = '/mnt/data/scripts/io/termination.txt'
+    termination_file_path = '/mnt/data/.io/termination.txt'
     if os.path.exists(termination_file_path):
         os.remove(termination_file_path)
 
     scripts_to_run = [
-        "/mnt/data/scripts/main_runner.py"
+        "/mnt/data/.scripts/main_runner.py"
     ]
 
     # Terminate all running instances of the scripts

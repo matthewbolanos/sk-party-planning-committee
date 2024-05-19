@@ -145,8 +145,8 @@ public partial class PythonPlanner
 
         // 5. Upload the main code and any new plugins
         ////////////////////////////////////////////////
-        string startScriptCode = await generator.GeneratePythonRunCodeAsync(kernel, code);
-        var startScriptCodeResults = await BaseExecuteAsync(newFunctionsCode+"\n"+startScriptCode);
+        string startScriptCode = await generator.GeneratePythonRunCodeAsync(kernel, newFunctionsCode+"\n"+code);
+        var startScriptCodeResults = await BaseExecuteAsync(startScriptCode);
 
 
         // 6. Perform "function calling" loop 

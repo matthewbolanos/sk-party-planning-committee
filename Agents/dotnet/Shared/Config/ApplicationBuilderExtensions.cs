@@ -40,12 +40,12 @@ namespace PartyPlanning.Agents.Shared.Config
             });
         }
 
-        public static void ConfigurePythonInterpreter(this IHostApplicationBuilder builder)
+        public static void ConfigurePythonPlanner(this IHostApplicationBuilder builder)
         {
-            builder.Services.Configure<PythonInterpreterConfiguration>(options =>
+            builder.Services.Configure<PythonPlannerConfiguration>(options =>
             {
-                IConfigurationSection? sharedConfig = SharedConfigReader.GetConfiguration()?.GetSection("PythonInterpreter");
-                builder.Configuration.Bind("PythonInterpreter", options);
+                IConfigurationSection? sharedConfig = SharedConfigReader.GetConfiguration()?.GetSection("PythonPlanner");
+                builder.Configuration.Bind("PythonPlanner", options);
 
                 // If there is a shared configuration, bind it to the options
                 sharedConfig?.Bind(options);

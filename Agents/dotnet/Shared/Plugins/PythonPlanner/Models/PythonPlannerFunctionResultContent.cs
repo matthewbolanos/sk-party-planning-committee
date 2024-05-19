@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
-public class PythonInterpreterFunctionResultContent
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
+public class PythonPlannerFunctionResultContent
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }

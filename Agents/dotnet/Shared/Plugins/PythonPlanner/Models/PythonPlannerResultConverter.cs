@@ -2,18 +2,18 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
-public class PythonInterpreterExecutionResultResultConverter : JsonConverter<PythonInterpreterExecutionResult>
+public class PythonPlannerResultConverter : JsonConverter<PythonPlannerResult>
 {
-    public override PythonInterpreterExecutionResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override PythonPlannerResult Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
         {
             throw new JsonException("Expected StartObject token");
         }
 
-        var response = new PythonInterpreterExecutionResult();
+        var response = new PythonPlannerResult();
 
         while (reader.Read())
         {
@@ -59,7 +59,7 @@ public class PythonInterpreterExecutionResultResultConverter : JsonConverter<Pyt
         throw new JsonException("Expected EndObject token");
     }
 
-    public override void Write(Utf8JsonWriter writer, PythonInterpreterExecutionResult value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, PythonPlannerResult value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
 
@@ -83,6 +83,6 @@ public class PythonInterpreterExecutionResultResultConverter : JsonConverter<Pyt
 
     public override bool CanConvert(Type typeToConvert)
     {
-        return typeToConvert == typeof(PythonInterpreterExecutionResult);
+        return typeToConvert == typeof(PythonPlannerResult);
     }
 }

@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
-[JsonConverter(typeof(PythonInterpreterExecutionResultResultConverter))]
-public class PythonInterpreterExecutionResult
+[JsonConverter(typeof(PythonPlannerResultConverter))]
+public class PythonPlannerResult
 {
     [JsonPropertyName("status")]
     public string Status { get; set; }

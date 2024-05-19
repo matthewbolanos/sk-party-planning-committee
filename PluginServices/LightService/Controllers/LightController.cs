@@ -21,6 +21,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         /// Retrieves all lights in the system.
         /// </summary>
         /// <returns>Returns the current state of the light and its 6 character long ID for other API requests</returns>
+        /// <response code="200">Returns a list of lights with their current state</response>
         [HttpGet(Name="get_all_lights")]
         [ProducesResponseType(typeof(IEnumerable<LightStateModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLightsAsync()
@@ -47,6 +48,8 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         /// </summary>
         /// <param name="id">The ID of the light from the get_all_lights tool.</param>
         /// <returns>The requested light or a 404 error if not found.</returns>
+        /// <response code="200">Returns the requested light</response>
+        /// <response code="404">If the light is not found</response>
         [HttpGet("{id}", Name="get_light")]
         [ProducesResponseType(typeof(LightStateModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLightAsync(string id)
@@ -73,6 +76,8 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
         /// <param name="id">The ID of the light to change from the get_all_lights tool.</param>
         /// <param name="changeStateRequest">The new state of the light and change parameters.</param>
         /// <returns>The updated light or a 404 error if not found.</returns>
+        /// <response code="200">Returns the updated light state</response>
+        /// <response code="404">If the light is not found</response>
         [HttpPost("{id}", Name="change_light_state")]
         [ProducesResponseType(typeof(LightStateModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> ChangeLightStateAsync(string id, ChangeStateRequest changeStateRequest)

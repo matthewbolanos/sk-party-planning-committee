@@ -6,7 +6,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Text;
 using Azure.AI.OpenAI;
 using System.Text.Json;
-using PartyPlanning.Agents.Plugins.PythonInterpreter;
+using PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
 namespace PartyPlanning.Agents.Shared.Services
 {
@@ -22,7 +22,7 @@ namespace PartyPlanning.Agents.Shared.Services
         Kernel kernel,
         IChatCompletionService chatCompletionService,
         AssistantEventStreamService assistantEventStreamService, 
-        PythonInterpreter pythonInterpreter
+        PythonPlanner pythonInterpreter
     )
     {
         private readonly IMongoCollection<AssistantMessageContent> _messagesCollection = database.GetCollection<AssistantMessageContent>("Messages");
@@ -45,10 +45,10 @@ namespace PartyPlanning.Agents.Shared.Services
                 If you don't use the Python tool, you will invoke functions in the wrong order or at the wrong time.
 
                 ## Available tools in the Python interpreter
-                Below are mocks of the available tools in the Python interpreter:
+                Below are the available tools in the Python interpreter:
 
                 ```python
-                {pythonInterpreter.GenerateMockPluginCodeForKernel(kernel)}
+                {await pythonInterpreter.GenerateMockPluginCodeForKernelAsync(kernel)}
                 ```
 
                 ## Importing libraries

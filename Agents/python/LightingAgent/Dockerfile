@@ -7,7 +7,7 @@ COPY Agents/python/LightingAgent/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY config.json .
-COPY ./Plugins ./plugins
+COPY ./PluginResources ./PluginResources
 COPY Agents/python/LightingAgent ./Agents/python/LightingAgent
 
 # Change working directory to the app directory

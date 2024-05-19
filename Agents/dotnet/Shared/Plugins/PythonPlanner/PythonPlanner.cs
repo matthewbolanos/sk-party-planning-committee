@@ -5,41 +5,39 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.SemanticKernel;
-using Humanizer;
-using System.Text.Json.Serialization;
+using PartyPlanning.Agents.Shared.Plugins.PythonPlanner.CodeGen;
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
 /// <summary>
 /// A plugin for running Python code in an Azure Container Apps dynamic sessions code interpreter.
 /// </summary>
-public partial class PythonInterpreter
+public partial class PythonPlanner
 {
     private static readonly string s_assemblyVersion = typeof(Kernel).Assembly.GetName().Version!.ToString();
 
     private readonly Uri _poolManagementEndpoint;
-    private readonly PythonInterpreterSettings _settings;
+    private readonly PythonPlannerExecutionSettings _settings;
     private readonly Func<Task<string>>? _authTokenProvider;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
     private Assembly _assembly = Assembly.GetExecutingAssembly();
     private readonly string _identifier;
-    private readonly PydanticGenerator generator = new();
+    private readonly PythonPluginGenerator generator = new();
 
     /// <summary>
-    /// Initializes a new instance of the PythonInterpreterTool class.
+    /// Initializes a new instance of the PythonPlannerTool class.
     /// </summary>
     /// <param name="settings">The settings for the Python tool plugin. </param>
     /// <param name="httpClientFactory">The HTTP client factory. </param>
     /// <param name="authTokenProvider"> Optional provider for auth token generation. </param>
     /// <param name="loggerFactory">The logger factory. </param>
-    public PythonInterpreter(
-        PythonInterpreterSettings settings,
+    public PythonPlanner(
+        PythonPlannerExecutionSettings settings,
         IHttpClientFactory httpClientFactory,
         Func<Task<string>>? authTokenProvider = null,
         ILoggerFactory? loggerFactory = null)
@@ -52,13 +50,16 @@ public partial class PythonInterpreter
         this._authTokenProvider = authTokenProvider;
         this._httpClientFactory = httpClientFactory;
         this._identifier = Guid.NewGuid().ToString();
-        this._logger = loggerFactory?.CreateLogger(typeof(PythonInterpreter)) ?? NullLogger.Instance;
+        this._logger = loggerFactory?.CreateLogger(typeof(PythonPlanner)) ?? NullLogger.Instance;
 
         InitializeAsync().Wait();
     }
 
     public async Task InitializeAsync()
     {
+        // get list of resources in the assembly
+        var resources = _assembly.GetManifestResourceNames();
+
         using Stream resourceStream = _assembly.GetManifestResourceStream("PartyPlanning.Agents.Shared.scripts.setup_env.py")!;
         using StreamReader reader = new StreamReader(resourceStream);
         string setupEnvCode = reader.ReadToEnd();
@@ -91,13 +92,13 @@ public partial class PythonInterpreter
 
     [KernelFunction("run")]
     [Description("Executes Python code in a container and returns the stdout, stderr, and result.")]
-    public async Task<PythonInterpreterExecutionResult> ExecuteAsync(Kernel kernel, string code)
+    public async Task<PythonPlannerResult> ExecuteAsync(Kernel kernel, string code)
     {
         // Create plugin files and upload them to the Python container asynchronously
-        var uploadTasks = new List<Task<PythonInterpreterFileUploadResponse>>();
+        var uploadTasks = new List<Task<PythonPlannerFileUploadResponse>>();
 
         string pluginsCode = "from modules.function_helpers import poll_for_results, write_function_call\n\n";
-        pluginsCode += generator.GeneratePluginCode(kernel, false);
+        pluginsCode += await generator.GeneratePluginCodeAsync(kernel, new (){IsMock = false});
         uploadTasks.Add(UploadBinaryAsync(Encoding.UTF8.GetBytes(pluginsCode), "scripts", $"functions.py"));
 
         // Wait for all the plugin files to be uploaded
@@ -141,14 +142,14 @@ public partial class PythonInterpreter
             using Stream connectionScriptResourceStream = _assembly.GetManifestResourceStream("PartyPlanning.Agents.Shared.scripts.connection.py")!;
             using StreamReader connectionScriptReader = new(connectionScriptResourceStream);
             string connectionScriptCode = connectionScriptReader.ReadToEnd();
-            PythonInterpreterExecutionResult connectionScriptResults;
+            PythonPlannerResult connectionScriptResults;
             try
             {
                 connectionScriptResults = await BaseExecuteAsync(sendResponseScriptCode + connectionScriptCode);
             }
             catch
             {
-                return new PythonInterpreterExecutionResult();
+                return new PythonPlannerResult();
             }
 
             // if the connection script results in a function call, execute the function
@@ -158,9 +159,9 @@ public partial class PythonInterpreter
 
             switch (connectionResult)
             {
-                case List<PythonInterpreterFunctionCallContent> functionCalls:
+                case List<PythonPlannerFunctionCallContent> functionCalls:
                     {
-                        List<PythonInterpreterFunctionResultContent> functionResults = new();
+                        List<PythonPlannerFunctionResultContent> functionResults = new();
                         foreach (var functionCall in functionCalls)
                         {
                             KernelArguments args = [];
@@ -251,7 +252,7 @@ public partial class PythonInterpreter
                             }
 
                             // Add to list of functionResults
-                            functionResults.Add(new PythonInterpreterFunctionResultContent
+                            functionResults.Add(new PythonPlannerFunctionResultContent
                             {
                                 Id = functionCall!.Id,
                                 PluginName = functionCall!.PluginName,
@@ -282,7 +283,7 @@ public partial class PythonInterpreter
     }
 
     
-    private async Task<PythonInterpreterExecutionResult> BaseExecuteAsync(string code)
+    private async Task<PythonPlannerResult> BaseExecuteAsync(string code)
     {
         if (this._settings.SanitizeInput)
         {
@@ -295,7 +296,7 @@ public partial class PythonInterpreter
 
         var requestBody = new
         {
-            properties = new PythonInterpreterCodeExecutionProperties(this._settings, code)
+            properties = new CodeInterpreterRequestSettings(this._settings, code)
         };
 
         await this.AddHeadersAsync(httpClient).ConfigureAwait(false);
@@ -313,7 +314,7 @@ public partial class PythonInterpreter
             throw new HttpRequestException($"Failed to execute python code. Status: {response.StatusCode}. Details: {errorBody}.");
         }
 
-        return JsonSerializer.Deserialize<PythonInterpreterExecutionResult>(await response.Content.ReadAsStringAsync().ConfigureAwait(false))!;
+        return JsonSerializer.Deserialize<PythonPlannerResult>(await response.Content.ReadAsStringAsync().ConfigureAwait(false))!;
 
     }
 
@@ -335,7 +336,7 @@ public partial class PythonInterpreter
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="HttpRequestException"></exception>
     [KernelFunction("upload_file"), Description("Uploads a file to `/mnt/data` in the session")]
-    public async Task<PythonInterpreterFileUploadResponseFile> UploadFileAsync(
+    public async Task<PythonPlannerFileUploadResponseFile> UploadFileAsync(
         [Description("The path to the file in the session, relative to `/mnt/data`.")] string remoteFilePath,
         [Description("The path to the file on the local machine.")] string? localFilePath)
     {
@@ -364,10 +365,10 @@ public partial class PythonInterpreter
 
         var JsonElementResult = JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-        return JsonSerializer.Deserialize<PythonInterpreterFileUploadResponseFile>(JsonElementResult.GetProperty("$values")[0].GetRawText())!;
+        return JsonSerializer.Deserialize<PythonPlannerFileUploadResponseFile>(JsonElementResult.GetProperty("$values")[0].GetRawText())!;
     }
 
-    private async Task<PythonInterpreterFileUploadResponse> UploadBinaryAsync(
+    private async Task<PythonPlannerFileUploadResponse> UploadBinaryAsync(
     byte[] fileBytes,
     string? targetFolder,
     string newFileName)
@@ -397,7 +398,7 @@ public partial class PythonInterpreter
         var responseContent = response.Content.ReadAsStringAsync().Result;
 
         // Deserialize the response
-        var executionResponse = JsonSerializer.Deserialize<PythonInterpreterFileUploadResponse>(responseContent);
+        var executionResponse = JsonSerializer.Deserialize<PythonPlannerFileUploadResponse>(responseContent);
 
         // Move the file to the target folder if specified using ExecuteAsync
         foreach (var file in executionResponse!.Values)
@@ -466,7 +467,7 @@ public partial class PythonInterpreter
     /// </summary>
     /// <returns> The list of files in the session. </returns>
     [KernelFunction, Description("Lists all files in the provided session id pool.")]
-    public async Task<IReadOnlyList<PythonInterpreterFileUploadResponseFile>> ListFilesAsync()
+    public async Task<IReadOnlyList<PythonPlannerFileUploadResponseFile>> ListFilesAsync()
     {
         // this._logger.LogTrace("Listing files for Session ID: {SessionId}", this._settings.SessionId);
 
@@ -484,11 +485,11 @@ public partial class PythonInterpreter
 
         var files = jsonElementResult.GetProperty("$values");
 
-        var result = new PythonInterpreterFileUploadResponseFile[files.GetArrayLength()];
+        var result = new PythonPlannerFileUploadResponseFile[files.GetArrayLength()];
 
         for (var i = 0; i < result.Length; i++)
         {
-            result[i] = JsonSerializer.Deserialize<PythonInterpreterFileUploadResponseFile>(files[i].GetRawText())!;
+            result[i] = JsonSerializer.Deserialize<PythonPlannerFileUploadResponseFile>(files[i].GetRawText())!;
         }
 
         return result;
@@ -535,7 +536,7 @@ public partial class PythonInterpreter
 
         try
         {
-            return JsonSerializer.Deserialize<List<PythonInterpreterFunctionCallContent>>(json)!;
+            return JsonSerializer.Deserialize<List<PythonPlannerFunctionCallContent>>(json)!;
         }
         catch (JsonException)
         {
@@ -543,9 +544,9 @@ public partial class PythonInterpreter
         }
     }
 
-    public string GenerateMockPluginCodeForKernel(Kernel kernel)
+    public async Task<string> GenerateMockPluginCodeForKernelAsync(Kernel kernel)
     {
-        return generator.GeneratePluginCode(kernel, true);
+        return await generator.GeneratePluginCodeAsync(kernel, new (){IsMock = true});
     }
 
     

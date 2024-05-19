@@ -12,6 +12,9 @@ namespace PartyPlanning.Agents.Shared.Services
         /// <exception cref="Exception"></exception>
         public string GetOpenApiResource(Assembly assembly, string OpenApiResourceName)
         {
+            // Get all resources in the assembly
+            var resources = assembly.GetManifestResourceNames();
+
             string? fullResourceName = assembly.GetManifestResourceNames().FirstOrDefault(x =>
                 x.EndsWith(OpenApiResourceName)
             );

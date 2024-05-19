@@ -24,7 +24,7 @@ COPY --from=build /app/Agents/java/LightingAgent/target/lighting-agent-0.0.1-SNA
 
 # Copy config.json to the expected location
 COPY config.json ../../../config.json
-COPY Plugins ../../../Plugins/
+COPY PluginResources ../../../PluginResources/
 
 # Expose the port your application will run on
 EXPOSE 8080

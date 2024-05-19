@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft. All rights reserved.
 
+using System.ComponentModel;
 using System.Text.Json.Serialization;
-using static PartyPlanning.Agents.Plugins.PythonInterpreter.PythonInterpreterSettings;
+using static PartyPlanning.Agents.Shared.Plugins.PythonPlanner.PythonPlannerExecutionSettings;
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
-internal sealed class PythonInterpreterCodeExecutionProperties
+public class CodeInterpreterRequestSettings
 {
     /// <summary>
     /// The session identifier.
@@ -37,7 +38,7 @@ internal sealed class PythonInterpreterCodeExecutionProperties
     [JsonPropertyName("pythonCode")]
     public string? PythonCode { get; }
 
-    public PythonInterpreterCodeExecutionProperties(PythonInterpreterSettings settings, string pythonCode)
+    public CodeInterpreterRequestSettings(PythonPlannerExecutionSettings settings, string pythonCode)
     {
         this.Identifier = settings.SessionId;
         this.PythonCode = pythonCode;

@@ -2,7 +2,7 @@
 
 namespace PartyPlanning.Agents.Shared.Config
 {
-    public class PythonInterpreterConfiguration
+    public class PythonPlannerConfiguration
     {
         public string Endpoint { get; set; }
         public string TenantId { get; set; }

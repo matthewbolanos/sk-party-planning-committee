@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using PartyPlanning.Agents.Shared.Controllers;
-using PartyPlanning.Agents.Plugins.PythonInterpreter;
+using PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +23,7 @@ builder.ConfigureOpenAI();
 builder.ConfigureAgentMetadata();
 builder.ConfigurePluginServices();
 builder.ConfigureHealthCheckService();
-builder.ConfigurePythonInterpreter();
+builder.ConfigurePythonPlanner();
 
 // Add chat completion service
 builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
@@ -61,15 +61,15 @@ builder.Services.AddSingleton<IChatCompletionService>((serviceProvider) => {
 });
 
 builder.Services.AddSingleton((serviceProvider)=> {
-    var PythonInterpreterConfiguration = serviceProvider.GetRequiredService<IOptions<PythonInterpreterConfiguration>>().Value;
+    var PythonPlannerConfiguration = serviceProvider.GetRequiredService<IOptions<PythonPlannerConfiguration>>().Value;
     var tokenProvider = serviceProvider.GetRequiredService<AzureContainerAppTokenService>();
 
-    var settings = new PythonInterpreterSettings(
+    var settings = new PythonPlannerExecutionSettings(
         sessionId: Guid.NewGuid().ToString(),
-        endpoint: new Uri(PythonInterpreterConfiguration.Endpoint));
+        endpoint: new Uri(PythonPlannerConfiguration.Endpoint));
     
-    return new PythonInterpreter(
-        new (sessionId: Guid.NewGuid().ToString(), endpoint: new Uri(PythonInterpreterConfiguration.Endpoint)),
+    return new PythonPlanner(
+        new (sessionId: Guid.NewGuid().ToString(), endpoint: new Uri(PythonPlannerConfiguration.Endpoint)),
             serviceProvider.GetRequiredService<IHttpClientFactory>(),
             tokenProvider.GetTokenAsync,
             serviceProvider.GetRequiredService<ILoggerFactory>()
@@ -78,7 +78,7 @@ builder.Services.AddSingleton((serviceProvider)=> {
 
 // Create native plugin collection
 builder.Services.AddSingleton((serviceProvider)=>{
-    var pythonInterpreter = serviceProvider.GetRequiredService<PythonInterpreter>();
+    var pythonInterpreter = serviceProvider.GetRequiredService<PythonPlanner>();
 
     KernelPluginCollection pluginCollection = [];
     pluginCollection.AddFromObject(pythonInterpreter, pluginName: "python");

@@ -14,7 +14,7 @@
                 "operationId": "get_all_lights",
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Returns a list of lights with their current state",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -66,7 +66,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Returns the requested light",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -84,6 +84,9 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "If the light is not found"
                     }
                 }
             },
@@ -127,7 +130,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Returns the updated light state",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -145,6 +148,9 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "If the light is not found"
                     }
                 }
             }

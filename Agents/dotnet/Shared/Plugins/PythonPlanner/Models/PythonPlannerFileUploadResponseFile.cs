@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
-public class PythonInterpreterFileUploadResponseFile
+public class PythonPlannerFileUploadResponseFile
 {
     [JsonPropertyName("$id")]
     public string Id { get; set; }

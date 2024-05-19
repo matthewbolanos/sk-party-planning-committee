@@ -1,0 +1,33 @@
+{{!-- Generates function stubs from plugin --}}
+{{#*inline "GenerateFunctions"}}
+class functions:
+{{#each functions}}
+    def {{toSnakeCase PluginName}}__{{toSnakeCase Name}}({{#if Arguments.Properties}}arguments: {{#if Arguments.IsRequired}}{{Arguments.PythonType}}{{else}}Optional[{{Arguments.PythonType}}] = None{{/if}}{{/if}}) -> {{Returns.PythonType}}:
+        """
+        {{#if Description}}
+        {{Description}}
+        {{/if}}
+        {{#if Arguments.Properties}}
+        Arguments:
+        {{#each Arguments.Properties}}
+        - {{Name}} ({{#if IsRequired}}{{PythonType}}{{else}}Optional[{{PythonType}}]{{/if}}){{#if Description}}: {{Description}}{{/if}}
+        {{/each}}
+        {{/if}}
+        {{#if Returns.Description}}
+        Returns:
+        - {{Returns.PythonType}}: {{Returns.Description}}
+          {{#each Returns.Properties}}
+          - {{Name}} ({{#if IsRequired}}{{PythonType}}{{else}}Optional[{{PythonType}}]{{/if}}){{#if Description}}: {{Description}}{{/if}}
+          {{/each}}
+        {{/if}}
+        """
+        {{#if @root.isMock}}
+        pass
+        {{else}}
+        function_call_id = write_function_call('{{PluginName}}', '{{FunctionName}}', arguments)
+        if function_call_id != None:
+            response = poll_for_results(function_call_id)
+            return response
+        {{/if}}
+{{/each}}
+{{/inline}}

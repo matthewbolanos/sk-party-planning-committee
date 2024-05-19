@@ -3,12 +3,9 @@
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
-/// <summary>
-/// Settings for a Python Sessions Plugin.
-/// </summary>
-public class PythonInterpreterSettings
+public class PythonPlannerExecutionSettings(string sessionId, Uri endpoint)
 {
     /// <summary>
     /// Determines if the input should be sanitized.
@@ -20,13 +17,13 @@ public class PythonInterpreterSettings
     /// The target endpoint.
     /// </summary>
     [JsonIgnore]
-    public Uri Endpoint { get; set; }
+    public Uri Endpoint { get; set; } = endpoint;
 
     /// <summary>
     /// The session identifier.
     /// </summary>
     [JsonPropertyName("identifier")]
-    public string SessionId { get; set; }
+    public string SessionId { get; set; } = sessionId;
 
     /// <summary>
     /// Code input type.
@@ -45,18 +42,6 @@ public class PythonInterpreterSettings
     /// </summary>
     [JsonPropertyName("timeoutInSeconds")]
     public int TimeoutInSeconds { get; set; } = 10;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PythonInterpreterSettings"/> class.
-    /// </summary>
-    /// <param name="sessionId">Session identifier.</param>
-    /// <param name="endpoint">Azure Container Apps Endpoint.</param>
-    [JsonConstructor]
-    public PythonInterpreterSettings(string sessionId, Uri endpoint)
-    {
-        this.SessionId = sessionId;
-        this.Endpoint = endpoint;
-    }
 
     /// <summary>
     /// Code input type.
@@ -88,3 +73,4 @@ public class PythonInterpreterSettings
         Synchronous
     }
 }
+

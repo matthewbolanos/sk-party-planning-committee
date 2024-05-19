@@ -15,12 +15,12 @@ namespace PartyPlanning.Agents.Shared.Services
         private string clientId;
         private string clientSecret;
 
-        public AzureContainerAppTokenService(ILogger<AzureContainerAppTokenService> logger, IOptions<PythonInterpreterConfiguration> PythonInterpreterConfiguration)
+        public AzureContainerAppTokenService(ILogger<AzureContainerAppTokenService> logger, IOptions<PythonPlannerConfiguration> PythonPlannerConfiguration)
         {
             this.logger = logger;
-            this.tenantId = PythonInterpreterConfiguration.Value.TenantId;
-            this.clientId = PythonInterpreterConfiguration.Value.ClientId;
-            this.clientSecret = PythonInterpreterConfiguration.Value.ClientSecret;
+            this.tenantId = PythonPlannerConfiguration.Value.TenantId;
+            this.clientId = PythonPlannerConfiguration.Value.ClientId;
+            this.clientSecret = PythonPlannerConfiguration.Value.ClientSecret;
         }
 
         public async Task<string> GetTokenAsync()

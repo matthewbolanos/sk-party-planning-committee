@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 @Service
 public class OpenApiSpecLoaderService {
 
-    private final Path directoryPath = Paths.get("../../../Plugins/OpenApiPlugins/");
+    private final Path directoryPath = Paths.get("../../../PluginResources/OpenApiPlugins/");
 
     public String loadSpecAsString(String fileName) throws IOException {
         Path filePath = directoryPath.resolve(fileName);

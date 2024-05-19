@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 using Microsoft.SemanticKernel;
 
-namespace PartyPlanning.Agents.Plugins.PythonInterpreter;
+namespace PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
 #pragma warning disable SKEXP0001
-public class PythonInterpreterFunctionCallContent
+public class PythonPlannerFunctionCallContent
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }

@@ -77,7 +77,7 @@ class RunService:
 
         kernel.add_plugin_from_openapi(
             plugin_name="light_plugin",
-            openapi_document_path="../../../plugins/OpenApiPlugins/LightPlugin.swagger.json",
+            openapi_document_path="../../../PluginResources/OpenApiPlugins/LightPlugin.swagger.json",
             execution_settings=OpenAPIFunctionExecutionParameters(
                 http_client=http_client, # Disable SSL verification (for development only
                 server_url_override=light_service_endpoint,

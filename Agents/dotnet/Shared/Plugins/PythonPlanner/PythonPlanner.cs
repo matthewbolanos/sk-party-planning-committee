@@ -119,6 +119,9 @@ public partial class PythonPlanner
                     IncludedFunctions = newFunctions.Select(f => new FunctionName(f.PluginName!, f.Name)).ToList()
                 }
             });
+
+            string newFunctionsScript = await generator.GeneratePythonRunCodeAsync(kernel, newFunctionsCode);
+            var newFunctionsCodeResults = await BaseExecuteAsync(newFunctionsScript);
         }
 
         // 4. Standardize function names
@@ -145,7 +148,7 @@ public partial class PythonPlanner
 
         // 5. Upload the main code and any new plugins
         ////////////////////////////////////////////////
-        string startScriptCode = await generator.GeneratePythonRunCodeAsync(kernel, newFunctionsCode+"\n"+code);
+        string startScriptCode = await generator.GeneratePythonRunCodeAsync(kernel, code);
         var startScriptCodeResults = await BaseExecuteAsync(startScriptCode);
 
 
@@ -157,7 +160,7 @@ public partial class PythonPlanner
         {
             // 6.a. Create a relay to the Python container
             ////////////////////////////////////////////////
-            var relayCode = await generator.GeneratePythonRelayCodeAsync(kernel, functionResults);
+            var relayCode = await generator.GeneratePythonRelayCodeAsync(kernel, functionResults, startScriptCodeResults.Result);
             var relayCodeResults = await BaseExecuteAsync(relayCode);
 
             // 6.b. Deserialize the relay code results
@@ -180,7 +183,7 @@ public partial class PythonPlanner
                         {
                             foreach (var parameter in args)
                             {
-                                args[parameter.Key] = parameter.Value?.ToString();
+                                kernelArgs[parameter.Key] = parameter.Value?.ToString();
                             }
                         }
 

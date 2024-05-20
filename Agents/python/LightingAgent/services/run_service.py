@@ -70,7 +70,6 @@ class RunService:
         else:
             raise Exception("Invalid deployment type")
 
-        # Load hooks
 
         # Load the OpenAPI plugins
         light_service_endpoint = await health_check_service.get_healthy_endpoint(plugin_services['LightService'].endpoints)

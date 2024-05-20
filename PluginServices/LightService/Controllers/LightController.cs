@@ -93,6 +93,15 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
                 return null;
             }
 
+            // Check if the light has a scheduled state change
+            if (changeStateRequest.ScheduledTime != null)
+            {
+                // Calculate the time until the scheduled state change
+                var timeUntilChange = Math.Max((changeStateRequest.ScheduledTime.Value - DateTime.Now).Milliseconds, 0);
+
+                // Wait until the scheduled time
+                await Task.Delay(timeUntilChange).ConfigureAwait(false);
+            }   
 
             if (changeStateRequest.HexColor != null)
             {

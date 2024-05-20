@@ -1,7 +1,9 @@
 {{#each functions}}
 async def {{toSnakeCase PluginName}}__{{toSnakeCase Name}}(_a=None):
- global _fr
- _fcid=_wfc('{{PluginName}}','{{Name}}',_a)
- return await _pfr(_fcid)
+    _fcid=write_function_call('{{PluginName}}','{{Name}}',_a)
+    return await poll_function_result(_fcid)
+    
 functions.{{toSnakeCase PluginName}}__{{toSnakeCase Name}}={{toSnakeCase PluginName}}__{{toSnakeCase Name}}
 {{/each}}
+
+

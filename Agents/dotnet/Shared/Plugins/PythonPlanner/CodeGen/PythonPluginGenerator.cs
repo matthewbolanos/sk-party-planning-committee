@@ -134,6 +134,7 @@ public class PythonPluginGenerator
     public async Task<string> GeneratePythonRelayCodeAsync(
         Kernel kernel,
         List<PythonPlannerFunctionResultContent> functionResults,
+        string scriptId,
         CancellationToken cancellationToken = default)
     {
         // Construct prompt from Partials and Prompt Template
@@ -154,7 +155,8 @@ public class PythonPluginGenerator
                         id = result.Id,
                         result = JsonSerializer.Serialize(result.Result)
                     }).ToList()
-                }
+                },
+                { "scriptId", scriptId }
             };
 
         var handlebarsTemplate = this._templateFactory.Create(promptTemplateConfig);

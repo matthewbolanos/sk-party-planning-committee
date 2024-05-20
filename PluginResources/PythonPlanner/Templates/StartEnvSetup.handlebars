@@ -1,30 +1,28 @@
 import sys,os,asyncio,time,json,random,traceback,subprocess,tempfile
 from IPython import get_ipython as gi
 from IPython.utils.capture import capture_output
-f=["/mnt/data/.cache","/mnt/data/.io", "/mnt/data/.io/function_results","/mnt/data/.main", "/mnt/data/.background/"]
+f=["/mnt/data/.cache","/mnt/data/.io", "/mnt/data/.io/function_results","/mnt/data/.io/final_results","/mnt/data/.main","/mnt/data/.background/"]
 os.environ['NUMBA_CACHE_DIR'],os.environ['PYTHONASYNCIODEBUG']=f[0],'1'
 for d in f: os.makedirs(d,exist_ok=True)
 
-final_results_path = os.path.join("/mnt/data/.io", "final_results.txt")
+_fc_pos = 0
 function_calls_path = os.path.join("/mnt/data/.io", "function_calls.txt")
 with open(function_calls_path, 'w') as function_calls_file:
 	function_calls_file.write("")
 
 if f[1] not in sys.path: sys.path.append(f[1])
-class functions: pass
-_fc,_fr,_res={},{},{}
 def _run(code):
+	scriptId = random.randint(0, 1000000)
 	try:
-		temp_dir = "/mnt/data/.main/"
-		os.makedirs(temp_dir, exist_ok=True)
-		tf = tempfile.NamedTemporaryFile(delete=False, suffix='.py', dir=temp_dir)
+		file_path = f"/mnt/data/.main/{scriptId}.py"
 		try:
-			with open(tf.name, "w") as f:
+			with open(file_path, "w") as f:
 				f.write(code)
 		finally:
 			tf.close()
 	finally:
 		tf.close()
+	return scriptId
 try:
 	temp_dir = "/mnt/data/.background/"
 	_r = {{mainRunner}}

@@ -12,16 +12,21 @@ import traceback
 import ast
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import nest_asyncio
+
+nest_asyncio.apply()
 
 # Set up logging
 LOG_FILE_PATH = '/mnt/data/.io/debug.log'
 os.makedirs(os.path.dirname(LOG_FILE_PATH), exist_ok=True)
 logging.basicConfig(filename=LOG_FILE_PATH, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
-FINAL_RESULTS_PATH = '/mnt/data/.io/final_results.txt'
+FINAL_RESULTS_DIR = '/mnt/data/.io/final_results'
 FUNCTION_CALLS_PATH = '/mnt/data/.io/function_calls.txt'
 RESULTS_DIR = '/mnt/data/.io/function_results'
 
+# Global context to share between the main runner and executed code
+class functions: pass
 
 class FileHandler(FileSystemEventHandler):
     def __init__(self, queue, processed_files):
@@ -35,76 +40,6 @@ class FileHandler(FileSystemEventHandler):
                 self.queue.put(event.src_path)
 
 
-def execute_with_last_result(code):
-    if not code.strip():
-        return None
-
-    output, error = io.StringIO(), io.StringIO()
-    parsed_code = ast.parse(code)
-    last_expr, last_stmt = None, None
-
-    for node in reversed(parsed_code.body):
-        if isinstance(node, ast.Expr):
-            last_expr = node
-            parsed_code.body.remove(node)
-            break
-        elif isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Assign, ast.AugAssign, ast.AnnAssign)):
-            last_stmt = node
-            parsed_code.body.remove(node)
-            break
-
-    local_context, global_context = {}, {}
-
-    try:
-        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(error):
-            exec(compile(parsed_code, filename="<ast>", mode="exec"), global_context, local_context)
-            if last_expr:
-                last_result = eval(compile(ast.Expression(last_expr.value), filename="<ast>", mode="eval"), global_context, local_context)
-            elif last_stmt:
-                exec(compile(ast.Module([last_stmt]), filename="<ast>", mode="exec"), global_context, local_context)
-                last_result = None
-            else:
-                last_result = None
-    except Exception:
-        error.write(traceback.format_exc())
-        last_result = None
-
-    return last_result, output.getvalue().strip(), error.getvalue().strip()
-
-
-def process_queue(queue, processed_files):
-    os.makedirs(os.path.dirname(FINAL_RESULTS_PATH), exist_ok=True)
-    while True:
-        file_path = queue.get()
-        if file_path is None:
-            break
-
-        try:
-            logging.debug(f"Processing file: {file_path}")
-            with open(file_path, 'r') as file:
-                code = file.read()
-            logging.debug(f"File content of {file_path}: {code}")
-
-            result, stdout, stderr = execute_with_last_result(code)
-
-            output = {
-                "stdout": stdout,
-                "stderr": stderr,
-                "result": json.dumps(result)
-            }
-            logging.debug(f"Output for {file_path}: {output}")
-            with open(FINAL_RESULTS_PATH, 'w') as result_file:
-                result_file.write(json.dumps(output) + '\n')
-            logging.debug(f"Written result for file: {file_path}")
-            processed_files.add(file_path)
-        except Exception as ex:
-            logging.error(f"Error processing {file_path}: {ex}")
-            with open(FINAL_RESULTS_PATH, 'w') as result_file:
-                result_file.write(json.dumps({"stdout": stdout, "stderr": traceback.format_exc()}) + '\n')
-        finally:
-            queue.task_done()
-
-
 def write_function_call(plugin, func, args=None):
     function_call_id = random.randint(0, 1000000000)
     call = {'id': function_call_id, 'plugin': plugin, 'function': func, 'args': json.dumps(args)}
@@ -115,13 +50,17 @@ def write_function_call(plugin, func, args=None):
 
 async def poll_function_result(key):
     result_path = os.path.join(RESULTS_DIR, f'{key}.json')
-    while True:
-        if os.path.exists(result_path):
-            with open(result_path, 'r') as f:
-                result = json.load(f)
-                os.remove(result_path)
-                return result
-        await asyncio.sleep(0.001)
+    try:
+        while True:
+            if os.path.exists(result_path):
+                with open(result_path, 'r') as f:
+                    result = json.load(f)
+                    os.remove(result_path)
+                    return result
+            await asyncio.sleep(0.001)
+    except json.JSONDecodeError as e:
+        os.remove(result_path)
+        return None
 
 
 def scan_directory(directory, queue, processed_files):
@@ -130,6 +69,102 @@ def scan_directory(directory, queue, processed_files):
         if file_path.endswith('.py') and file_path not in processed_files:
             logging.debug(f"Found unprocessed file: {file_path}")
             queue.put(file_path)
+
+global_context = globals()
+
+
+async def execute_with_last_result(code):
+    if not code.strip():
+        return None, "", ""
+
+    output, error = io.StringIO(), io.StringIO()
+    parsed_code = ast.parse(code)
+    last_expr, last_stmt = None, None
+    is_async = False
+
+    for node in reversed(parsed_code.body):
+        if isinstance(node, ast.Expr):
+            last_expr = node
+            if isinstance(node.value, ast.Await):
+                is_async = True
+            parsed_code.body.remove(node)
+            break
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Assign, ast.AugAssign, ast.AnnAssign)):
+            last_stmt = node
+            if isinstance(node, ast.AsyncFunctionDef):
+                is_async = True
+            parsed_code.body.remove(node)
+            break
+
+    local_context = {}
+
+    try:
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(error):
+            exec(compile(parsed_code, filename="<ast>", mode="exec"), global_context, local_context)
+            if last_expr:
+                if is_async:
+                    logging.debug(f"Evaluating async last expression: {ast.dump(last_expr)}")
+                    last_result = await eval(compile(ast.Expression(last_expr.value), filename="<ast>", mode="eval"), global_context, local_context)
+                else:
+                    logging.debug(f"Evaluating last expression: {ast.dump(last_expr)}")
+                    last_result = eval(compile(ast.Expression(last_expr.value), filename="<ast>", mode="eval"), global_context, local_context)
+            elif last_stmt:
+                module = ast.Module(body=[last_stmt], type_ignores=[])
+                if is_async:
+                    await exec(compile(module, filename="<ast>", mode="exec"), global_context, local_context)
+                else:
+                    exec(compile(module, filename="<ast>", mode="exec"), global_context, local_context)
+                last_result = None
+            else:
+                last_result = None
+    except Exception:
+        error.write(traceback.format_exc())
+        last_result = None
+
+    # Update the global context with the local context
+    global_context.update(local_context)
+
+    stdout_output = output.getvalue().strip()
+    stderr_output = error.getvalue().strip()
+
+    return last_result, stdout_output, stderr_output
+
+
+def process_queue(queue, processed_files):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    while True:
+        file_path = queue.get()
+        if file_path is None:
+            break
+
+        final_results_path = os.path.join(FINAL_RESULTS_DIR, f'{os.path.basename(file_path).replace(".py", ".json")}')
+
+        try:
+            logging.debug(f"Processing file: {file_path}")
+            with open(file_path, 'r') as file:
+                code = file.read()
+            logging.debug(f"File content of {file_path}: {code}")
+
+            result, stdout, stderr = loop.run_until_complete(execute_with_last_result(code))
+
+            output = {
+                "stdout": stdout,
+                "stderr": stderr,
+                "result": json.dumps(result)
+            }
+            logging.debug(f"Output for {file_path}: {output}")
+            with open(final_results_path, 'w') as result_file:
+                result_file.write(json.dumps(output) + '\n')
+            logging.debug(f"Written result for file: {file_path}")
+            processed_files.add(file_path)
+        except Exception as ex:
+            logging.error(f"Error processing {file_path}: {ex}")
+            with open(final_results_path, 'w') as result_file:
+                result_file.write(json.dumps({"stdout": stdout, "stderr": traceback.format_exc()}) + '\n')
+        finally:
+            queue.task_done()
+
 
 
 def main():

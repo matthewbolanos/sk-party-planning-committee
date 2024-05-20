@@ -28,6 +28,6 @@ namespace PartyPlanning.PluginServices.LightService.Models
         /// <summary>
         /// The time at which the change should occur.
         /// </summary>
-        public DateTime? ScheduledTime { get; set; } = DateTime.Now;
+        public DateTime? ScheduledTime { get; set; }
     }
 }

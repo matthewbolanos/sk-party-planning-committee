@@ -46,9 +46,10 @@ namespace PartyPlanning.Agents.Shared.Serializers
                         throw new Exception($"Unknown content type: {type}");
                 }
             }
-            
-            var assistantId = doc.GetValue("assistant_id", "lighting-agent")?.AsString;
-            var runId = doc.GetValue("run_id", null)?.AsString;
+
+            var runIdValue = doc.GetValue("run_id", null);
+            string? runId = runIdValue != null && !runIdValue.IsBsonNull ? runIdValue.AsString : null;
+
 
             return new AssistantMessageContent
             {
@@ -57,7 +58,7 @@ namespace PartyPlanning.Agents.Shared.Serializers
                 CreatedAt = createdAt,
                 Role = role,
                 Items = [.. items],
-                AssistantId = assistantId,
+                AssistantId = "lighting-agent",
                 RunId = runId
             };
         }

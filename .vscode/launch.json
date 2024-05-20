@@ -170,6 +170,19 @@
         }
     },
     {
+      "name": "SceneService (Python)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["app:app", "--reload", "--host", "0.0.0.0", "--port", "7104"],
+      "jinja": true,
+      "cwd": "${workspaceFolder}/PluginServices/SceneService-Python",
+      "justMyCode": false,
+      "env": {
+        "DEPLOY_ENV": "development"
+      }
+    },
+    {
         "name": ".NET Core Attach",
         "type": "coreclr",
         "request": "attach"

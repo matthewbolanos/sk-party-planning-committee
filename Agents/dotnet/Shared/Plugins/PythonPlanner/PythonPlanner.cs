@@ -268,18 +268,18 @@ public partial class PythonPlanner
     /// <returns>The metadata of the uploaded file.</returns>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="HttpRequestException"></exception>
-    [KernelFunction("upload_file"), Description("Uploads a file to `/mnt/data` in the session")]
-    public async Task<PythonPlannerFileUploadResponseFile> UploadFileAsync(
-        [Description("The path to the file in the session, relative to `/mnt/data`.")] string remoteFilePath,
+    [KernelFunction, Description("Uploads a file for the current session id pool.")]
+    public async Task<PythonPlannerFileUploadResponse> UploadFileAsync(
+        [Description("The path to the file in the session.")] string remoteFilePath,
         [Description("The path to the file on the local machine.")] string? localFilePath)
     {
-        // this._logger.LogInformation("Uploading file: {LocalFilePath} to {RemoteFilePath}", localFilePath, remoteFilePath);
+        this._logger.LogInformation("Uploading file: {LocalFilePath} to {RemoteFilePath}", localFilePath, remoteFilePath);
 
         using var httpClient = this._httpClientFactory.CreateClient();
 
         await this.AddHeadersAsync(httpClient).ConfigureAwait(false);
 
-        using var fileContent = new ByteArrayContent(File.ReadAllBytes(localFilePath!));
+        using var fileContent = new ByteArrayContent(File.ReadAllBytes(localFilePath));
         using var request = new HttpRequestMessage(HttpMethod.Post, $"{this._poolManagementEndpoint}python/uploadFile?identifier={this._settings.SessionId}")
         {
             Content = new MultipartFormDataContent
@@ -298,61 +298,7 @@ public partial class PythonPlanner
 
         var JsonElementResult = JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-        return JsonSerializer.Deserialize<PythonPlannerFileUploadResponseFile>(JsonElementResult.GetProperty("$values")[0].GetRawText())!;
-    }
-
-    private async Task<PythonPlannerFileUploadResponse> UploadBinaryAsync(
-    byte[] fileBytes,
-    string? targetFolder,
-    string newFileName)
-    {
-        // Create the multipart/form-data content
-        var content = new MultipartFormDataContent();
-        var fileContent = new ByteArrayContent(fileBytes);
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-
-        // 'file' is the name of the form field that the server expects
-        content.Add(fileContent, "file", newFileName);
-
-        using var httpClient = this._httpClientFactory.CreateClient();
-
-        await this.AddHeadersAsync(httpClient).ConfigureAwait(false);
-
-        // Create the request
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{this._poolManagementEndpoint}python/uploadFile?identifier={this._settings.SessionId}")
-        {
-            Content = content
-        };
-
-        // Send the request
-        var response = await httpClient.SendAsync(request);
-
-        // Read the response
-        var responseContent = response.Content.ReadAsStringAsync().Result;
-
-        // Deserialize the response
-        var executionResponse = JsonSerializer.Deserialize<PythonPlannerFileUploadResponse>(responseContent);
-
-        // Move the file to the target folder if specified using ExecuteAsync
-        foreach (var file in executionResponse!.Values)
-        {
-            if (targetFolder != null)
-            {
-                var moveFileCode = $"""
-                    import shutil
-                    shutil.move('/mnt/data/{file.Filename}', '/mnt/data/{targetFolder}/{newFileName}')
-                    """;
-                await BaseExecuteAsync(moveFileCode);
-
-                file.FullPath = $"/mnt/data/{targetFolder}/{newFileName}";
-            }
-            else
-            {
-                file.FullPath = $"/mnt/data/{newFileName}";
-            }
-        }
-
-        return executionResponse!;
+        return JsonSerializer.Deserialize<PythonPlannerFileUploadResponse>(JsonElementResult.GetProperty("$values")[0].GetRawText())!;
     }
 
     /// <summary>

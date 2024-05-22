@@ -30,7 +30,7 @@ public class CodeInterpreterRequestSettings
     /// Timeout in seconds for the code execution.
     /// </summary>
     [JsonPropertyName("timeoutInSeconds")]
-    public int TimeoutInSeconds { get; } = 10;
+    public int TimeoutInSeconds { get; } = 300;
 
     /// <summary>
     /// The Python code to execute.

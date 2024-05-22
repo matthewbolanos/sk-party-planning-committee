@@ -41,7 +41,7 @@ public class PythonPlannerExecutionSettings(string sessionId, Uri endpoint)
     /// Timeout in seconds for the code execution.
     /// </summary>
     [JsonPropertyName("timeoutInSeconds")]
-    public int TimeoutInSeconds { get; set; } = 10;
+    public int TimeoutInSeconds { get; set; } = 300;
 
     /// <summary>
     /// Code input type.

@@ -1,0 +1,138 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Home API",
+        "version": "v1"
+    },
+    "paths": {
+        "/Speaker/LoadSong": {
+            "post": {
+                "tags": [
+                    "Speaker"
+                ],
+                "summary": "Loads a song.\r\nCall this before playing to ensure the song can immediately start playing when Play is called.",
+                "operationId": "load_song",
+                "requestBody": {
+                    "description": "An object containing the relative path to the song file.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SongRequest"
+                            }
+                        },
+                        "text/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SongRequest"
+                            }
+                        },
+                        "application/*+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SongRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Song loaded successfully."
+                    },
+                    "400": {
+                        "description": "Error loading song.",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/Speaker/Play": {
+            "post": {
+                "tags": [
+                    "Speaker"
+                ],
+                "summary": "Plays a song.\r\nYou must call LoadSong before calling this.",
+                "operationId": "play_song",
+                "responses": {
+                    "200": {
+                        "description": "Song is playing."
+                    },
+                    "400": {
+                        "description": "Error playing song.",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            },
+                            "text/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProblemDetails"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ProblemDetails": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    },
+                    "detail": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "instance": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": {}
+            },
+            "SongRequest": {
+                "type": "object",
+                "properties": {
+                    "relativePath": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "additionalProperties": false
+            }
+        }
+    }
+}

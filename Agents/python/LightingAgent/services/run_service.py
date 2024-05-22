@@ -35,7 +35,6 @@ class RunService:
             db_manager: DatabaseManager,
             http_client: httpx.AsyncClient
         ):
-        
 
         # Load variables from config.json at the root of the solution
         with open('../../../config.json') as file:
@@ -65,21 +64,39 @@ class RunService:
                     org_id=org_id, # org_id is optional
                 ),
             )
-        elif (deployment_type == "Other"):
-            raise Exception("Other deployment type not supported in the Python SDK yet.")
-        else:
-            raise Exception("Invalid deployment type")
 
-
-        # Load the OpenAPI plugins
+        # Load the Light plugin
         light_service_endpoint = await health_check_service.get_healthy_endpoint(plugin_services['LightService'].endpoints)
-
         kernel.add_plugin_from_openapi(
             plugin_name="light_plugin",
             openapi_document_path="../../../PluginResources/OpenApiPlugins/LightPlugin.swagger.json",
             execution_settings=OpenAPIFunctionExecutionParameters(
-                http_client=http_client, # Disable SSL verification (for development only
+                http_client=http_client,
                 server_url_override=light_service_endpoint,
+                enable_payload_namespacing=True,
+            ),
+        )
+
+        # Load the Scene plugin
+        scene_service_endpoint = await health_check_service.get_healthy_endpoint(plugin_services['SceneService'].endpoints)
+        kernel.add_plugin_from_openapi(
+            plugin_name="scene_plugin",
+            openapi_document_path="../../../PluginResources/OpenApiPlugins/ScenePlugin.swagger.json",
+            execution_settings=OpenAPIFunctionExecutionParameters(
+                http_client=http_client,
+                server_url_override=scene_service_endpoint,
+                enable_payload_namespacing=True,
+            ),
+        )
+
+        # Load the Speaker plugin
+        speaker_service_endpoint = await health_check_service.get_healthy_endpoint(plugin_services['SpeakerService'].endpoints)
+        kernel.add_plugin_from_openapi(
+            plugin_name="speaker_plugin",
+            openapi_document_path="../../../PluginResources/OpenApiPlugins/SpeakerPlugin.swagger.json",
+            execution_settings=OpenAPIFunctionExecutionParameters(
+                http_client=http_client,
+                server_url_override=speaker_service_endpoint,
                 enable_payload_namespacing=True,
             ),
         )
@@ -103,7 +120,7 @@ class RunService:
             ),
             kernel=kernel,
             arguments=KernelArguments()
-        ) 
+        )
 
         # Return the results as a stream 
         completeMessage = ""

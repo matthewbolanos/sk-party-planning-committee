@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="MongoDB.Driver" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="OpenTK.Audio.OpenAL" />
   </ItemGroup>
 
   <ItemGroup>

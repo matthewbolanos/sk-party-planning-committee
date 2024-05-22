@@ -1,6 +1,4 @@
 import os
-import time
-import queue
 import threading
 import contextlib
 import io
@@ -26,52 +24,68 @@ FUNCTION_CALLS_PATH = '/mnt/data/.io/function_calls.txt'
 RESULTS_DIR = '/mnt/data/.io/function_results'
 
 # Global context to share between the main runner and executed code
+global_context = {}
 class functions: pass
 
 class FileHandler(FileSystemEventHandler):
-    def __init__(self, queue, processed_files):
+    def __init__(self, queue, event_loop):
         self.queue = queue
-        self.processed_files = processed_files
+        self.event_loop = event_loop
 
     def on_created(self, event):
         if not event.is_directory and event.src_path.endswith('.py'):
             logging.debug(f"File created: {event.src_path}")
-            if event.src_path not in self.processed_files:
-                self.queue.put(event.src_path)
+            self.event_loop.call_soon_threadsafe(self.queue.put_nowait, event.src_path)
 
+    def on_modified(self, event):
+        if not event.is_directory and event.src_path.endswith('.py'):
+            logging.debug(f"File modified: {event.src_path}")
+            self.event_loop.call_soon_threadsafe(self.queue.put_nowait, event.src_path)
 
-def write_function_call(plugin, func, args=None):
-    function_call_id = random.randint(0, 1000000000)
-    call = {'id': function_call_id, 'plugin': plugin, 'function': func, 'args': json.dumps(args)}
-    with open(FUNCTION_CALLS_PATH, 'a') as f:
-        f.write(json.dumps(call) + '\n')
-    return function_call_id
+class ResultFileHandler(FileSystemEventHandler):
+    def __init__(self, loop, result_event, result_path):
+        self.loop = loop
+        self.result_event = result_event
+        self.result_path = result_path
 
+    def on_created(self, event):
+        if event.src_path == self.result_path:
+            self.loop.call_soon_threadsafe(self.result_event.set)
 
-async def poll_function_result(key):
+    def on_modified(self, event):
+        if event.src_path == self.result_path:
+            self.loop.call_soon_threadsafe(self.result_event.set)
+
+async def poll_function_result(key, loop):
     result_path = os.path.join(RESULTS_DIR, f'{key}.json')
+    result_event = asyncio.Event()
+
+    # Check if the result file already exists
+    if os.path.exists(result_path):
+        with open(result_path, 'r') as f:
+            result = json.load(f)
+        os.remove(result_path)
+        return result
+
+    # Set up watchdog observer for the result file
+    event_handler = ResultFileHandler(loop, result_event, result_path)
+    observer = Observer()
+    observer.schedule(event_handler, path=RESULTS_DIR, recursive=False)
+    observer.start()
+
     try:
-        while True:
-            if os.path.exists(result_path):
-                with open(result_path, 'r') as f:
-                    result = json.load(f)
-                    os.remove(result_path)
-                    return result
-            await asyncio.sleep(0.001)
-    except json.JSONDecodeError as e:
+        await result_event.wait()  # Wait for the event to be set when the file is created
+
+        with open(result_path, 'r') as f:
+            result = json.load(f)
+        os.remove(result_path)
+        return result
+    except json.JSONDecodeError:
         os.remove(result_path)
         return None
-
-
-def scan_directory(directory, queue, processed_files):
-    for filename in os.listdir(directory):
-        file_path = os.path.join(directory, filename)
-        if file_path.endswith('.py') and file_path not in processed_files:
-            logging.debug(f"Found unprocessed file: {file_path}")
-            queue.put(file_path)
-
-global_context = globals()
-
+    finally:
+        observer.stop()
+        observer.join()
 
 async def execute_with_last_result(code):
     if not code.strip():
@@ -129,12 +143,9 @@ async def execute_with_last_result(code):
 
     return last_result, stdout_output, stderr_output
 
-
-def process_queue(queue, processed_files):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+async def process_queue(queue):
     while True:
-        file_path = queue.get()
+        file_path = await queue.get()
         if file_path is None:
             break
 
@@ -146,7 +157,7 @@ def process_queue(queue, processed_files):
                 code = file.read()
             logging.debug(f"File content of {file_path}: {code}")
 
-            result, stdout, stderr = loop.run_until_complete(execute_with_last_result(code))
+            result, stdout, stderr = await execute_with_last_result(code)
 
             output = {
                 "stdout": stdout,
@@ -157,7 +168,6 @@ def process_queue(queue, processed_files):
             with open(final_results_path, 'w') as result_file:
                 result_file.write(json.dumps(output) + '\n')
             logging.debug(f"Written result for file: {file_path}")
-            processed_files.add(file_path)
         except Exception as ex:
             logging.error(f"Error processing {file_path}: {ex}")
             with open(final_results_path, 'w') as result_file:
@@ -165,37 +175,39 @@ def process_queue(queue, processed_files):
         finally:
             queue.task_done()
 
-
-
 def main():
     directory_to_watch = '/mnt/data/.main/'
     if not os.path.exists(directory_to_watch):
         logging.error(f"Directory {directory_to_watch} does not exist")
         return
 
-    processed_files = set()
-    file_queue = queue.Queue()
-    event_handler = FileHandler(file_queue, processed_files)
+    loop = asyncio.get_event_loop()
+    file_queue = asyncio.Queue()
+
+    # Check if there are any existing files in the directory
+    for filename in os.listdir(directory_to_watch):
+        file_path = os.path.join(directory_to_watch, filename)
+        if os.path.isfile(file_path) and file_path.endswith('.py'):
+            file_queue.put_nowait(file_path)
+
+    event_handler = FileHandler(file_queue, loop)
     observer = Observer()
     observer.schedule(event_handler, path=directory_to_watch, recursive=False)
     observer.start()
     logging.debug(f"Started observer on {directory_to_watch}")
 
-    processing_thread = threading.Thread(target=process_queue, args=(file_queue, processed_files), daemon=True)
-    processing_thread.start()
-    logging.debug("Started processing thread")
+    processing_task = loop.create_task(process_queue(file_queue))
+    logging.debug("Started processing task")
 
     try:
-        while True:
-            logging.debug("Main loop running...")
-            scan_directory(directory_to_watch, file_queue, processed_files)
-            time.sleep(1)
+        loop.run_forever()
     except KeyboardInterrupt:
         observer.stop()
-    observer.join()
-    file_queue.put(None)
-    processing_thread.join()
-
+    finally:
+        observer.join()
+        file_queue.put_nowait(None)
+        loop.run_until_complete(processing_task)
+        loop.close()
 
 if __name__ == "__main__":
     main()

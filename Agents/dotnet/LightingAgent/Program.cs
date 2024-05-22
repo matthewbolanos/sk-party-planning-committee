@@ -91,6 +91,7 @@ builder.Services.AddTransient((serviceProvider) => {
     var pluginServicesConfig = serviceProvider.GetRequiredService<IOptions<PluginServicesConfiguration>>().Value;
     var lightPluginEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(pluginServicesConfig["LightService"].Endpoints).Result;
     var scenePluginEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(pluginServicesConfig["SceneService"].Endpoints).Result;
+    var speakerPluginEndpoint = serviceProvider.GetRequiredService<HealthCheckService>().GetHealthyEndpointAsync(pluginServicesConfig["SpeakerService"].Endpoints).Result;
     var pluginCollection = serviceProvider.GetRequiredService<KernelPluginCollection>();
 
     Kernel kernel = new(serviceProvider, pluginCollection);
@@ -100,6 +101,8 @@ builder.Services.AddTransient((serviceProvider) => {
         openApiResourceService.GetOpenApiResource(Assembly.GetExecutingAssembly(),"LightPlugin.swagger.json")));
     var scenePluginFile = new MemoryStream(Encoding.UTF8.GetBytes(
         openApiResourceService.GetOpenApiResource(Assembly.GetExecutingAssembly(),"ScenePlugin.swagger.json")));
+    var speakerPluginFile = new MemoryStream(Encoding.UTF8.GetBytes(
+        openApiResourceService.GetOpenApiResource(Assembly.GetExecutingAssembly(),"SpeakerPlugin.swagger.json")));
 
     #pragma warning disable SKEXP0040
     // Plugin for changing lights
@@ -120,6 +123,17 @@ builder.Services.AddTransient((serviceProvider) => {
         executionParameters: new OpenApiFunctionExecutionParameters()
         {
             ServerUrlOverride = new Uri(scenePluginEndpoint),
+            EnablePayloadNamespacing = true
+        }
+    ).Wait();
+    
+    // Plugin for getting scene recommendations
+    kernel.ImportPluginFromOpenApiAsync(
+        pluginName: "speaker_plugin",
+        stream: speakerPluginFile,
+        executionParameters: new OpenApiFunctionExecutionParameters()
+        {
+            ServerUrlOverride = new Uri(speakerPluginEndpoint),
             EnablePayloadNamespacing = true
         }
     ).Wait();

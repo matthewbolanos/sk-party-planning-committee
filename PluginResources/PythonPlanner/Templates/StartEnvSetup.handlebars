@@ -1,34 +1,134 @@
-import sys,os,asyncio,time,json,random,traceback,subprocess,tempfile
+import sys
+import os
+import asyncio
+import json
+import random
+import subprocess
+import tempfile
+from datetime import datetime, timedelta
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 from IPython import get_ipython as gi
 from IPython.utils.capture import capture_output
-f=["/mnt/data/.cache","/mnt/data/.io", "/mnt/data/.io/function_results","/mnt/data/.io/final_results","/mnt/data/.main","/mnt/data/.background/"]
-os.environ['NUMBA_CACHE_DIR'],os.environ['PYTHONASYNCIODEBUG']=f[0],'1'
-for d in f: os.makedirs(d,exist_ok=True)
+
+f = ["/mnt/data/.cache", "/mnt/data/.io", "/mnt/data/.io/function_results",
+     "/mnt/data/.io/final_results", "/mnt/data/.main", "/mnt/data/.background/"]
+os.environ['NUMBA_CACHE_DIR'], os.environ['PYTHONASYNCIODEBUG'] = f[0], '1'
+for d in f:
+    os.makedirs(d, exist_ok=True)
 
 _fc_pos = 0
+_debounce_time = 0.1  # Initial debounce time in seconds
+_max_debounce_time = 1  # Maximum debounce time in seconds
+_last_call_time = None
+
 function_calls_path = os.path.join("/mnt/data/.io", "function_calls.txt")
 with open(function_calls_path, 'w') as function_calls_file:
-	function_calls_file.write("")
+    function_calls_file.write("")
 
-if f[1] not in sys.path: sys.path.append(f[1])
+if f[1] not in sys.path:
+    sys.path.append(f[1])
+
 def _run(code):
-	scriptId = random.randint(0, 1000000)
-	try:
-		file_path = f"/mnt/data/.main/{scriptId}.py"
-		try:
-			with open(file_path, "w") as f:
-				f.write(code)
-		finally:
-			tf.close()
-	finally:
-		tf.close()
-	return scriptId
+    scriptId = random.randint(0, 1000000)
+    try:
+        file_path = f"/mnt/data/.main/{scriptId}.py"
+        try:
+            with open(file_path, "w") as f:
+                f.write(code)
+        finally:
+            tf.close()
+    finally:
+        tf.close()
+    return scriptId
+
 try:
-	temp_dir = "/mnt/data/.background/"
-	_r = {{mainRunner}}
-	tf = tempfile.NamedTemporaryFile(delete=False, suffix='.py', dir=temp_dir)
-	with open(tf.name, "w") as f:
-		f.write(_r)
-	process = subprocess.Popen(f"python {tf.name} &", shell=True)
+    temp_dir = "/mnt/data/.background/"
+    _r = {{mainRunner}}
+    tf = tempfile.NamedTemporaryFile(delete=False, suffix='.py', dir=temp_dir)
+    with open(tf.name, "w") as f:
+        f.write(_r)
+    process = subprocess.Popen(f"python {tf.name} &", shell=True)
 finally:
-	tf.close()
+    tf.close()
+
+class FileChangeHandler(FileSystemEventHandler):
+    def __init__(self, loop, script_id, future):
+        self.loop = loop
+        self.script_id = script_id
+        self.future = future
+
+    def on_modified(self, event):
+        if event.src_path == function_calls_path:
+            self.loop.call_soon_threadsafe(self._process_function_calls)
+        elif event.src_path == f'/mnt/data/.io/final_results/{self.script_id}.json':
+            self.loop.call_soon_threadsafe(self._process_final_results)
+
+    def on_created(self, event):
+        if event.src_path == f'/mnt/data/.io/final_results/{self.script_id}.json':
+            self.loop.call_soon_threadsafe(self._process_final_results)
+
+    def _process_function_calls(self):
+        global _fc_pos, _last_call_time
+
+        current_time = datetime.now()
+
+        if _last_call_time is None:
+            _last_call_time = current_time
+        elif (current_time - _last_call_time).total_seconds() < _debounce_time:
+            return
+
+        _last_call_time = current_time
+
+        with open(function_calls_path, 'r') as f:
+            f.seek(_fc_pos)
+            lines = f.readlines()
+            _calls = [json.loads(line) for line in lines]
+            _fc_pos = f.tell()
+
+        if _calls:
+            with open(function_calls_path, 'w') as f:
+                f.writelines(lines[len(_calls):])
+            self.future.set_result(json.dumps(_calls))
+
+    def _process_final_results(self):
+        res_file = f'/mnt/data/.io/final_results/{self.script_id}.json'
+        if os.path.exists(res_file):
+            with open(res_file, 'r') as f:
+                _res = json.load(f)
+            os.remove(res_file)
+            if _res:
+                self.future.set_result(json.dumps({
+                    'stdout': _res['stdout'],
+                    'stderr': _res['stderr'],
+                    'result': json.dumps(_res['result'])
+                }))
+
+async def _wd(script_id):
+    loop = asyncio.get_event_loop()
+    future = loop.create_future()
+
+    # Check if the final results file already exists
+    res_file = f'/mnt/data/.io/final_results/{script_id}.json'
+    if os.path.exists(res_file):
+        with open(res_file, 'r') as f:
+            _res = json.load(f)
+        os.remove(res_file)
+        if _res:
+            return json.dumps({
+                'stdout': _res['stdout'],
+                'stderr': _res['stderr'],
+                'result': json.dumps(_res['result'])
+            })
+
+    event_handler = FileChangeHandler(loop, script_id, future)
+    observer = Observer()
+    observer.schedule(event_handler, path='/mnt/data/.io', recursive=False)
+    observer.schedule(event_handler, path=f'/mnt/data/.io/final_results', recursive=False)
+    observer.start()
+
+    try:
+        return await future
+    finally:
+        observer.stop()
+        observer.join()

@@ -82,11 +82,6 @@ public class RunService {
                     .endpoint(openAIConfig.getEndpoint())
                     .buildAsyncClient();
                 break;
-            case "Other":
-                client = new OpenAIClientBuilder()
-                    .endpoint(openAIConfig.getEndpoint())
-                    .buildAsyncClient();
-                break;
             default:
                 throw new IllegalArgumentException("Invalid deployment type");
         }
@@ -98,7 +93,6 @@ public class RunService {
 
         var lightPluginConfig = pluginServicesConfig.get("LightService");
         var lightPluginEndpoint = healthCheckService.getHealthyEndpointAsync(lightPluginConfig.getEndpoints()).join();
-
         KernelPlugin lightPlugin = SemanticKernelOpenAPIImporter
             .builder()
             .withPluginName("light_plugin")
@@ -106,9 +100,19 @@ public class RunService {
             .withSchema(openApiSpecLoaderService.loadSpecAsString("LightPlugin.swagger.json"))
             .build();
 
+        var speakerPluginConfig = pluginServicesConfig.get("SpeakerService");
+        var speakerPluginEndpoint = healthCheckService.getHealthyEndpointAsync(speakerPluginConfig.getEndpoints()).join();
+        KernelPlugin speakerPlugin = SemanticKernelOpenAPIImporter
+            .builder()
+            .withPluginName("speaker_plugin")
+            .withServer(speakerPluginEndpoint)
+            .withSchema(openApiSpecLoaderService.loadSpecAsString("SpeakerPlugin.swagger.json"))
+            .build();
+
         Kernel kernel = Kernel.builder()
             .withAIService(ChatCompletionService.class, chat)
             .withPlugin(lightPlugin)
+            .withPlugin(speakerPlugin)
             .build();
 
         // Load chat history from MongoDB

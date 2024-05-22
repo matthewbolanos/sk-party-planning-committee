@@ -28,37 +28,43 @@ class AssistantEventStreamService:
             yield self.create_error_event("Previous message was not finished.")
             return
 
-        if self._current_message is None:
-            self._current_message = AssistantMessageContent(
-                id=streaming_chat_completions_update.id,
-                thread_id=run.thread_id,
-                created_at=datetime.now(),
-                role=AuthorRole.ASSISTANT,
-                assistant_id="LightingAgent",
-                run_id=run.id,
-                items=[TextContent(text='')]
+        if (streaming_chat_completions_update.choices[0].delta.content == None and streaming_chat_completions_update.choices[0].delta.tool_calls == None):
+            if (streaming_chat_completions_update.choices[0].finish_reason != None and self._current_message != None and len(self._current_message.items[0].text) > 0):
+
+                yield self.create_event("thread.message.completed", self._current_message)
+            
+                self._current_message = None
+
+            return
+
+        if streaming_chat_completions_update.choices[0].delta.content != None:
+            if self._current_message is None:
+                self._current_message = AssistantMessageContent(
+                    id=streaming_chat_completions_update.id,
+                    thread_id=run.thread_id,
+                    created_at=datetime.now(),
+                    role=AuthorRole.ASSISTANT,
+                    assistant_id="LightingAgent",
+                    run_id=run.id,
+                    items=[TextContent(text='')]
+                )
+                yield self.create_event("thread.message.created", self._current_message)
+                yield self.create_event("thread.message.in_progress", self._current_message)
+
+            self._current_message.items[0].text += data.content
+
+            delta: StreamingAssistantMessageContent = StreamingAssistantMessageContent(
+                content=[{
+                    "index": streaming_chat_completions_update.choices[0].index,
+                    "type": "text",
+                    "text": {
+                        "value": data.content,
+                        "annotations": []
+                    }
+                }]
             )
-            yield self.create_event("thread.message.created", self._current_message)
-            yield self.create_event("thread.message.in_progress", self._current_message)
 
-        self._current_message.items[0].text += data.content
-
-        delta: StreamingAssistantMessageContent = StreamingAssistantMessageContent(
-            content=[{
-                "index": streaming_chat_completions_update.choices[0].index,
-                "type": "text",
-                "text": {
-                    "value": data.content,
-                    "annotations": []
-                }
-            }]
-        )
-
-        yield self.create_event("thread.message.delta", delta)
-
-        if streaming_chat_completions_update.choices[0].finish_reason is not None:
-            yield self.create_event("thread.message.completed", self._current_message)
-            self._current_message = None
+            yield self.create_event("thread.message.delta", delta)
 
     def create_event(self, event_type: str, data: BaseModel) -> str:
         json_data = data.model_dump_json()

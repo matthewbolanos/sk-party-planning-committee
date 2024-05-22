@@ -17,4 +17,49 @@ with open(_result_path, 'w') as f:
 {{/each}}
 {{/if}}
 
+async def _wd(script_id):
+    global _fc_pos, _last_call_time
+    _fc_path = '/mnt/data/.io/function_calls.txt'
+    _res_file = f'/mnt/data/.io/final_results/{script_id}.json'
+
+    while True:
+        _calls = []
+        current_time = datetime.now()
+
+        if os.path.exists(_fc_path):
+            # Check if we need to debounce
+            if _last_call_time is None:
+                _last_call_time = current_time
+            elif (current_time - _last_call_time).total_seconds() < _debounce_time:
+                await asyncio.sleep(_debounce_time)
+                current_time = datetime.now()
+                if (current_time - _last_call_time).total_seconds() > _max_debounce_time:
+                    _last_call_time = current_time - timedelta(seconds=_max_debounce_time)
+                continue
+            else:
+                _last_call_time = current_time
+
+            with open(_fc_path, 'r') as f:
+                f.seek(_fc_pos)
+                lines = f.readlines()
+                _calls = [json.loads(line) for line in lines]
+                _fc_pos = f.tell()
+
+            if _calls:
+                # Process calls and then clear the file 
+                with open(_fc_path, 'w') as f:
+                    f.write('')
+                _fc_pos = 0
+        
+                return json.dumps(_calls)
+
+        if os.path.exists(_res_file):
+            with open(_res_file, 'r') as f:
+                _res = json.load(f)
+            os.remove(_res_file)
+            # Check if it's not empty
+            if _res:
+                return json.dumps({'stdout': _res['stdout'], 'stderr': _res['stderr'], 'result': json.dumps(_res['result'])})
+        await asyncio.sleep(0.01)
+
 await _wd({{scriptId}})

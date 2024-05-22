@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 
 namespace MusicAPI.Controllers
 {
+
     [ApiController]
     [Route("Speaker")]
     public class SpeakerController : ControllerBase
     {
+        private const int LATENCY_BUFFER = 300; // milliseconds
         private static int _buffer;
         private static int _source;
         private static ALDevice _device;
         private static ALContext _context;
 
         /// <summary>
-        /// Loads a song.
-        /// Call this before playing to ensure the song can immediately start playing when Play is called.
+        /// Loads a song; call this before playing to ensure the song can immediately start playing when Play is called.
         /// </summary>
         /// <param name="songRequest">An object containing the relative path to the song file.</param>
         /// <returns>A message indicating whether the song was loaded successfully.</returns>
@@ -28,7 +29,6 @@ namespace MusicAPI.Controllers
         [HttpPost("LoadSong", Name = "load_song")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Description("Loads a song; call this before playing to ensure the song can immediately start playing when Play is called.")]
         public IActionResult LoadSong([FromBody] SongRequest songRequest)
         {
             try
@@ -85,22 +85,31 @@ namespace MusicAPI.Controllers
 
 
         /// <summary>
-        /// Plays a song.
-        /// You must call LoadSong before calling this.
+        /// Plays a song; you must call LoadSong before calling this.
         /// </summary>
         /// <returns>A message indicating whether the song is playing.</returns>
         /// <response code="200">Song is playing.</response>
         /// <response code="400">Error playing song.</response>
+        /// <param name="scheduledTime">You may optionally provide when the music should start playing so you can synchronize it with other elements as an async task</param>
         [HttpPost("Play", Name = "play_song")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Description("Plays a song; you must call LoadSong before calling this.")]
-        public IActionResult Play()
+        public async Task<IActionResult> PlayAsync(DateTime? scheduledTime = null)
         {
+            // Check if the light has a scheduled state change
+            if (scheduledTime != null)
+            {
+                // Calculate the time until the scheduled state change (include a latency buffer to account for network latency)
+                var timeUntilChange = Math.Max((scheduledTime.Value - DateTime.Now + new TimeSpan(LATENCY_BUFFER)).Milliseconds, 0);
+
+                // Wait until the scheduled time
+                await Task.Delay(timeUntilChange).ConfigureAwait(false);
+            }  
+
             try
             {
                 // Play asynchronously in a new task
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
                     // play it
                     AL.SourcePlay(_source);

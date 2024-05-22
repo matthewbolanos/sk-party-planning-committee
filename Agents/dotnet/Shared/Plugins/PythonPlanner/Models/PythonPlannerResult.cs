@@ -10,10 +10,10 @@ public class PythonPlannerResult
     public string Status { get; set; }
 
     [JsonPropertyName("stdout")]
-    public string Stdout { get; set; }
+    public string? Stdout { get; set; }
 
     [JsonPropertyName("stderr")]
-    public string Stderr { get; set; }
+    public string? Stderr { get; set; }
 
     [JsonPropertyName("result")]
     public string? Result { get; set; }

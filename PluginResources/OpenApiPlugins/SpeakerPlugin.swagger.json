@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "Home API",
+        "title": "Speaker API",
         "version": "v1"
     },
     "paths": {
@@ -10,7 +10,7 @@
                 "tags": [
                     "Speaker"
                 ],
-                "summary": "Loads a song.\r\nCall this before playing to ensure the song can immediately start playing when Play is called.",
+                "summary": "Loads a song; call this before playing to ensure the song can immediately start playing when Play is called.",
                 "operationId": "load_song",
                 "requestBody": {
                     "description": "An object containing the relative path to the song file.",
@@ -64,8 +64,20 @@
                 "tags": [
                     "Speaker"
                 ],
-                "summary": "Plays a song.\r\nYou must call LoadSong before calling this.",
+                "summary": "Plays a song; you must call LoadSong before calling this.",
                 "operationId": "play_song",
+                "parameters": [
+                    {
+                        "name": "scheduledTime",
+                        "in": "query",
+                        "description": "You may optionally provide when the music should start playing so you can synchronize it with other elements as an async task",
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Song is playing."

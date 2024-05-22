@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace PartyPlanning.PluginServices.LightService.Models
 {
     /// <summary>
@@ -26,7 +28,7 @@ namespace PartyPlanning.PluginServices.LightService.Models
         public int? FadeDurationInMilliseconds { get; set; } = 100;
 
         /// <summary>
-        /// The time at which the change should occur.
+        /// Use ScheduledTime to synchronize lights. It's recommended that you asynchronously create tasks for each light that's scheduled to avoid blocking the main thread.
         /// </summary>
         public DateTime? ScheduledTime { get; set; }
     }

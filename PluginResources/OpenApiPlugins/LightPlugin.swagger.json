@@ -185,7 +185,7 @@
                     },
                     "scheduledTime": {
                         "type": "string",
-                        "description": "The time at which the change should occur.",
+                        "description": "Use ScheduledTime to synchronize lights. It's recommended that you asynchronously create tasks for each light that's scheduled to avoid blocking the main thread.",
                         "format": "date-time",
                         "nullable": true
                     }

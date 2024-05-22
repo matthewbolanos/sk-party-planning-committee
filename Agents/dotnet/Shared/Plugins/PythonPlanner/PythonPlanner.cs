@@ -156,12 +156,25 @@ public partial class PythonPlanner
         ////////////////////////////////////////////////
 
         List<PythonPlannerFunctionResultContent> functionResults = [];
+        PythonPlannerResult relayCodeResults;
         while (true)
         {
             // 6.a. Create a relay to the Python container
             ////////////////////////////////////////////////
-            var relayCode = await generator.GeneratePythonRelayCodeAsync(kernel, functionResults, startScriptCodeResults.Result);
-            var relayCodeResults = await BaseExecuteAsync(relayCode);
+            while (true)
+            {
+                var relayCode = await generator.GeneratePythonRelayCodeAsync(kernel, functionResults, startScriptCodeResults.Result);
+                relayCodeResults = await BaseExecuteAsync(relayCode);
+                if (relayCodeResults.Stderr == "Request timed out waiting for code execution to complete")
+                {
+                    // Retry the relay code execution
+                    continue;
+                } else if (relayCodeResults.Stderr != "") {
+                    throw new Exception(relayCodeResults.Stderr);
+                } else {
+                    break;
+                }
+            }
 
             // 6.b. Deserialize the relay code results
             ////////////////////////////////////////////////
@@ -268,8 +281,8 @@ public partial class PythonPlanner
     /// <returns>The metadata of the uploaded file.</returns>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="HttpRequestException"></exception>
-    [KernelFunction, Description("Uploads a file for the current session id pool.")]
-    public async Task<PythonPlannerFileUploadResponse> UploadFileAsync(
+    [KernelFunction, Description("Uploads a file to /mnt/data for the current python container.")]
+    public async Task<PythonPlannerFileUploadResponseFile> UploadFileAsync(
         [Description("The path to the file in the session.")] string remoteFilePath,
         [Description("The path to the file on the local machine.")] string? localFilePath)
     {
@@ -298,7 +311,7 @@ public partial class PythonPlanner
 
         var JsonElementResult = JsonSerializer.Deserialize<JsonElement>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 
-        return JsonSerializer.Deserialize<PythonPlannerFileUploadResponse>(JsonElementResult.GetProperty("$values")[0].GetRawText())!;
+        return JsonSerializer.Deserialize<PythonPlannerFileUploadResponseFile>(JsonElementResult.GetProperty("$values")[0].GetRawText())!;
     }
 
     /// <summary>

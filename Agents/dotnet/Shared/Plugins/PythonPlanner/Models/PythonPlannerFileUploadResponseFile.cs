@@ -10,12 +10,9 @@ public class PythonPlannerFileUploadResponseFile
     [JsonPropertyName("filename")]
     public string Filename { get; set; }
 
-    [JsonPropertyName("bytes")]
-    public int Bytes { get; set; }
+    [JsonPropertyName("size")]
+    public int Size { get; set; }
 
-    [JsonPropertyName("lastModifiedTime")]
+    [JsonPropertyName("last_modified_time")]
     public DateTime LastModifiedTime { get; set; }
-
-    [JsonPropertyName("fullPath")]
-    public string? FullPath { get; set; }
 }

@@ -122,6 +122,9 @@ public partial class PythonPlanner
 
             string newFunctionsScript = await generator.GeneratePythonRunCodeAsync(kernel, newFunctionsCode);
             var newFunctionsCodeResults = await BaseExecuteAsync(newFunctionsScript);
+            var waitCode = await generator.GeneratePythonRelayCodeAsync(kernel, [], newFunctionsCodeResults.Result);
+            var newFunctionWaitResults = await BaseExecuteAsync(waitCode);
+                
         }
 
         // 4. Standardize function names
@@ -225,7 +228,10 @@ public partial class PythonPlanner
             } catch {
                 // 7. Return the final result
                 ////////////////////////////////////////////////
-                return JsonSerializer.Deserialize<PythonPlannerResult>(relayCodeResults.Result)!;
+                if (relayCodeResults.Result != null)
+                {
+                    return JsonSerializer.Deserialize<PythonPlannerResult>(relayCodeResults.Result)!;
+                }
             }
         }
     }
@@ -235,6 +241,7 @@ public partial class PythonPlanner
         this._logger.LogTrace("Executing code: {Code}", code);
 
         using var httpClient = this._httpClientFactory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromMinutes(5);
 
         var requestBody = new
         {

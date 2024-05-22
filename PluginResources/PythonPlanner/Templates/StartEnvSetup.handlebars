@@ -7,7 +7,7 @@ for d in f: os.makedirs(d,exist_ok=True)
 
 _fc_pos = 0
 _debounce_time = 0.1  # Initial debounce time in seconds
-_max_debounce_time = 1  # Maximum debounce time in seconds
+_max_debounce_time = 60  # Maximum debounce time in seconds
 _last_call_time = None
 
 function_calls_path = os.path.join("/mnt/data/.io", "function_calls.txt")

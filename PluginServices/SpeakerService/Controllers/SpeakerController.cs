@@ -13,7 +13,7 @@ namespace MusicAPI.Controllers
     [Route("Speaker")]
     public class SpeakerController : ControllerBase
     {
-        private const int LATENCY_BUFFER = 300; // milliseconds
+        private const int LATENCY_BUFFER = 10000; // milliseconds
         private static int _buffer;
         private static int _source;
         private static ALDevice _device;

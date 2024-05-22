@@ -1,6 +1,6 @@
 {{#each functions}}
-async def {{toSnakeCase PluginName}}__{{toSnakeCase Name}}(_a=None):
-    _fcid=write_function_call('{{PluginName}}','{{Name}}',_a)
+async def {{toSnakeCase PluginName}}__{{toSnakeCase Name}}(arguments=None):
+    _fcid=write_function_call('{{PluginName}}','{{Name}}',arguments)
     return await poll_function_result(_fcid)
     
 functions.{{toSnakeCase PluginName}}__{{toSnakeCase Name}}={{toSnakeCase PluginName}}__{{toSnakeCase Name}}

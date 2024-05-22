@@ -15,7 +15,7 @@ namespace PartyPlanning.PluginServices.LightService.Controllers
 
         // private readonly IMongoCollection<BsonDocument> _smartDevices = database.GetCollection<BsonDocument>("SmartDevices");
         // private readonly IMongoCollection<Light> _lights = database.GetCollection<Light>("Lights");
-        private const int LATENCY_BUFFER = 300; // milliseconds
+        private const int LATENCY_BUFFER = 10000; // milliseconds
 
         /// <summary>
         /// Retrieves all lights in the system.

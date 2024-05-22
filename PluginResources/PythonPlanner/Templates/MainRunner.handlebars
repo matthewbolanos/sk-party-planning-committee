@@ -55,7 +55,7 @@ async def poll_function_result(key):
             if os.path.exists(result_path):
                 with open(result_path, 'r') as f:
                     result = json.load(f)
-                    os.remove(result_path)
+                    # os.remove(result_path)
                     return result
             await asyncio.sleep(0.01)
     except json.JSONDecodeError as e:
@@ -144,6 +144,8 @@ def process_queue(queue, processed_files):
             logging.debug(f"Processing file: {file_path}")
             with open(file_path, 'r') as file:
                 code = file.read()
+            os.remove(file_path)
+            
             logging.debug(f"File content of {file_path}: {code}")
 
             result, stdout, stderr = loop.run_until_complete(execute_with_last_result(code))

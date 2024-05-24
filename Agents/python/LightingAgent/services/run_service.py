@@ -65,6 +65,8 @@ class RunService:
                 ),
             )
 
+        # Add plugin services
+
         # Load the Light plugin
         light_service_endpoint = await health_check_service.get_healthy_endpoint(plugin_services['LightService'].endpoints)
         kernel.add_plugin_from_openapi(
@@ -76,6 +78,7 @@ class RunService:
                 enable_payload_namespacing=True,
             ),
         )
+
 
         # Load the Scene plugin
         scene_service_endpoint = await health_check_service.get_healthy_endpoint(plugin_services['SceneService'].endpoints)

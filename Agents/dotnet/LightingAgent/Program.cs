@@ -14,6 +14,8 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using PartyPlanning.Agents.Shared.Controllers;
 using PartyPlanning.Agents.Shared.Plugins.PythonPlanner;
 
+ #pragma warning disable SKEXP0001
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Setup configuration
@@ -85,6 +87,10 @@ builder.Services.AddSingleton((serviceProvider)=>{
 
     return pluginCollection;
 });
+
+
+builder.Services.AddSingleton<StrobeProtector>();
+builder.Services.AddSingleton<IFunctionInvocationFilter,StopStrobeFilter>();
 
 // Create kernel
 builder.Services.AddTransient((serviceProvider) => {
@@ -200,3 +206,32 @@ app.UseSwaggerUI(c =>
 });
 
 app.Run();
+
+
+public class StopStrobeFilter : IFunctionInvocationFilter
+{
+    private readonly StrobeProtector _strobeProtector;
+
+    public StopStrobeFilter(StrobeProtector strobeProtector)
+    {
+        _strobeProtector = strobeProtector;
+    }
+
+    public async Task OnFunctionInvocationAsync(FunctionInvocationContext context, Func<FunctionInvocationContext, Task> next)
+    {
+        var fullName = context.Function.PluginName + "." + context.Function.Name;
+        
+        switch (fullName)
+        {
+            case "light_plugin.change_light_state":
+                if (!_strobeProtector.TestForStrobe(context))
+                {
+                    await next(context);
+                }
+                break;
+            default:
+                await next(context);
+                break;
+        }
+    }
+}

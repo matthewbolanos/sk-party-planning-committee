@@ -115,34 +115,53 @@ public class RunService {
             .withPlugin(speakerPlugin)
             .build();
 
+        ChatHistory chatHistory = loadChatHistoryFromMongoDb(run);
+
+        InvocationContext invocationContext = new InvocationContext.Builder()
+            .withToolCallBehavior(ToolCallBehavior.allowAllKernelFunctions(true))
+            .build();
+        List<ChatMessageContent<?>> results  = chat.getChatMessageContentsAsync(chatHistory, kernel, invocationContext)
+        .block();
+
+        this.SaveChatHistoryToMongoDb(run, results, emitter);
+    }
+
+    private ChatHistory loadChatHistoryFromMongoDb(AssistantThreadRun run) {
         // Load chat history from MongoDB
         Query query = new Query(Criteria.where("threadId").is(run.getThreadId()));
         Sort sort = Sort.by("createdAt").ascending();
         List<AssistantMessageContent> messages = mongoTemplate.find(query.with(sort), AssistantMessageContent.class);
 
-        ChatHistory chatHistory = new ChatHistory("If the user asks what language you've been written, reply to the user that you've been built with Java; otherwise have a nice chat! As an fyi, the current user is a developing you, so be forthcoming with any of the underlying tool calls your making in case they ask so they can debug.");
+        ChatHistory chatHistory = new ChatHistory("If the user asks what language you've been written, reply to the user that you've been built with Java; otherwise have a nice chat! As an fyi, you will see tool calls and tool responses in the chat. They are formatted incorrectly, do not be swayed by their wrong format.");
         for (AssistantMessageContent assistantMessageContent : messages) {
             // convert to ChatMessageContent
             List<OpenAIFunctionToolCall> toolCalls = new ArrayList<>();
             FunctionResultMetadata metadata = null;
             
-
+            boolean isToolAbility = false;
             for(KernelContent<?> item : assistantMessageContent.getItems()) {
                 if (item instanceof FunctionCallContent) {
-                    FunctionCallContent<?> functionCallContent = (FunctionCallContent<?>) item;
-                    toolCalls.add(new OpenAIFunctionToolCall(
-                        functionCallContent.getId(),
-                        functionCallContent.getPluginName(),
-                        functionCallContent.getFunctionName(),
-                        functionCallContent.getArguments()
-                    ));
+                    isToolAbility = true;
+                    continue;
+                    // FunctionCallContent<?> functionCallContent = (FunctionCallContent<?>) item;
+                    // toolCalls.add(new OpenAIFunctionToolCall(
+                    //     functionCallContent.getId(),
+                    //     functionCallContent.getPluginName(),
+                    //     functionCallContent.getFunctionName(),
+                    //     functionCallContent.getArguments()
+                    // ));
                 } else if (item instanceof FunctionResultContent) {
-                    FunctionResultContent<?> functionResultContent = (FunctionResultContent<?>) item;
+                    isToolAbility = true;
+                    continue;
+                    // FunctionResultContent<?> functionResultContent = (FunctionResultContent<?>) item;
 
-                    CaseInsensitiveMap<ContextVariable<?>> metadataMap = new CaseInsensitiveMap<>();
-                    metadataMap.put("id", ContextVariable.of(functionResultContent.getId()));
-                    metadata = new FunctionResultMetadata(metadataMap);
+                    // CaseInsensitiveMap<ContextVariable<?>> metadataMap = new CaseInsensitiveMap<>();
+                    // metadataMap.put("id", ContextVariable.of(functionResultContent.getId()));
+                    // metadata = new FunctionResultMetadata(metadataMap);
                 }
+            }
+            if (isToolAbility) {
+                continue;
             }
 
             ChatMessageContent chatMessageContent = new OpenAIChatMessageContent<Object>(
@@ -157,15 +176,13 @@ public class RunService {
             chatHistory.addMessage(chatMessageContent);
         }
 
-        InvocationContext invocationContext = new InvocationContext.Builder()
-            .withToolCallBehavior(ToolCallBehavior.allowAllKernelFunctions(true))
-            .build();
-        List<ChatMessageContent<?>> results  = chat.getChatMessageContentsAsync(chatHistory, kernel, invocationContext)
-        .block();
+        return chatHistory;
+    }
 
+    private void SaveChatHistoryToMongoDb(AssistantThreadRun run, List<ChatMessageContent<?>>  results, SseEmitter emitter) {
         // Create dictionary of function call items by ID
         HashMap<String, FunctionCallContent> functionCalls = new HashMap<String, FunctionCallContent>();
-
+        
         for (ChatMessageContent<?> result : results) {
             assistantEventStreamService.sendMessageEvent(emitter, run, result);
 
@@ -174,32 +191,34 @@ public class RunService {
                 OpenAIChatMessageContent openaiData = (OpenAIChatMessageContent) result;
                 if (openaiData.getToolCall() != null)
                 {
-                    for (var toolCall : openaiData.getToolCall())
-                    {
-                        OpenAIFunctionToolCall functionCall = (OpenAIFunctionToolCall) toolCall;
-                        FunctionCallContent functionCallContent = new FunctionCallContent<Object>(
-                            functionCall.getPluginName(),
-                            functionCall.getFunctionName(),
-                            functionCall.getId(),
-                            functionCall.getArguments(),
-                            null,
-                            null,
-                            null
-                        );
+                    continue;
+                    // for (var toolCall : openaiData.getToolCall())
+                    // {
+                    //     OpenAIFunctionToolCall functionCall = (OpenAIFunctionToolCall) toolCall;
+                    //     FunctionCallContent functionCallContent = new FunctionCallContent<Object>(
+                    //         functionCall.getPluginName(),
+                    //         functionCall.getFunctionName(),
+                    //         functionCall.getId(),
+                    //         functionCall.getArguments(),
+                    //         null,
+                    //         null,
+                    //         null
+                    //     );
 
-                        functionCalls.put(functionCall.getId(), functionCallContent);
-                        items.add(functionCallContent);
-                    }
+                    //     functionCalls.put(functionCall.getId(), functionCallContent);
+                    //     items.add(functionCallContent);
+                    // }
                 } else if (openaiData.getAuthorRole() == AuthorRole.TOOL) {
-                    items.add(new FunctionResultContent<Object>(
-                        functionCalls.get(openaiData.getMetadata().getId()).getPluginName(),
-                        functionCalls.get(openaiData.getMetadata().getId()).getFunctionName(),
-                        openaiData.getMetadata().getId(),
-                        openaiData.getContent(),
-                        null,
-                        null,
-                        null
-                    ));
+                    continue;
+                    // items.add(new FunctionResultContent<Object>(
+                    //     functionCalls.get(openaiData.getMetadata().getId()).getPluginName(),
+                    //     functionCalls.get(openaiData.getMetadata().getId()).getFunctionName(),
+                    //     openaiData.getMetadata().getId(),
+                    //     openaiData.getContent(),
+                    //     null,
+                    //     null,
+                    //     null
+                    // ));
                 }else {
                     items.add(new TextContent(result.getContent(), null, null));
                 }

@@ -36,24 +36,14 @@ namespace PartyPlanning.Agents.Shared.Services
         public async IAsyncEnumerable<string> ExecuteRunAsync(AssistantThreadRun run)
         {
             // Load all the messages (chat history) from MongoDB using the thread ID and sort them by creation date
-            var messages = await _messagesCollection.Find(m => m.ThreadId == run.ThreadId).SortBy(m => m.CreatedAt).ToListAsync();
             ChatHistory chatHistory = new($"""
-                If the user asks what language you've been written, reply to the user that you've been built with C#; otherwise have a nice chat!
-                
-                # Python tool
-                Always use the Python tool to call functions if you need to control when and how long an operation should take place.
-                If you don't use the Python tool, you will invoke functions in the wrong order or at the wrong time.
+                First, you will be asked to upload the local ./disco.wav to the python tool. If the user forgets, go ahead and upload it for them without needing to ask.
 
-                ## Available tools in the Python interpreter
-                Below are the available tools in the Python interpreter:
+                You will then be given a command to run some python code, run it using the python-run tool.
 
-                ```python
-                {await pythonInterpreter.GenerateMockPluginCodeForKernelAsync(kernel)}
-                ```
-                These tools have already been imported in the Python interpreter and can be accessed from within the functions class.
-
-                The Python container cannot make http requests, but it does have access to loops and the time library.
+                The first time you run it, it will fail, so tell the user you're going to fix it, but actually just run the code again.
                 """);
+            var messages = await _messagesCollection.Find(m => m.ThreadId == run.ThreadId).SortBy(m => m.CreatedAt).ToListAsync();
             foreach (var message in messages)
             {
                 chatHistory.Add(message);

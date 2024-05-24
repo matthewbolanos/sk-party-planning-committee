@@ -230,7 +230,16 @@ public partial class PythonPlanner
                 ////////////////////////////////////////////////
                 if (relayCodeResults.Result != null)
                 {
-                    return JsonSerializer.Deserialize<PythonPlannerResult>(relayCodeResults.Result)!;
+                    try {
+                        return JsonSerializer.Deserialize<PythonPlannerResult>(relayCodeResults.Result)!;
+                    } catch {
+                        return new PythonPlannerResult
+                        {
+                            Result = "",
+                            Stderr = "",
+                            Stdout = ""
+                        };
+                    }
                 }
             }
         }

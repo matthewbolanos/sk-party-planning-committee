@@ -78,20 +78,23 @@ endpoints = config.weaviate.model_dump().values()
 async def generate_scene_pallette(scene_request: SceneRequest):
     complete_prompt = f"{scene_request.threeWordDescription}{'; ' + scene_request.recommendedColors if scene_request.recommendedColors else ''}"
 
-    # Retrieve the scene
-    embedding = await embeddingService.generate_embeddings(complete_prompt)
-    result = weaviate_client.query.get("scene", ["sk_text", "sk_description", "sk_additional_metadata"]).with_near_vector({'vector': embedding}).with_limit(1).do()
-    if result['data']['Get']['Scene']:
-        return ScenePallette(
-            imageUrl=result['data']['Get']['Scene'][0]['sk_additional_metadata'],
-            colors=json.loads(result['data']['Get']['Scene'][0]['sk_description'])
-        )
+    try:
+        embedding = await embeddingService.generate_embeddings(complete_prompt)
+        result = weaviate_client.query.get("scene", ["sk_text", "sk_description", "sk_additional_metadata"]).with_near_vector({'vector': embedding}).with_limit(1).do()
+        if result['data']['Get']['Scene']:
+            return ScenePallette(
+                imageUrl=result['data']['Get']['Scene'][0]['sk_additional_metadata'],
+                colors=json.loads(result['data']['Get']['Scene'][0]['sk_description'])
+            )
+    except Exception as e:
+        pass
+
     # Generate an image
     image_url = await generate_image(f"Realistic image for desktop background: {complete_prompt}")
     local_image_path = await download_image(image_url)
     hex_colors = get_top_colors(local_image_path, 5)
 
-    # Store in cache
+    # Cache the scene
     weaviate_client.data_object.create({
         "sk_additional_metadata": image_url,
         "sk_description": json.dumps(hex_colors),
